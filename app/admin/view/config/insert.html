@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_config_key')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_config_name')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_config_type')}</label>
+                        <div class="layui-input-block">
+                            <div name="type" id="type" value="1" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_config_group')}</label>
+                        <div class="layui-input-block">
+                            <div name="group" id="group" value="1" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_sort')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sort_order" value="0" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_config_val')}</label>
+                        <div class="layui-input-block">
+                            <textarea name="val" placeholder="{:trans('text_config_val')}" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_config_extra')}</label>
+                        <div class="layui-input-block">
+                            <textarea name="extra" placeholder="{:trans('text_config_extra')}" class="layui-textarea"></textarea>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_config_extra')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_config_desc')}</label>
+                        <div class="layui-input-block">
+                            <textarea name="desc" placeholder="{:trans('text_config_desc')}" class="layui-textarea"></textarea>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_config_desc')}</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/admin/config/insert";
+
+            // 字段 父级 type
+            layui.use(["jquery", "xmSelect"], function() {
+                layui.$.ajax({
+                    url: "/admin/config/getConfig?key=SYS_CONFIG_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#type").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#type",
+                            name: "type",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+            });
+
+            // 字段 父级 group
+            layui.use(["jquery", "xmSelect"], function() {
+                layui.$.ajax({
+                    url: "/admin/config/getConfig?key=SYS_CONFIG_GROUP",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#group").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#group",
+                            name: "group",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+            });
+            
+            //提交事件
+            layui.use(["form", "popup"], function () {
+                layui.form.on("submit(save)", function (data) {
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_category')}</label>
+                        <div class="layui-input-block">
+                            <div name="category" id="category" value="1" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_title')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_thumb')}</label>
+                        <div class="layui-input-block">
+                            <img class="img-3" src="" />
+                            <input type="text" style="display:none" id="image-thumb" name="thumb" value="" />
+                            <button type="button" class="pear-btn pear-btn-primary pear-btn-sm" id="upload-image-thumb" permission="app.admin.upload.image">
+                                <i class="layui-icon layui-icon-upload"></i> {:trans('text_upload_image')}
+                            </button>
+                            <button type="button" class="pear-btn pear-btn-primary pear-btn-sm" id="choose-image-thumb" permission="app.admin.upload.attachment">
+                                <i class="layui-icon layui-icon-align-left"></i> {:trans('text_select_image')}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_content')}</label>
+                        <div class="layui-input-block">
+                            <textarea id="content_edit" class="layui-textarea"></textarea>
+                            <input type="hidden" name="content" id="content">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_sort')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sort_order" value="0" class="layui-input">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/admin/article/insert";
+
+            // 基础设置
+            layui.use(["upload", "layer", "popup", "tinymce", "form", "popup", "jquery", "xmSelect"], function() {
+                let $ = layui.$;
+                let form = layui.form;
+                // 通用图片类型配置上传 通配匹配id为image-*
+                let uploadImgInputs = $("input[id^='image-']");
+                if(uploadImgInputs.size() > 0) {
+                    uploadImgInputs.each(function() {
+                        let input = $(this);
+                        let key = input.attr("id").replace("image-", "");
+                        let img = input.prev();
+                        // 填充img的src
+                        img.attr("src", input.val());
+                        layui.upload.render({
+                            elem: "#upload-image-" + key,
+                            url: "/admin/upload/image",
+                            acceptMime: "image/gif,image/jpeg,image/jpg,image/png",
+                            done: function (res) {
+                                if (res.code) {
+                                    return layui.popup.failure(res.msg);
+                                }
+                                input.val(res.data.url);
+                                img.attr("src", res.data.url);
+                            }
+                        });
+                        layui.$("#choose-image-" + key).on("click", function() {
+                            parent.layer.open({
+                                type: 2,
+                                title: "{:trans('text_select_image')}",
+                                content: "/admin/upload/attachment?ext=jpg,jpeg,png,gif,bmp",
+                                area: ["95%", "90%"],
+                                success: function (layero, index) {
+                                    parent.layui.$("#layui-layer" + index).data("callback", function (data) {
+                                        input.val(data.url);
+                                        img.attr("src", data.url);
+                                    });
+                                }
+                            });
+                        });
+                    });
+                }
+                // 富文本编辑器
+                var tinymce = layui.tinymce
+                var content_edit = tinymce.render({
+                    elem: "#content_edit",
+                    height: 400,
+                    images_upload_url: '/admin/upload/image',
+                    images_upload_handler: function (blobInfo, success, failure) {
+                        var formData = new FormData();
+                        formData.append('file', blobInfo.blob(), blobInfo.filename());
+                        $.ajax({
+                            url: '/admin/upload/image',
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function (res) {
+                                if (res.code === 0) {
+                                    success(res.data.url);
+                                } else {
+                                    failure(res.msg);
+                                }
+                            },
+                            error: function () {
+                                failure('Image upload failed.');
+                            }
+                        });
+                    }
+                });
+
+                // 字段 父级 category
+                layui.$.ajax({
+                    url: "/admin/config/getConfig?key=CATE_ARTICLE_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#category").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#category",
+                            name: "category",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 提交事件
+                form.on("submit(save)", function (data) {
+                    data.field.status = data.field.status ? 1 : 0;
+                    data.field.content = content_edit.getContent();
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

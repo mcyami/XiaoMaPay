@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+        <style>
+            .layui-iconpicker .layui-anim {
+                bottom: 42px !important;
+                top: inherit !important;
+            }
+        </style>
+    </head>
+    <body>
+
+        <form class="layui-form">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_title')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" required lay-verify="required" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_key')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" required lay-verify="required" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_parent_menu')}</label>
+                        <div class="layui-input-block">
+                            <div name="pid" id="pid" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_url')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="href" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_icon')}</label>
+                        <div class="layui-input-block">
+                            <input name="icon" id="icon" />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_type')}</label>
+                        <div class="layui-input-block">
+                            <div name="type" id="type" value="1" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_sort')}</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="weight" value="0" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        <script>
+
+            // 相关接口
+            let PRIMARY_KEY = "id";
+            const SELECT_API = "/admin/rule/select" + location.search;
+            const UPDATE_API = "/admin/rule/update";
+
+            // 获取行数据
+            layui.use(["form", "util", "popup"], function () {
+                let $ = layui.$;
+                $.ajax({
+                    url: SELECT_API,
+                    dataType: "json",
+                    success: function (res) {
+
+                        // 赋值表单
+                        layui.each(res.data[0], function (key, value) {
+                            let obj = $('*[name="'+key+'"]');
+                            if (typeof obj[0] === "undefined" || !obj[0].nodeName) return;
+                            if (obj[0].nodeName.toLowerCase() === "textarea") {
+                                obj.html(layui.util.escape(value));
+                            }  else if (obj[0].type === "checkbox") {
+                                // checkbox 特殊处理，1为选中，0或空为未选中
+                                if (value === 1) {
+                                    obj.prop('checked', true);  // 设置为选中
+                                } else {
+                                    obj.prop('checked', false); // 设置为未选中
+                                }
+                            } else {
+                                obj.attr("value", value);
+                            }
+                        });
+
+                        // 图标选择
+                        layui.use(["iconPicker"], function() {
+                            layui.iconPicker.render({
+                                elem: "#icon",
+                                type: "fontClass",
+                                page: false,
+                            });
+                        });
+
+                        // 获取上级菜单
+                        layui.use(["jquery", "xmSelect", "popup"], function() {
+                            layui.$.ajax({
+                                url: "/admin/rule/select?format=tree&type=0,1",
+                                dataType: "json",
+                                success: function (res) {
+                                    let value = layui.$("#pid").attr("value");
+                                    let initValue = value ? value.split(",") : [];
+                                    layui.xmSelect.render({
+                                        el: "#pid",
+                                        name: "pid",
+                                        initValue: initValue,
+                                        tips: "{:trans('text_none')}",
+                                        toolbar: {show: true, list: ["CLEAR"]},
+                                        data: res.data,
+                                        model: {"icon":"hidden","label":{"type":"text"}},
+                                        clickClose: true,
+                                        radio: true,
+                                        tree: {show: true,"strict":false,"clickCheck":true,"clickExpand":false,expandedKeys: initValue},
+                                    });
+                                    if (res.code) {
+                                        return layui.popup.failure(res.msg);
+                                    }
+                                }
+                            });
+                        });
+
+                        // 菜单类型下拉选择
+                        layui.use(["jquery", "xmSelect"], function() {
+                            let value = layui.$("#type").attr("value");
+                            let initValue = value ? value.split(",") : [];
+                            layui.xmSelect.render({
+                                el: "#type",
+                                name: "type",
+                                initValue: initValue,
+                                data: [{"value":"0","name":"{:trans('text_dir')}"},{"value":"1","name":"{:trans('text_menu')}"},{"value":"2","name":"{:trans('text_permission')}"}],
+                                model: {"icon":"hidden","label":{"type":"text"}},
+                                clickClose: true,
+                                radio: true,
+                            })
+                        });
+
+                        // ajax产生错误
+                        if (res.code) {
+                            layui.popup.failure(res.msg);
+                        }
+
+                    }
+                });
+            });
+
+            // 提交事件
+            layui.use(["form", "popup"], function () {
+                layui.form.on("submit(save)", function (data) {
+                    data.field[PRIMARY_KEY] = layui.url().search[PRIMARY_KEY];
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: UPDATE_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+
+</html>

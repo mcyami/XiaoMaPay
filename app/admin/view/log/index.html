@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/admin/css/reset.css"/>
+</head>
+<body class="pear-container">
+
+<!-- 顶部查询表单 -->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form top-search-from">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_category')}</label>
+                <div class="layui-input-block">
+                    <div name="category" id="category" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_action_name')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="action_name" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_controller')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="controller" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_action')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="action" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_user_id')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="user_id" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_action_user')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="user_name" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_client_ip')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="client_ip" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_related_id')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="related_id" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_action_time')}</label>
+                <div class="layui-input-block">
+                    <div class="layui-input-block" id="created_at">
+                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-start" class="layui-input inline-block" placeholder="{:trans('text_start_time')}">
+                        -
+                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-end" class="layui-input inline-block" placeholder="{:trans('text_end_time')}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label"></label>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
+                    <i class="layui-icon layui-icon-search"></i> {:trans('text_select')}
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
+                    <i class="layui-icon layui-icon-refresh"></i> {:trans('text_reset')}
+                </button>
+            </div>
+            <div class="toggle-btn">
+                <a class="layui-hide">{:trans('text_expand')} <i class="layui-icon layui-icon-down"></i></a>
+                <a class="layui-hide">{:trans('text_collapse')} <i class="layui-icon layui-icon-up"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 数据表格 -->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="data-table" lay-filter="data-table"></table>
+    </div>
+</div>
+
+<script src="/component/layui/layui.js?v=2.8.12"></script>
+<script src="/component/pear/pear.js"></script>
+<script src="/admin/js/permission.js"></script>
+<script src="/admin/js/common.js"></script>
+<script>
+
+    // 相关常量
+    const PRIMARY_KEY = "id";
+    const SELECT_API = "/admin/log/select";
+
+    // 字段 创建时间 created_at
+    layui.use(["laydate"], function () {
+        layui.laydate.render({
+            elem: "#created_at",
+            range: ["#created_at-date-start", "#created_at-date-end"],
+            type: "datetime",
+            lang: "{php} echo session('lang') == 'zh_CN' ? 'cn' : 'en';{/php}"
+        });
+    })
+
+    // 字段 类别 category
+    layui.use(["jquery", "xmSelect", "popup"], function() {
+        layui.$.ajax({
+            url: "/admin/config/getConfig?key=CATE_LOG_TYPE",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#category").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#category",
+                    name: "category",
+                    initValue: initValue,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+    });
+
+    // 表格渲染
+    layui.use(["table", "form", "common", "popup", "util"], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.$;
+        let common = layui.common;
+        let util = layui.util;
+
+        // 表头参数
+        let cols = [
+            {
+                title: "ID",
+                field: "id",
+                width: 100,
+                sort: true,
+                hide: true,
+            }, {
+                title: "{:trans('text_category')}",
+                field: "category",
+                width: 100,
+                templet: function (d) {
+                    let field = "category";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "{:trans('text_action_name')}",
+                field: "action_name",
+            }, {
+                title: "{:trans('text_controller')}",
+                field: "controller",
+                hide: true,
+            }, {
+                title: "{:trans('text_action')}",
+                field: "action",
+                hide: true,
+            }, {
+                title: "{:trans('text_user_type')}",
+                field: "user_type",
+                templet: function (d) {
+                    let field = "user_type";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "{:trans('text_user_id')}",
+                field: "user_id",
+                hide: true,
+            }, {
+                title: "{:trans('text_action_user')}",
+                field: "user_name",
+            }, {
+                title: "{:trans('text_user_agent')}",
+                field: "user_agent",
+                hide: true,
+            }, {
+                title: "{:trans('text_client_ip')}",
+                field: "client_ip",
+            }, {
+                title: "{:trans('text_related_id')}",
+                field: "related_id",
+                width: 100,
+            }, {
+                title: "{:trans('text_before_data')}",
+                field: "before_data",
+                width: 260,
+            }, {
+                title: "{:trans('text_after_data')}",
+                field: "after_data",
+                width: 260,
+            }, {
+                title: "{:trans('text_action_msg')}",
+                field: "msg",
+                hide: true,
+            }, {
+                title: "{:trans('text_action_time')}",
+                field: "created_at",
+                width: 180,
+            }, {
+                title: "{:trans('text_update_time')}",
+                field: "updated_at",
+                hide: true,
+            }
+        ];
+
+        // 渲染表格
+        function render() {
+            table.render({
+                elem: "#data-table",
+                url: SELECT_API,
+                page: {
+                    prev: "{:trans('text_prev')}",
+                    next: "{:trans('text_next')}",
+                    skipText: ["{:trans('text_goto')}", "{:trans('text_page')}", "{:trans('text_confirm')}"],
+                    countText: ["{:trans('text_total')} ", " {:trans('text_records')}"],
+                    limitTemplet: function(item) {
+                        return item + " {:trans('text_records_per_page')}";
+                    }
+                },
+                cols: [cols],
+                skin: "line",
+                size: "lg",
+                toolbar: "#table-toolbar",
+                autoSort: false,
+                defaultToolbar: [{
+                    title: "{:trans('text_refresh')}",
+                    layEvent: "refresh",
+                    icon: "layui-icon-refresh",
+                }, "filter", "print", "exports"],
+                done: function () {
+                    layer.photos({photos: 'div[lay-id="data-table"]', anim: 5});
+                },
+                parseData: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+                    return {
+                        "code": res.code,
+                        "msg": res.msg,
+                        "count": res.count,
+                        "data": res.data
+                    };
+                }
+            });
+        }
+
+        // 获取表格中下拉或树形组件数据
+        let apis = [];
+        apis.push(["category", "/admin/config/getConfig?key=CATE_LOG_TYPE"]);
+        apis.push(["user_type", "/admin/config/getConfig?key=CATE_LOG_USER"]);
+        let apiResults = {};
+        apiResults["category"] = [];
+        apiResults["user_type"] = [];
+        let count = apis.length;
+        layui.each(apis, function (k, item) {
+            let [field, url] = item;
+            $.ajax({
+                url: url,
+                dateType: "json",
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+
+                    function travel(items) {
+                        for (let k in items) {
+                            let item = items[k];
+                            apiResults[field][item.value] = item.name;
+                            if (item.children) {
+                                travel(item.children);
+                            }
+                        }
+                    }
+
+                    travel(res.data);
+                },
+                complete: function () {
+                    if (--count === 0) {
+                        render();
+                    }
+                }
+            });
+        });
+        if (!count) {
+            render();
+        }
+
+        // 表格顶部搜索事件
+        form.on("submit(table-query)", function (data) {
+            table.reload("data-table", {
+                page: {
+                    curr: 1
+                },
+                where: data.field
+            })
+            return false;
+        });
+
+        // 表格顶部搜索重置事件
+        form.on("submit(table-reset)", function (data) {
+            table.reload("data-table", {
+                where: []
+            })
+        });
+
+        // 表格顶部工具栏事件
+        table.on("toolbar(data-table)", function (obj) {
+            if (obj.event === "refresh") {
+                refreshTable();
+            }
+        });
+
+        // 表格排序事件
+        table.on("sort(data-table)", function (obj) {
+            table.reload("data-table", {
+                initSort: obj,
+                scrollPos: "fixed",
+                where: {
+                    field: obj.field,
+                    order: obj.type
+                }
+            });
+        });
+
+        // 刷新表格数据
+        window.refreshTable = function () {
+            table.reloadData("data-table", {
+                scrollPos: "fixed",
+                done: function (res, curr) {
+                    if (curr > 1 && res.data && !res.data.length) {
+                        curr = curr - 1;
+                        table.reloadData("data-table", {
+                            page: {
+                                curr: curr
+                            },
+                        })
+                    }
+                }
+            });
+        }
+    })
+
+</script>
+</body>
+</html>

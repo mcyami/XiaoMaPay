@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body class="pear-container">
+
+        <!-- 数据表格 -->
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <table id="data-table" lay-filter="data-table"></table>
+            </div>
+        </div>
+
+        <!-- 表格顶部工具栏 -->
+        <script type="text/html" id="table-toolbar">
+            <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.rule.insert">
+                <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
+            </button>
+            <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.rule.delete">
+                <i class="layui-icon layui-icon-delete"></i> {:trans('text_delete')}
+            </button>
+        </script>
+
+        <!-- 表格行工具栏 -->
+        <script type="text/html" id="table-bar">
+            <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.rule.update">{:trans('text_edit')}</button>
+            <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.rule.delete">{:trans('text_delete')}</button>
+        </script>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        <script src="/admin/js/common.js"></script>
+
+        <script>
+
+            // 相关常量
+            const PRIMARY_KEY = "id";
+            const SELECT_API = "/admin/rule/select?limit=5000";
+            const DELETE_API = "/admin/rule/delete";
+            const UPDATE_API = "/admin/rule/update";
+            const INSERT_URL = "/admin/rule/insert";
+            const UPDATE_URL = "/admin/rule/update";
+
+            // 表格渲染
+            layui.use(["table", "treetable", "form", "common", "popup", "util"], function() {
+                let table = layui.table;
+                let form = layui.form;
+                let $ = layui.$;
+                let common = layui.common;
+                let treeTable = layui.treetable;
+                let util = layui.util;
+
+                // 表格头部列数据
+                let cols = [
+                    {
+                        type: "checkbox"
+                    },{
+                        title: "{:trans('text_title')}",
+                        field: "title",
+                    },{
+                        title: "{:trans('text_icon')}",
+                        field: "icon",
+                        templet: function (d) {
+                            return '<i class="layui-icon ' + util.escape(d["icon"]) + '"></i>';
+                        }
+                    },{
+                        title: "ID",
+                        field: "id",
+                        hide: true,
+                    },{
+                        title: "Key",
+                        field: "key",
+                    },{
+                        title: "{:trans('text_parent_menu')}",
+                        field: "pid",
+                        hide: true,
+                        templet: function (d) {
+                            let field = "pid";
+                            if (typeof d[field] == "undefined") return "";
+                            let items = [];
+                            layui.each((d[field] + "").split(","), function (k , v) {
+                                items.push(apiResults[field][v] || v);
+                            });
+                            return util.escape(items.join(","));
+                        }
+                    },{
+                        title: "{:trans('text_create_time')}",
+                        field: "created_at",
+                        hide: true,
+                    },{
+                        title: "{:trans('text_update_time')}",
+                        field: "updated_at",
+                        hide: true,
+                    },{
+                        title: "{:trans('text_url')}",
+                        field: "href",
+                    },{
+                        title: "{:trans('text_type')}",
+                        field: "type",
+                        width: 110,
+                        templet: function (d) {
+                            let field = "type";
+                            let value = apiResults["type"][d["type"]] || d["type"];
+                            let css = {"{:trans('text_dir')}":"layui-bg-blue", "{:trans('text_menu')}": "layui-bg-green", "{:trans('text_permission')}": "layui-bg-orange"}[value];
+                            return '<span class="layui-badge '+css+'">'+util.escape(value)+'</span>';
+                        }
+                    },{
+                        title: "{:trans('text_sort')}",
+                        field: "weight",
+                        width: 80,
+                    }, {
+                        title: "{:trans('text_enabled')}",
+                        field: "status",
+                        templet: function (d) {
+                            let field = "status";
+                            form.on("switch(" + field + ")", function (data) {
+                                let load = layer.load();
+                                let postData = {};
+                                postData[field] = data.elem.checked ? 1 : 0;
+                                postData[PRIMARY_KEY] = this.value;
+                                $.post(UPDATE_API, postData, function (res) {
+                                    layer.close(load);
+                                    if (res.code) {
+                                        return layui.popup.failure(res.msg, function () {
+                                            data.elem.checked = !data.elem.checked;
+                                            form.render();
+                                        });
+                                    }
+                                    return layui.popup.success(res.msg);
+                                })
+                            });
+                            let checked = d[field] === 1 ? "checked" : "";
+                            return '<input type="checkbox" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
+                        },
+                        width: 90,
+                    }, {
+                        title: "{:trans('text_action')}",
+                        toolbar: "#table-bar",
+                        align: "center",
+                        fixed: "right",
+                        width: 130,
+                    }
+                ];
+
+                // 渲染表格
+                function render()
+                {
+                    treeTable.render({
+                        elem: "#data-table",
+                        url: SELECT_API,
+                        treeColIndex: 1,
+                        treeIdName: "id",
+                        treePidName: "pid",
+                        treeDefaultClose: true,
+                        cols: [cols],
+                        skin: "line",
+                        size: "lg",
+                        toolbar: "#table-toolbar",
+                        defaultToolbar: [{
+                            title: "{:trans('text_refresh')}",
+                            layEvent: "refresh",
+                            icon: "layui-icon-refresh",
+                        }, "filter", "print", "exports"]
+                    });
+                }
+
+                // 获取下拉菜单及树形组件数据
+                let apis = [];
+                let apiResults = {};
+                apiResults["pid"] = [];
+                apis.push(["pid", "/admin/rule/select?format=tree&type=0,1"]);
+                apiResults["type"] = ["{:trans('text_dir')}","{:trans('text_menu')}","{:trans('text_permission')}"];
+                let count = apis.length;
+                layui.each(apis, function (k, item) {
+                    let [field, url] = item;
+                    $.ajax({
+                        url: url,
+                        dateType: "json",
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            function travel(items) {
+                                for (let k in items) {
+                                    let item = items[k];
+                                    apiResults[field][item.value] = item.name;
+                                    if (item.children) {
+                                        travel(item.children);
+                                    }
+                                }
+                            }
+                            travel(res.data);
+                        },
+                        complete: function () {
+                            if (--count === 0) {
+                                render();
+                            }
+                        }
+                    });
+                });
+                if (!count) {
+                    render();
+                }
+
+                // 删除或编辑行事件
+                table.on("tool(data-table)", function(obj) {
+                    if (obj.event === "remove") {
+                        remove(obj);
+                    } else if (obj.event === "edit") {
+                        edit(obj);
+                    }
+                });
+
+                // 添加 批量删除 刷新事件
+                table.on("toolbar(data-table)", function(obj) {
+                    if (obj.event === "add") {
+                        add();
+                    } else if (obj.event === "refresh") {
+                        refreshTable();
+                    } else if (obj.event === "batchRemove") {
+                        batchRemove(obj);
+                    }
+                });
+
+                // 添加行
+                let add = function() {
+                    layer.open({
+                        type: 2,
+                        title: "{:trans('text_add')}",
+                        shade: 0.1,
+                        area: [common.isModile()?"100%":"600px", common.isModile()?"100%":"520px"],
+                        content: INSERT_URL
+                    });
+                }
+
+                // 编辑行
+                let edit = function(obj) {
+                    let value = obj.data[PRIMARY_KEY];
+                    layer.open({
+                        type: 2,
+                        title: "{:trans('text_edit')}",
+                        shade: 0.1,
+                        area: [common.isModile()?"100%":"600px", common.isModile()?"100%":"520px"],
+                        content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
+                    });
+                }
+
+                // 删除行
+                let remove = function(obj) {
+                    return doRemove(obj.data[PRIMARY_KEY], obj);
+                }
+
+                // 删除多行
+                let batchRemove = function(obj) {
+                    let checkIds = common.checkField(obj, PRIMARY_KEY);
+                    if (checkIds === "") {
+                        layui.popup.warning("{:trans('tip_no_checked')}");
+                        return false;
+                    }
+                    doRemove(checkIds.split(","));
+                }
+
+                // 执行删除
+                let doRemove = function (ids, obj) {
+                    let data = {};
+                    data[PRIMARY_KEY] = ids;
+                    layer.confirm("{:trans('tip_delete')}", {
+                        icon: 3,
+                        title: "{:trans('tip')}"
+                    }, function(index) {
+                        layer.close(index);
+                        let loading = layer.load();
+                        $.ajax({
+                            url: DELETE_API,
+                            data: data,
+                            dataType: "json",
+                            type: "post",
+                            success: function(res) {
+                                layer.close(loading);
+                                if (res.code) {
+                                    return layui.popup.failure(res.msg);
+                                }
+                                return layui.popup.success(res.msg, function () {
+                                    return obj ? obj.del() : refreshTable();
+                                });
+                            }
+                        })
+                    });
+                }
+
+                // 刷新表格
+                window.refreshTable = function() {
+                    table.reloadData("data-table", {
+                        scrollPos: "fixed",
+                        done: function (res, curr) {
+                            if (curr > 1 && res.data && !res.data.length) {
+                                curr = curr - 1;
+                                table.reloadData("data-table", {
+                                    page: {
+                                        curr: curr
+                                    },
+                                })
+                            }
+                        }
+                    });
+                }
+            })
+
+        </script>
+    </body>
+</html>

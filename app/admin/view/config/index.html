@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/layui/css/layui.css?v=2.8.12" />
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body class="pear-container">
+        <style>
+            .layui-form-item .layui-form-label {
+                width: 140px;
+            }
+            .layui-form-item .layui-input-block {
+                margin-left: 180px;
+            }
+        </style>
+
+        <div class="layui-card">
+            <div class="layui-card-body">
+
+                <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    {foreach $groups as $key=>$vo}
+                        {if $key == 1} <li class="layui-this">{$vo}</li>
+                        {else /} <li>{$vo}</li>
+                        {/if}
+                    {/foreach}
+                </ul>
+                <div class="layui-tab-content layui-row">
+
+                    {foreach $groups as $group_key=>$group}
+
+                    <div class="layui-tab-item layui-col-xs12 layui-col-md6{eq name='group_key' value='1'} layui-show{/eq}">
+
+                        <form class="layui-form" lay-filter="group{$group_key}">
+                            {foreach $configs as $key=>$config }
+                            {if $config['group'] == $group_key}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{$config.name}</label>
+                                <div class="layui-input-block">
+                                    {switch config['type']}
+                                    {case 1}<input type="number" name="{$config.key}" value="{$config.val}" autocomplete="off" class="layui-input">{/case}
+                                    {case 2}<input type="text" name="{$config.key}" value="{$config.val}" autocomplete="off" class="layui-input">{/case}
+                                    {case 3}<textarea name="{$config.key}" class="layui-textarea">{$config.val}</textarea>{/case}
+                                    {case 4}<textarea name="{$config.key}" class="layui-textarea">{$config.val}</textarea>{/case}
+                                    {case 5}
+                                    <select name="{$config.key}" lay-search>
+                                        <option value=""></option>
+                                        {foreach $config.extra as $sid=>$select }
+                                        <option value="{$sid}" {eq name="config['val']" value="$sid"}selected{/eq}>{$select}</option>
+                                        {/foreach}
+                                    </select>
+                                    {/case}
+                                    {case 6}
+                                    <img class="img-3" src="" />
+                                    <input type="text" style="display:none" id="image-{$config.key}" name="{$config.key}" value="{$config.val}" />
+                                    <button type="button" class="pear-btn pear-btn-primary pear-btn-sm" id="upload-image-{$config.key}" permission="app.admin.upload.image">
+                                        <i class="layui-icon layui-icon-upload"></i> {:trans('text_upload_image')}
+                                    </button>
+                                    <button type="button" class="pear-btn pear-btn-primary pear-btn-sm" id="choose-image-{$config.key}" permission="app.admin.upload.attachment">
+                                        <i class="layui-icon layui-icon-align-left"></i> {:trans('text_select_image')}
+                                    </button>
+                                    {/case}
+                                    {/switch}
+
+                                    {if $config['desc'] != ''}
+                                    <div class="layui-form-mid layui-text-em">{$config['desc']}</div>
+                                    {/if}
+                                </div>
+                            </div>
+                            {/if}
+                            {/foreach}
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="group{$group_key}">
+                                        {:trans('text_submit')}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    {/foreach}
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        <script>
+
+            // 基础设置
+            layui.use(["upload", "layer", "popup"], function() {
+                let $ = layui.$;
+                let form = layui.form;
+
+                // 通用图片类型配置上传 通配匹配id为image-*
+                let uploadImgInputs = $("input[id^='image-']");
+                if(uploadImgInputs.size() > 0) {
+                    uploadImgInputs.each(function() {
+                        let input = $(this);
+                        let key = input.attr("id").replace("image-", "");
+                        let img = input.prev();
+                        // 填充img的src
+                        img.attr("src", input.val());
+                        layui.upload.render({
+                            elem: "#upload-image-" + key,
+                            url: "/admin/upload/image",
+                            acceptMime: "image/gif,image/jpeg,image/jpg,image/png",
+                            done: function (res) {
+                                if (res.code) {
+                                    return layui.popup.failure(res.msg);
+                                }
+                                input.val(res.data.url);
+                                img.attr("src", res.data.url);
+                            }
+                        });
+                        layui.$("#choose-image-" + key).on("click", function() {
+                            parent.layer.open({
+                                type: 2,
+                                title: "{:trans('text_select_image')}",
+                                content: "/admin/upload/attachment?ext=jpg,jpeg,png,gif,bmp",
+                                area: ["95%", "90%"],
+                                success: function (layero, index) {
+                                    parent.layui.$("#layui-layer" + index).data("callback", function (data) {
+                                        input.val(data.url);
+                                        img.attr("src", data.url);
+                                    });
+                                }
+                            });
+                        });
+                    });
+                }
+
+                // 提交
+                form.on("submit", function(data){
+                    $.ajax({
+                        url: "/admin/config/save",
+                        dataType: "json",
+                        type: "POST",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success("操作成功");
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>
