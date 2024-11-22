@@ -105,6 +105,12 @@ return [
     'text_action_msg' => '操作描述',
     'text_action_time' => '操作时间',
 
+    // 支付方式
+    'text_pay_method' => '支付方式',
+    'text_pay_method_name' => '支付方式名称',
+    'text_pay_method_driver_key' => '驱动标识',
+    'text_pay_method_is_pc' => 'PC端',
+    'text_pay_method_is_mobile' => '移动端',
 
 
 

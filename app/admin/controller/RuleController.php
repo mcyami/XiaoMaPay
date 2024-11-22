@@ -248,12 +248,14 @@ class RuleController extends CrudController {
             return $this->error('error_records');
         }
         $before_data = $row->toArray();
-        if (isset($data['pid']) || $data['pid'] == null) {
+        if (isset($data['pid'])) {
             loginfo('pid', ['data'=>$data]);
             $data['pid'] = is_numeric($data['pid']) ? $data['pid'] : 0;
             if ($data['pid'] == $row['id']) {
                 return $this->error('error_no_pid_self');
             }
+        } else {
+            unset($data['pid']);
         }
         if (isset($data['key'])) {
             $data['key'] = str_replace('\\\\', '\\', $data['key']);

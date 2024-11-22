@@ -103,6 +103,14 @@ return [
     'text_after_data' => 'after data',
     'text_action_msg' => 'description',
 
+    // 支付方式
+    'text_pay_method' => 'payment method',
+    'text_pay_method_name' => 'payment method name',
+    'text_pay_method_driver_key' => 'driver name',
+    'text_pay_method_is_pc' => 'PC',
+    'text_pay_method_is_mobile' => 'mobile',
+
+
 
     // Error prompt
     'error' => 'Operation failed',
