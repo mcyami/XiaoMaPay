@@ -46,11 +46,9 @@ class PayDriverController extends CrudController {
      * @return Response
      */
     public function refresh(Request $request): Response {
+        PayDriverModel::reload();
         // 清空缓存
-        // 清空数据表
-        // 扫码驱动目录
-        // 获取驱动列表
-        // 保存到数据库
+
         return $this->success();
     }
 

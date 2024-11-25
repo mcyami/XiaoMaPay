@@ -54,3 +54,11 @@ function C($name = null, $value = null, $default = null) {
     }
     return null; // 避免非法参数
 }
+
+/**
+ * 获取驱动目录
+ * @return string
+ */
+function driver_path() {
+    return app_path() . '/common/driver';
+}
