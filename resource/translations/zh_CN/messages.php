@@ -112,6 +112,16 @@ return [
     'text_pay_method_is_pc' => 'PC端',
     'text_pay_method_is_mobile' => '移动端',
 
+    // 支付驱动
+    'text_pay_driver' => '支付驱动',
+    'text_pay_driver_name' => '驱动名称',
+    'text_pay_driver_key' => '驱动标识',
+    'text_pay_driver_author' => '作者',
+    'text_pay_driver_link' => '链接',
+    'text_pay_driver_pay_types' => '包含支付方式',
+    'text_pay_driver_trans_types' => '包含转账方式',
+    'text_pay_driver_refresh' => '刷新驱动列表',
+
 
 
 
@@ -170,6 +180,7 @@ return [
     // 提示
     'tip' => '提示',
     'tip_delete' => '确定删除吗？',
+    'tip_operate' => '确定执行该操作吗？',
     'tip_no_checked' => '未选中数据',
     // 不更新密码请留空
     'tip_no_update_password' => '不更新密码请留空',

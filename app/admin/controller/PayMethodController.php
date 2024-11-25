@@ -9,7 +9,7 @@ use support\Request;
 use support\Response;
 
 /**
- * 文章管理
+ * 支付方式管理
  */
 class PayMethodController extends CrudController {
 
