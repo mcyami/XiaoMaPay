@@ -8,53 +8,6 @@
 </head>
 <body class="pear-container">
 
-<!-- 顶部查询表单 -->
-<div class="layui-card">
-    <div class="layui-card-body">
-        <form class="layui-form top-search-from">
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_category')}</label>
-                <div class="layui-input-block">
-                    <div name="category" id="category" value="" ></div>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_title')}</label>
-                <div class="layui-input-block">
-                    <input type="hidden" name="title[]" value="like" class="layui-input">
-                    <input type="text" name="title[]" value="" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_create_time')}</label>
-                <div class="layui-input-block">
-                    <div class="layui-input-block" id="created_at">
-                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-start" class="layui-input inline-block" placeholder="{:trans('text_start_time')}">
-                        -
-                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-end" class="layui-input inline-block" placeholder="{:trans('text_end_time')}">
-                    </div>
-                </div>
-            </div>
-
-            <div class="layui-form-item layui-inline">
-                <label class="layui-form-label"></label>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
-                    <i class="layui-icon layui-icon-search"></i> {:trans('text_select')}
-                </button>
-                <button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
-                    <i class="layui-icon layui-icon-refresh"></i> {:trans('text_reset')}
-                </button>
-            </div>
-            <div class="toggle-btn">
-                <a class="layui-hide">{:trans('text_expand')} <i class="layui-icon layui-icon-down"></i></a>
-                <a class="layui-hide">{:trans('text_collapse')} <i class="layui-icon layui-icon-up"></i></a>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- 数据表格 -->
 <div class="layui-card">
@@ -67,9 +20,6 @@
 <script type="text/html" id="table-toolbar">
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.article.insert">
         <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
-    </button>
-    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.article.delete">
-        <i class="layui-icon layui-icon-delete"></i> {:trans('text_delete')}
     </button>
 </script>
 
@@ -293,39 +243,8 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
-        apis.push(["category", "/admin/config/getConfig?key=CATE_ARTICLE_TYPE"]);
         let apiResults = {};
-        apiResults["category"] = [];
         let count = apis.length;
-        layui.each(apis, function (k, item) {
-            let [field, url] = item;
-            $.ajax({
-                url: url,
-                dateType: "json",
-                success: function (res) {
-                    if (res.code) {
-                        return layui.popup.failure(res.msg);
-                    }
-
-                    function travel(items) {
-                        for (let k in items) {
-                            let item = items[k];
-                            apiResults[field][item.value] = item.name;
-                            if (item.children) {
-                                travel(item.children);
-                            }
-                        }
-                    }
-
-                    travel(res.data);
-                },
-                complete: function () {
-                    if (--count === 0) {
-                        render();
-                    }
-                }
-            });
-        });
         if (!count) {
             render();
         }
@@ -348,24 +267,6 @@
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
             }
-        });
-
-        // 表格顶部搜索事件
-        form.on("submit(table-query)", function (data) {
-            table.reload("data-table", {
-                page: {
-                    curr: 1
-                },
-                where: data.field
-            })
-            return false;
-        });
-
-        // 表格顶部搜索重置事件
-        form.on("submit(table-reset)", function (data) {
-            table.reload("data-table", {
-                where: []
-            })
         });
 
         // 表格排序事件
@@ -406,16 +307,6 @@
         // 删除一行
         let remove = function (obj) {
             return doRemove(obj.data[PRIMARY_KEY]);
-        }
-
-        // 删除多行
-        let batchRemove = function (obj) {
-            let checkIds = common.checkField(obj, PRIMARY_KEY);
-            if (checkIds === "") {
-                layui.popup.warning("{:trans('tip_no_checked')}");
-                return false;
-            }
-            doRemove(checkIds.split(","));
         }
 
         // 执行删除
