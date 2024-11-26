@@ -47,8 +47,6 @@ class PayDriverController extends CrudController {
      */
     public function refresh(Request $request): Response {
         PayDriverModel::reload();
-        // 清空缓存
-
         return $this->success();
     }
 

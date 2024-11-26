@@ -17,9 +17,6 @@ class PayDriverModel extends BaseModel {
     // 表名称
     protected $table = 'xm_pay_driver';
 
-    // 主键
-    protected $primaryKey = 'key';
-
     // 无需自动维护时间戳
     public $timestamps = false;
 
@@ -28,34 +25,78 @@ class PayDriverModel extends BaseModel {
      */
     public static function reload() {
         // 清空数据表
-//        Db::statement("TRUNCATE TABLE xm_pay_driver");
+        Db::statement("TRUNCATE TABLE xm_pay_driver");
         // 扫描驱动目录
         $driverList = self::scanDriver();
-
-        loginfo('driverList', [$driverList]);
-//        return true;
-        // 保存到数据库
-//        foreach ($driverList as $name) {
-//            if ($config = self::getConfig($name)) {
-//                if ($config['name'] != $name) continue;
-//                $DB->insert('plugin', ['name' => $config['name'], 'showname' => $config['showname'], 'author' => $config['author'], 'link' => $config['link'], 'types' => implode(',', $config['types']), 'transtypes' => $config['transtypes'] ? implode(',', $config['transtypes']) : null]);
-//            }
-//        }
-//        return true;
+        $dataList = [];
+        foreach ($driverList as $name) {
+            $info = self::getDriverInfo($name);
+            if ($info = self::getDriverInfo($name)) {
+                if ($info['key'] != $name) continue;
+                $data = [
+                    'key' => $info['key'],
+                    'name' => $info['name'],
+                    'author' => $info['author'],
+                    'link' => $info['link'],
+                    'pay_types' => $info['pay_types'] ? json_encode($info['pay_types']) : '',
+                    'trans_types' => $info['trans_types'] ? json_encode($info['trans_types']) : '',
+                ];
+                $dataList[] = $data;
+            }
+        }
+        // 批量插入到数据库
+        if ($dataList) {
+            self::insert($dataList);
+        }
+        return true;
     }
 
     /**
      * 扫描目录返回驱动列表
      * @return array
      */
-    public static function scanDriver(){
-        // 扫码驱动目录：app/common/driver
-        $dir = driver_path();
-        // glob 方式获取驱动列表
-        $dirArray = glob($dir . '/*', GLOB_ONLYDIR);
+    public static function scanDriver(): array {
         return array_map(function ($v) {
             return basename($v);
-        }, $dirArray);
+        }, glob(driver_path() . '/*', GLOB_ONLYDIR));
+    }
+
+    /**
+     * 获取驱动信息
+     * @param string $name
+     * @return array
+     */
+    public static function getDriverInfo(string $name): array {
+        $filename = self::getDriverFilename($name);
+        $classname = self::getDriverClassname($name);
+        if (file_exists($filename)) {
+            include_once $filename;
+            if (class_exists($classname) && property_exists($classname, 'info')) {
+                return $classname::$info;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * 获取驱动文件路径
+     * @param string $name
+     * @return string
+     */
+    public static function getDriverFilename(string $name): string {
+        return driver_path() . '/' . $name . '/' . $name . '.php';
+    }
+
+    /**
+     * 获取驱动类名
+     * @param string $name
+     * @return string
+     */
+    public static function getDriverClassname(string $name): string {
+        return '\\app\\common\\driver\\' . $name . '\\' . $name;
     }
 
 }

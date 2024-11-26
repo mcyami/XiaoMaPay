@@ -18,7 +18,8 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="refresh" permission="app.admin.paydriver.refresh">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="refreshList"
+            permission="app.admin.paydriver.refresh">
         <i class="layui-icon layui-icon-refresh"></i> {:trans('text_pay_driver_refresh')}
     </button>
 </script>
@@ -70,7 +71,11 @@
                 templet: function (d) {
                     let link_field = "link";
                     let author_field = "author";
-                    return '<a href="' + d[link_field] + '" target="_blank">' + d[author_field] + '</a>';
+                    if(!d[link_field]) {
+                        return d[author_field];
+                    } else {
+                        return '<a href="' + d[link_field] + '" target="_blank">' + d[author_field] + '</a>';
+                    }
                 }
             }, {
                 title: "{:trans('text_pay_driver_pay_types')}",
@@ -91,7 +96,7 @@
                     next: "{:trans('text_next')}",
                     skipText: ["{:trans('text_goto')}", "{:trans('text_page')}", "{:trans('text_confirm')}"],
                     countText: ["{:trans('text_total')} ", " {:trans('text_records')}"],
-                    limitTemplet: function(item) {
+                    limitTemplet: function (item) {
                         return item + " {:trans('text_records_per_page')}";
                     }
                 },
@@ -130,19 +135,11 @@
             render();
         }
 
-        // 编辑或删除行事件
-        table.on("tool(data-table)", function (obj) {
-            if (obj.event === "remove") {
-                remove(obj);
-            } else if (obj.event === "edit") {
-                edit(obj);
-            }
-        });
-
         // 表格顶部工具栏事件
         table.on("toolbar(data-table)", function (obj) {
             if (obj.event === "refresh") {
-                // refreshTable();
+                refreshTable();
+            } else if (obj.event === "refreshList") {
                 refresh();
             }
         });
@@ -158,34 +155,6 @@
                 }
             });
         });
-
-        // 表格新增数据
-        let add = function () {
-            layer.open({
-                type: 2,
-                title: "{:trans('text_add')}",
-                shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: INSERT_URL
-            });
-        }
-
-        // 表格编辑数据
-        let edit = function (obj) {
-            let value = obj.data[PRIMARY_KEY];
-            layer.open({
-                type: 2,
-                title: "{:trans('text_edit')}",
-                shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
-            });
-        }
-
-        // 删除一行
-        let remove = function (obj) {
-            return doRemove(obj.data[PRIMARY_KEY]);
-        }
 
         // 刷新驱动列表
         let refresh = function () {

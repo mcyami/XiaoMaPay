@@ -4,11 +4,12 @@ namespace app\common\driver\monipay;
 
 class monipay {
     static public $info = [
-        'name' => 'monipay', // 支付驱动英文名称，需和目录名称一致，不能有重复
-        'showname' => '模拟支付', // 支付驱动显示名称
+        'key' => 'monipay', // 支付驱动英文名称，需和目录名称一致，不能有重复
+        'name' => '模拟支付', // 支付驱动显示名称
         'author' => 'XiaoMaPay', // 支付驱动作者
-        'link' => '', // 支付驱动作者链接
-        'types' => ['alipay', 'qqpay', 'wxpay', 'bank', 'jdpay'], // 支付驱动支持的支付方式，可选的有alipay,qqpay,wxpay,bank
+        'link' => 'https://www.xiaomapay.com/', // 支付驱动作者链接
+        'pay_types' => ['alipay', 'qqpay', 'wxpay', 'bank', 'jdpay'], // 支付驱动支持的支付方式，可选的有alipay,qqpay,wxpay,bank
+        'trans_types' => ['alipay', 'bank'], // 支付驱动支持的付款方式，可选的有alipay,qqpay,wxpay,bank
         'inputs' => [ // 支付驱动要求传入的参数以及参数显示名称，可选的有appid,appkey,appsecret,appurl,appmchid
             'appurl' => [
                 'name' => '接口地址',
