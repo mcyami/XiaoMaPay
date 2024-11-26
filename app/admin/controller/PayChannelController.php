@@ -3,18 +3,18 @@
 namespace app\admin\controller;
 
 use app\admin\model\LogModel;
-use app\admin\model\PayMethodModel;
+use app\admin\model\PayChannelModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 
 /**
- * 支付方式管理
+ * 支付通道管理
  */
-class PayMethodController extends CrudController {
+class PayChannelController extends CrudController {
 
     /**
-     * @var PayMethodModel
+     * @var PayChannelModel
      */
     protected $model = null;
 
@@ -29,19 +29,19 @@ class PayMethodController extends CrudController {
      * @return void
      */
     public function __construct() {
-        $this->model = new PayMethodModel;
+        $this->model = new PayChannelModel;
     }
 
     /**
-     * 支付方式列表
+     * 支付通道列表
      * @return Response
      */
     public function index() {
-        return view('pay_method/index');
+        return view('pay_channel/index');
     }
 
     /**
-     * 新增支付方式
+     * 新增支付通道
      * @param Request $request
      * @return Response
      * @throws BusinessException
@@ -53,25 +53,25 @@ class PayMethodController extends CrudController {
             $this->output['id'] = $id;
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
-                LogModel::OP_TYPE_PAY_METHOD,
+                LogModel::OP_TYPE_PAY_CHANNEL,
                 $id,
                 '',
                 $data
             );
             return $this->success();
         }
-        return view('pay_method/insert');
+        return view('pay_channel/insert');
     }
 
     /**
-     * 更新支付方式
+     * 更新支付通道
      * @param Request $request
      * @return Response
      * @throws BusinessException
      */
     public function update(Request $request): Response {
         if ($request->method() === 'GET') {
-            return view('pay_method/update');
+            return view('pay_channel/update');
         }
         [$id, $data] = $this->updateInput($request);
         // 获取$data中的key，作为查询的字段
@@ -80,7 +80,7 @@ class PayMethodController extends CrudController {
         $this->doUpdate($id, $data);
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_ADMIN,
-            LogModel::OP_TYPE_PAY_METHOD,
+            LogModel::OP_TYPE_PAY_CHANNEL,
             $id,
             $before_data,
             $data
@@ -89,7 +89,7 @@ class PayMethodController extends CrudController {
     }
 
     /**
-     * 删除支付方式
+     * 删除支付通道
      * @param Request $request
      * @return Response
      */
@@ -101,7 +101,7 @@ class PayMethodController extends CrudController {
         foreach ($ids as $id) {
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
-                LogModel::OP_TYPE_PAY_METHOD,
+                LogModel::OP_TYPE_PAY_CHANNEL,
                 $id,
                 $before_data[$id] ?? '',
                 ''

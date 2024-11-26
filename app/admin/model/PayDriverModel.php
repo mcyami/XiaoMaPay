@@ -30,8 +30,7 @@ class PayDriverModel extends BaseModel {
         $driverList = self::scanDriver();
         $dataList = [];
         foreach ($driverList as $name) {
-            $info = self::getDriverInfo($name);
-            if ($info = self::getDriverInfo($name)) {
+            if ($info = self::getInfo($name)) {
                 if ($info['key'] != $name) continue;
                 $data = [
                     'key' => $info['key'],
@@ -66,9 +65,9 @@ class PayDriverModel extends BaseModel {
      * @param string $name
      * @return array
      */
-    public static function getDriverInfo(string $name): array {
-        $filename = self::getDriverFilename($name);
-        $classname = self::getDriverClassname($name);
+    public static function getInfo(string $name): array {
+        $filename = self::getFilename($name);
+        $classname = self::getClassname($name);
         if (file_exists($filename)) {
             include_once $filename;
             if (class_exists($classname) && property_exists($classname, 'info')) {
@@ -86,7 +85,7 @@ class PayDriverModel extends BaseModel {
      * @param string $name
      * @return string
      */
-    public static function getDriverFilename(string $name): string {
+    public static function getFilename(string $name): string {
         return driver_path() . '/' . $name . '/' . $name . '.php';
     }
 
@@ -95,7 +94,7 @@ class PayDriverModel extends BaseModel {
      * @param string $name
      * @return string
      */
-    public static function getDriverClassname(string $name): string {
+    public static function getClassname(string $name): string {
         return '\\app\\common\\driver\\' . $name . '\\' . $name;
     }
 

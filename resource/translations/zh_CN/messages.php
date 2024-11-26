@@ -34,8 +34,10 @@ return [
     'text_start_time' => '开始时间',
     'text_end_time' => '结束时间',
     'text_role' => '角色',
-    'text_disabled' => '禁用',
-    'text_enabled' => '启用',
+    'text_disabled' => '已禁用',
+    'text_enabled' => '已启用',
+    'text_open' => '已开启',
+    'text_close' => '已关闭',
     'text_status' => '状态',
     'text_action' => '操作',
     'text_search' => '搜索',
@@ -62,6 +64,7 @@ return [
     'text_language' => '语言',
     'text_lang_english' => 'English',
     'text_lang_chinese' => '中文',
+    'text_set_secret' => '配置密钥',
 
     // 系统配置管理
     'text_config_name' => '配置名称',
@@ -121,6 +124,13 @@ return [
     'text_pay_driver_pay_types' => '包含支付方式',
     'text_pay_driver_trans_types' => '包含转账方式',
     'text_pay_driver_refresh' => '刷新驱动列表',
+
+    // 支付通道
+    'text_pay_channel' => '支付通道',
+    'text_pay_channel_name' => '通道名称',
+    'text_pay_channel_mode' => '通道模式',
+    'text_pay_channel_ratio' => '结算比例',
+
 
 
 

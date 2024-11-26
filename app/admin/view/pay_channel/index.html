@@ -7,35 +7,48 @@
     <link rel="stylesheet" href="/admin/css/reset.css"/>
 </head>
 <body class="pear-container">
-
 <!-- 顶部查询表单 -->
 <div class="layui-card">
     <div class="layui-card-body">
         <form class="layui-form top-search-from">
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_category')}</label>
+                <label class="layui-form-label">ID</label>
                 <div class="layui-input-block">
-                    <div name="category" id="category" value="" ></div>
+                    <input type="text" name="id" value="" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_title')}</label>
+                <label class="layui-form-label">{:trans('text_pay_channel_name')}</label>
                 <div class="layui-input-block">
-                    <input type="hidden" name="title[]" value="like" class="layui-input">
-                    <input type="text" name="title[]" value="" class="layui-input">
+                    <input type="hidden" name="name[]" value="like" class="layui-input">
+                    <input type="text" name="name[]" value="" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_create_time')}</label>
+                <label class="layui-form-label">{:trans('text_pay_driver_key')}</label>
                 <div class="layui-input-block">
-                    <div class="layui-input-block" id="created_at">
-                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-start" class="layui-input inline-block" placeholder="{:trans('text_start_time')}">
-                        -
-                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-end" class="layui-input inline-block" placeholder="{:trans('text_end_time')}">
-                    </div>
+                    <input type="text" name="driver_key" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_pay_method')}</label>
+                <div class="layui-input-block">
+                    <div name="method_id" id="methods" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_status')}</label>
+                <div class="layui-input-block">
+                    <select name="status">
+                        <option value="">{:trans('tip_select')}</option>
+                        <option value="1">{:trans('text_open')}</option>
+                        <option value="0">{:trans('text_close')}</option>
+                    </select>
                 </div>
             </div>
 
@@ -65,7 +78,7 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.article.insert">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.paymethod.insert">
         <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
     </button>
     <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.article.delete">
@@ -75,10 +88,13 @@
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.article.update">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="secret" permission="app.admin.paychannel.secret">
+        {:trans('text_set_secret')}
+    </button>
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paychannel.update">
         {:trans('text_edit')}
     </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.article.delete">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.paychannel.delete">
         {:trans('text_delete')}
     </button>
 </script>
@@ -91,11 +107,11 @@
 
     // 相关常量
     const PRIMARY_KEY = "id";
-    const SELECT_API = "/admin/article/select";
-    const UPDATE_API = "/admin/article/update";
-    const DELETE_API = "/admin/article/delete";
-    const INSERT_URL = "/admin/article/insert";
-    const UPDATE_URL = "/admin/article/update";
+    const SELECT_API = "/admin/payChannel/select";
+    const UPDATE_API = "/admin/payChannel/update";
+    const DELETE_API = "/admin/payChannel/delete";
+    const INSERT_URL = "/admin/payChannel/insert";
+    const UPDATE_URL = "/admin/payChannel/update";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -107,17 +123,17 @@
         });
     })
 
-    // 字段 类别 category
+    // 字段 支付方式
     layui.use(["jquery", "xmSelect", "popup"], function() {
         layui.$.ajax({
-            url: "/admin/config/getConfig?key=CATE_ARTICLE_TYPE",
+            url: "/admin/payMethod/select?format=select",
             dataType: "json",
             success: function (res) {
-                let value = layui.$("#category").attr("value");
+                let value = layui.$("#methods").attr("value");
                 let initValue = value ? value.split(",") : [];
                 layui.xmSelect.render({
-                    el: "#category",
-                    name: "category",
+                    el: "#methods",
+                    name: "method_id",
                     initValue: initValue,
                     data: res.data,
                     model: {"icon":"hidden","label":{"type":"text"}},
@@ -142,17 +158,21 @@
         // 表头参数
         let cols = [
             {
-                type: "checkbox"
+                type: "checkbox",
+                hide: true,
             }, {
                 title: "ID",
                 field: "id",
                 width: 100,
                 sort: true,
             }, {
-                title: "{:trans('text_category')}",
-                field: "category",
+                title: "{:trans('text_pay_channel_name')}",
+                field: "name",
+            }, {
+                title: "{:trans('text_pay_channel_mode')}",
+                field: "mode",
                 templet: function (d) {
-                    let field = "category";
+                    let field = "mode";
                     if (typeof d[field] == "undefined") return "";
                     let items = [];
                     layui.each((d[field] + "").split(","), function (k, v) {
@@ -161,21 +181,34 @@
                     return util.escape(items.join(","));
                 }
             }, {
-                title: "{:trans('text_title')}",
-                field: "title",
-            }, {
-                title: "{:trans('text_thumb')}",
-                field: "thumb",
+                title: "{:trans('text_pay_channel_ratio')}",
+                field: "ratio",
                 templet: function (d) {
-                    if(d.thumb === "") return "";
-                    return '<img src="' + d.thumb + '" style="max-width:32px;max-height:32px;" />';
+                    return d['ratio'] + "%";
                 }
+            }, {
+                title: "{:trans('text_pay_method')}",
+                field: "method_id",
+                templet: function (d) {
+                    let field = "method_id";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "{:trans('text_pay_method_driver_key')}",
+                field: "driver_key",
             }, {
                 title: "{:trans('text_create_time')}",
                 field: "created_at",
+                hide: true,
             }, {
                 title: "{:trans('text_update_time')}",
                 field: "updated_at",
+                hide: true,
             }, {
                 title: "{:trans('text_sort')}",
                 field: "sort_order"
@@ -209,7 +242,7 @@
                 toolbar: "#table-bar",
                 align: "center",
                 fixed: "right",
-                width: 130,
+                width: 200,
             }
         ];
 
@@ -256,9 +289,11 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
-        apis.push(["category", "/admin/config/getConfig?key=CATE_ARTICLE_TYPE"]);
+        apis.push(["mode", "/admin/config/getConfig?key=PAY_CHANNEL_MODES"]);
+        apis.push(["method_id", "/admin/payMethod/select?format=select"]);
         let apiResults = {};
-        apiResults["category"] = [];
+        apiResults["mode"] = [];
+        apiResults["method_id"] = [];
         let count = apis.length;
         layui.each(apis, function (k, item) {
             let [field, url] = item;
@@ -349,7 +384,7 @@
                 type: 2,
                 title: "{:trans('text_add')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "980px", common.isModile() ? "100%" : "760px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: INSERT_URL
             });
         }
@@ -361,7 +396,7 @@
                 type: 2,
                 title: "{:trans('text_edit')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "980px", common.isModile() ? "100%" : "760px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
@@ -369,16 +404,6 @@
         // 删除一行
         let remove = function (obj) {
             return doRemove(obj.data[PRIMARY_KEY]);
-        }
-
-        // 删除多行
-        let batchRemove = function (obj) {
-            let checkIds = common.checkField(obj, PRIMARY_KEY);
-            if (checkIds === "") {
-                layui.popup.warning("{:trans('tip_no_checked')}");
-                return false;
-            }
-            doRemove(checkIds.split(","));
         }
 
         // 执行删除

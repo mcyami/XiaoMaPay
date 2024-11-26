@@ -46,6 +46,8 @@ class LogModel extends BaseModel {
     const OP_TYPE_CONFIG = 5; // 配置操作
     const OP_TYPE_ARTICLE = 6; // 文章操作
     const OP_TYPE_ATTACHMENT = 7; // 附件操作
+    const OP_TYPE_PAY_METHOD = 8; // 支付方式
+    const OP_TYPE_PAY_CHANNEL = 9; // 支付通道
 
     /**
      * 保存日志
