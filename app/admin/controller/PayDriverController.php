@@ -2,8 +2,10 @@
 
 namespace app\admin\controller;
 
+use app\admin\cache\PayDriverCache;
 use app\admin\model\LogModel;
 use app\admin\model\PayDriverModel;
+use app\admin\model\PayMethodModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -47,6 +49,25 @@ class PayDriverController extends CrudController {
      */
     public function refresh(Request $request): Response {
         PayDriverModel::reload();
+        return $this->success();
+    }
+
+    /**
+     * 通过支付方式获取支持的驱动列表
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function getListByMethod(Request $request): Response {
+        $methodId = $request->input('method_id');
+        if (empty($methodId)) {
+            throw new BusinessException('支付方式ID不能为空');
+        }
+        // 支付方式信息
+        $method = PayMethodModel::find($methodId);
+        // 获取支付方式可用的驱动列表
+        $methodDriverList = PayDriverCache::getMethodDriver();
+        $this->output = $methodDriverList[$method['key']] ?? [];
         return $this->success();
     }
 

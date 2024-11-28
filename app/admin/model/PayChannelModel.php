@@ -11,7 +11,7 @@ namespace app\admin\model;
  * @property string $driver_key 支付驱动标识
  * @property float $ratio 商户结算比率
  * @property string $app_type 可用接口
- * @property float $day_top 单日限额,0或留空为没有单日限额，超出限额会暂停使用该通道
+ * @property float $day_limit 单日限额，0或留空为没有单日限额，超出限额会暂停使用该通道
  * @property integer $day_status 当日状态
  * @property float $pay_min 单笔最小金额
  * @property float $pay_max 单笔最大金额

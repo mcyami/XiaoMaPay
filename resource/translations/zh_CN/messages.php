@@ -111,7 +111,7 @@ return [
     // 支付方式
     'text_pay_method' => '支付方式',
     'text_pay_method_name' => '支付方式名称',
-    'text_pay_method_driver_key' => '驱动标识',
+    'text_pay_method_key' => '调用标识',
     'text_pay_method_is_pc' => 'PC端',
     'text_pay_method_is_mobile' => '移动端',
 
@@ -129,7 +129,17 @@ return [
     'text_pay_channel' => '支付通道',
     'text_pay_channel_name' => '通道名称',
     'text_pay_channel_mode' => '通道模式',
+    'tip_pay_channel_mode' => '「平台代收」：资金进入平台账户，手续费从每笔订单中扣除之后，结算给商户。 「商户直清」：资金进入商户账户，手续费从商户余额扣除，如余额不足将无法支付。',
     'text_pay_channel_ratio' => '结算比例',
+    'tip_pay_channel_ratio' => '通道默认结算比例。优先级：用户组结算比例 > 通道默认结算比例',
+    'text_pay_channel_cost_ratio' => '通道成本',
+    'tip_pay_channel_cost_ratio' => '仅用于统计通道利润，不参与结算。',
+    'text_pay_channel_day_limit' => '单日限额',
+    'tip_pay_channel_day_limit' => '超出限额会暂停使用该通道，0表示没有限额。',
+    'text_pay_channel_pay_min' => '单笔最小限额',
+    'tip_pay_channel_pay_min' => '0表示无单笔最小限额',
+    'text_pay_channel_pay_max' => '单笔最大限额',
+    'tip_pay_channel_pay_max' => '0表示无单笔最大限额',
 
 
 

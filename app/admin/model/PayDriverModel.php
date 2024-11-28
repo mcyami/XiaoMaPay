@@ -88,10 +88,10 @@ class PayDriverModel extends BaseModel {
             $transTypes[$key] = [];
             foreach ($dataList as $item) {
                 if ($item['pay_types'] && in_array($key, json_decode($item['pay_types']))) {
-                    $payTypes[$key][] = [$item['key'] => $item['name']];
+                    $payTypes[$key][] = ['name' => $item['name'], 'value' => $item['key']];
                 }
                 if ($item['trans_types'] && in_array($key, json_decode($item['trans_types']))) {
-                    $transTypes[$key][] = [$item['key'] => $item['name']];
+                    $transTypes[$key][] = ['name' => $item['name'], 'value' => $item['key']];
                 }
             }
         }
