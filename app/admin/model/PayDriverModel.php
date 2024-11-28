@@ -61,10 +61,42 @@ class PayDriverModel extends BaseModel {
         if ($dataList) {
             self::insert($dataList);
         }
-        // 使用支付标识作为键名
-        $dataList = array_column($dataList, null, 'key');
         // 保存到缓存
+        self::cache();
+        return true;
+    }
+
+    /**
+     * 缓存支付驱动
+     * 1. 全部支付驱动列表
+     * 2. 支付方式支持的驱动列表
+     * 3. 转账方式支持的驱动列表
+     */
+    public static function cache(): bool {
+        $all = self::get()->toArray();
+        $dataList = array_column($all, null, 'key');
+        loginfo('dataList', [$dataList]);
+        // 1. 全部支付驱动列表
         PayDriverCache::setList($dataList);
+        // 2&3. 支付方式支持的驱动列表
+        // 获取支付方式列表 只获取key字段
+        $methodList = PayMethodModel::pluck('key')->toArray();
+        $payTypes = $transTypes = []; // key=>name
+
+        foreach ($methodList as $key) {
+            $payTypes[$key] = [];
+            $transTypes[$key] = [];
+            foreach ($dataList as $item) {
+                if ($item['pay_types'] && in_array($key, json_decode($item['pay_types']))) {
+                    $payTypes[$key][] = [$item['key'] => $item['name']];
+                }
+                if ($item['trans_types'] && in_array($key, json_decode($item['trans_types']))) {
+                    $transTypes[$key][] = [$item['key'] => $item['name']];
+                }
+            }
+        }
+        PayDriverCache::setMethodDriver($payTypes);
+        PayDriverCache::setTransDriver($transTypes);
         return true;
     }
 
