@@ -2,6 +2,7 @@
 
 namespace app\admin\model;
 
+use app\admin\cache\PayDriverCache;
 use support\Db;
 
 /**
@@ -30,6 +31,8 @@ class PayDriverModel extends BaseModel {
      * 重新加载支付驱动
      */
     public static function reload() {
+        // 清空缓存
+        PayDriverCache::delList();
         // 清空数据表
         Db::statement("TRUNCATE TABLE xm_pay_driver");
         // 扫描驱动目录
@@ -58,6 +61,10 @@ class PayDriverModel extends BaseModel {
         if ($dataList) {
             self::insert($dataList);
         }
+        // 使用支付标识作为键名
+        $dataList = array_column($dataList, null, 'key');
+        // 保存到缓存
+        PayDriverCache::setList($dataList);
         return true;
     }
 
