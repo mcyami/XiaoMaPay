@@ -32,7 +32,7 @@ class monipay {
                 'options' => [0 => '否', 1 => '是'],
             ],
         ],
-        'select' => [ //选择已开启的支付方式
+        'select' => [ //选择已开启的支付形式
             '1' => '电脑网站支付',
             '2' => '手机网站支付',
             '3' => '当面付扫码',
@@ -43,8 +43,8 @@ class monipay {
             '8' => '订单码支付',
         ],
         'note' => '', // 支付密钥填写说明
-        'bindwxmp' => false, // 是否支持绑定微信公众号
-        'bindwxa' => false, // 是否支持绑定微信小程序
+        'bind_wxmp' => 1, // 是否支持绑定微信公众号
+        'bind_wxa' => 0, // 是否支持绑定微信小程序
     ];
 
     static public function submit() {

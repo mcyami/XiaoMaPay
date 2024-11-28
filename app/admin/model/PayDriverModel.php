@@ -6,12 +6,18 @@ use support\Db;
 
 /**
  * 支付驱动
- * @property string $key 驱动标识(主键)
+ * @property integer $id ID(主键)
+ * @property string $key 驱动标识
  * @property string $name 驱动显示名称
  * @property string $author 作者
  * @property string $link 链接
  * @property string $pay_types 包含的支付方式
  * @property string $trans_types 包含的转账方式
+ * @property string $inputs 配置参数形式
+ * @property string $select 支持的支付形式
+ * @property string $note 支付密钥填写说明
+ * @property integer $bind_wxmp 是否支持绑定微信公众号
+ * @property integer $bind_wxa 是否支持绑定微信小程序
  */
 class PayDriverModel extends BaseModel {
     // 表名称
@@ -39,6 +45,11 @@ class PayDriverModel extends BaseModel {
                     'link' => $info['link'],
                     'pay_types' => $info['pay_types'] ? json_encode($info['pay_types']) : '',
                     'trans_types' => $info['trans_types'] ? json_encode($info['trans_types']) : '',
+                    'inputs' => $info['inputs'] ? json_encode($info['inputs']) : '',
+                    'select' => $info['select'] ? json_encode($info['select']) : '',
+                    'note' => $info['note'],
+                    'bind_wxmp' => $info['bind_wxmp'] ? 1 : 0,
+                    'bind_wxa' => $info['bind_wxa'] ? 1 : 0,
                 ];
                 $dataList[] = $data;
             }
