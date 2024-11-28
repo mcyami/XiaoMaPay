@@ -136,7 +136,6 @@
                     url: SELECT_API,
                     dataType: "json",
                     success: function (res) {
-                        console.log(res);
                         // 给表单初始化数据
                         layui.each(res.data[0], function (key, value) {
                             let obj = $('*[name="'+key+'"]');

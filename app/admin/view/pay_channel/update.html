@@ -14,30 +14,87 @@
                 <div class="main-container mr-5">
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_name')}</label>
+                        <label class="layui-form-label required">{:trans('text_pay_channel_name')}</label>
                         <div class="layui-input-block">
                             <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_driver_key')}</label>
+                        <label class="layui-form-label required">{:trans('text_pay_channel_ratio')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="driver_key" value="" required lay-verify="required" class="layui-input">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="ratio" value="" lay-verify="required" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_ratio')}</div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_pc')}</label>
+                        <label class="layui-form-label">{:trans('text_pay_channel_cost_ratio')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_pc" lay-skin="switch" checked />
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="cost_ratio" value="" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_cost_ratio')}</div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_mobile')}</label>
+                        <label class="layui-form-label required">{:trans('text_pay_channel_mode')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_mobile" lay-skin="switch" checked />
+                            <div name="mode" id="mode" value="" ></div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_mode')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_method')}</label>
+                        <div class="layui-input-block">
+                            <div name="method_id" id="method" value="" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_driver')}</label>
+                        <div class="layui-input-block">
+                            <div name="driver_key" id="driver" value="" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_channel_day_limit')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" lay-affix="number" name="day_limit" value="" required lay-verify="required" placeholder="￥" class="layui-input" style="width: 120px">
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_day_limit')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_channel_pay_min')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" lay-affix="number" name="day_limit" value="" required lay-verify="required" placeholder="￥" class="layui-input" style="width: 120px">
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_pay_min')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_channel_pay_max')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" lay-affix="number" name="day_limit" value="" required lay-verify="required" placeholder="￥" class="layui-input" style="width: 120px">
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_pay_channel_pay_max')}</div>
                         </div>
                     </div>
 
@@ -80,18 +137,18 @@
 
             // 相关接口
             const PRIMARY_KEY = "id";
-            const SELECT_API = "/admin/payMethod/select" + location.search;
-            const UPDATE_API = "/admin/payMethod/update";
+            const SELECT_API = "/admin/payChannel/select" + location.search;
+            const UPDATE_API = "/admin/payChannel/update";
 
             // 获取数据库记录
-            layui.use(["form", "util", "popup", "form"], function () {
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect", "util"], function () {
                 let $ = layui.$;
+                let form = layui.form;
 
                 $.ajax({
                     url: SELECT_API,
                     dataType: "json",
                     success: function (res) {
-                        console.log(res);
                         // 给表单初始化数据
                         layui.each(res.data[0], function (key, value) {
                             let obj = $('*[name="'+key+'"]');
@@ -107,6 +164,94 @@
                                 }
                             } else {
                                 obj.attr("value", value);
+                            }
+                        });
+
+                        // 字段 mode
+                        layui.$.ajax({
+                            url: "/admin/config/getConfig?key=PAY_CHANNEL_MODES",
+                            dataType: "json",
+                            success: function (res) {
+                                let value = layui.$("#mode").attr("value");
+                                let initValue = value ? value.split(",") : [];
+                                layui.xmSelect.render({
+                                    el: "#mode",
+                                    name: "mode",
+                                    initValue: initValue,
+                                    tips: "{:trans('tip_select')}",
+                                    data: res.data,
+                                    value: "0",
+                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                    clickClose: true,
+                                    radio: true
+                                })
+                            }
+                        });
+
+                        // 字段 method_id
+                        layui.$.ajax({
+                            url: "/admin/payMethod/select?format=select",
+                            dataType: "json",
+                            success: function (res) {
+                                let value = layui.$("#method").attr("value");
+                                let initValue = value ? value.split(",") : [];
+                                layui.xmSelect.render({
+                                    el: "#method",
+                                    name: "method_id",
+                                    initValue: initValue,
+                                    tips: "{:trans('tip_select')}",
+                                    data: res.data,
+                                    value: "0",
+                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                    clickClose: true,
+                                    radio: true,
+                                    on: function (data) {
+                                        // 选择支付方式后获取支持的驱动列表
+                                        var change = data.change;
+                                        // driver_key 字段
+                                        layui.$.ajax({
+                                            url: "/admin/payDriver/getListByMethod?method_id=" + change[0].value,
+                                            dataType: "json",
+                                            success: function (res) {
+                                                let value = layui.$("#driver").attr("value");
+                                                let initValue = value ? value.split(",") : [];
+                                                layui.xmSelect.render({
+                                                    el: "#driver",
+                                                    name: "driver_key",
+                                                    initValue: initValue,
+                                                    tips: "{:trans('tip_select')}",
+                                                    data: res.data,
+                                                    value: "0",
+                                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                                    clickClose: true,
+                                                    radio: true
+                                                })
+
+                                            }
+                                        });
+                                    }
+                                })
+                            }
+                        });
+
+                        // driver_key 字段
+                        layui.$.ajax({
+                            url: "/admin/payDriver/getListByMethod?method_id=" + res.data[0].method_id,
+                            dataType: "json",
+                            success: function (res) {
+                                let value = layui.$("#driver").attr("value");
+                                let initValue = value ? value.split(",") : [];
+                                layui.xmSelect.render({
+                                    el: "#driver",
+                                    name: "driver_key",
+                                    initValue: initValue,
+                                    tips: "{:trans('tip_select')}",
+                                    data: res.data,
+                                    value: "0",
+                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                    clickClose: true,
+                                    radio: true
+                                })
                             }
                         });
 
@@ -142,10 +287,6 @@
                     return false;
                 });
             });
-
-
-            
-
 
         </script>
 
