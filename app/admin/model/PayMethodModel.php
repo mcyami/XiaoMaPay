@@ -6,7 +6,7 @@ namespace app\admin\model;
  * 支付方式
  * @property integer $id ID(主键)
  * @property string $name 支付方式显示名称
- * @property string $driver_key 驱动标识
+ * @property string $key 调用标识
  * @property integer $is_pc 是否支持PC 1是 0否
  * @property integer $is_mobile 是否支持移动端 1是 0否
  * @property integer $created_at 创建时间
