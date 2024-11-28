@@ -112,6 +112,7 @@
     const DELETE_API = "/admin/payChannel/delete";
     const INSERT_URL = "/admin/payChannel/insert";
     const UPDATE_URL = "/admin/payChannel/update";
+    const SECRET_URL = "/admin/payChannel/update";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -334,6 +335,8 @@
                 remove(obj);
             } else if (obj.event === "edit") {
                 edit(obj);
+            } else if (obj.event === "secret") {
+                secret(obj);
             }
         });
 
@@ -398,6 +401,18 @@
                 shade: 0.1,
                 area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
+            });
+        }
+
+        // 表格设置密钥
+        let secret = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "{:trans('text_set_secret')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                content: SECRET_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

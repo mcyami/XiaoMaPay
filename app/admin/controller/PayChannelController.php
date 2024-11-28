@@ -109,4 +109,16 @@ class PayChannelController extends CrudController {
         }
         return $this->success();
     }
+
+    /**
+     * 配置通道密钥
+     * @param Request $request
+     * @return Response
+     */
+    public function secret(Request $request): Response {
+        if ($request->method() === 'GET') {
+            return view('pay_channel/secret');
+        }
+        return $this->success();
+    }
 }
