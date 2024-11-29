@@ -61,7 +61,7 @@ class PayDriverController extends CrudController {
     public function getListByMethod(Request $request): Response {
         $methodId = $request->input('method_id');
         if (empty($methodId)) {
-            throw new BusinessException('支付方式ID不能为空');
+            throw new BusinessException(trans('error_pay_method_id_empty'));
         }
         // 支付方式信息
         $method = PayMethodModel::find($methodId);

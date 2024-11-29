@@ -140,6 +140,9 @@ return [
     'tip_pay_channel_pay_min' => '0表示无单笔最小限额',
     'text_pay_channel_pay_max' => '单笔最大限额',
     'tip_pay_channel_pay_max' => '0表示无单笔最大限额',
+    'text_pay_channel_select' => '可用支付形式（接口）',
+    'error_pay_method_id_empty' => '支付方式ID不能为空',
+    'error_pay_driver_key_empty' => '驱动标识不能为空',
 
 
 

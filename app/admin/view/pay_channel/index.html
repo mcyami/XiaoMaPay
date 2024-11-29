@@ -112,7 +112,7 @@
     const DELETE_API = "/admin/payChannel/delete";
     const INSERT_URL = "/admin/payChannel/insert";
     const UPDATE_URL = "/admin/payChannel/update";
-    const SECRET_URL = "/admin/payChannel/update";
+    const SECRET_URL = "/admin/payChannel/secret";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -412,7 +412,7 @@
                 title: "{:trans('text_set_secret')}",
                 shade: 0.1,
                 area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: SECRET_URL + "?" + PRIMARY_KEY + "=" + value
+                content: SECRET_URL + "?" + PRIMARY_KEY + "=" + value + "&driver_key=" + obj.data.driver_key
             });
         }
 

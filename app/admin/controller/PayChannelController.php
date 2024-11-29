@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\cache\PayDriverCache;
 use app\admin\model\LogModel;
 use app\admin\model\PayChannelModel;
 use support\exception\BusinessException;
@@ -117,7 +118,26 @@ class PayChannelController extends CrudController {
      */
     public function secret(Request $request): Response {
         if ($request->method() === 'GET') {
-            return view('pay_channel/secret');
+            /* 密钥配置界面 */
+            $return = [];
+            // 1- 通道信息
+            $id = $request->input('id');
+            $channel = PayChannelModel::find($id);
+            $return['channel_app_type'] = $channel['app_type'] ? explode(',', $channel['app_type']) : '';
+            $return['channel_secret_config'] = json_decode($channel['secret_config'], true);
+
+            // 2- 驱动配置项
+            $driverKey = $request->input('driver_key');
+            // 获取驱动缓存列表
+            $driverList = PayDriverCache::getList();
+            $driver = $driverList[$driverKey] ?? [];
+            loginfo('driver', json_decode($driver['select'], true));
+            // 支付形式列表 selects
+            if (isset($driver['select']) && !empty($driver['select'])) {
+                $return['selects'] = json_decode($driver['select'], true) ?? [];
+            }
+
+            return view('pay_channel/secret', $return);
         }
         return $this->success();
     }
