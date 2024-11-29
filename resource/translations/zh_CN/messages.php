@@ -124,6 +124,7 @@ return [
     'text_pay_driver_pay_types' => '包含支付方式',
     'text_pay_driver_trans_types' => '包含转账方式',
     'text_pay_driver_refresh' => '刷新驱动列表',
+    'text_pay_driver_note' => '配置说明',
 
     // 支付通道
     'text_pay_channel' => '支付通道',

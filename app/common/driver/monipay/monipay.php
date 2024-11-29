@@ -24,12 +24,18 @@ class monipay {
             'appkey' => [
                 'name' => '商户密钥',
                 'type' => 'input',
-                'note' => '',
+                'note' => '33333333',
             ],
             'appswitch' => [
                 'name' => '是否使用mapi接口',
                 'type' => 'select',
                 'options' => [0 => '否', 1 => '是'],
+                'note' => '2232',
+            ],
+            'apptest1' => [
+                'name' => '商户test1',
+                'type' => 'textarea',
+                'note' => '12333',
             ],
         ],
         'select' => [ //选择已开启的支付形式
@@ -42,7 +48,7 @@ class monipay {
             '7' => 'JSAPI支付',
             '8' => '订单码支付',
         ],
-        'note' => '', // 支付密钥填写说明
+        'note' => '<p>在支付宝服务商后台进件后可获取到子商户的授权链接，子商户访问之后即可得到商户授权token。</p><p>如果使用公钥证书模式，需将<font color="red">应用公钥证书、支付宝公钥证书、支付宝根证书</font>3个crt文件放置于<font color="red">/plugins/alipaysl/cert/</font>文件夹（或<font color="red">/plugins/alipaysl/cert/应用APPID/</font>文件夹）</p>', // 支付密钥填写说明
         'bind_wxmp' => 1, // 是否支持绑定微信公众号
         'bind_wxa' => 0, // 是否支持绑定微信小程序
     ];

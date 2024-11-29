@@ -131,12 +131,17 @@ class PayChannelController extends CrudController {
             // 获取驱动缓存列表
             $driverList = PayDriverCache::getList();
             $driver = $driverList[$driverKey] ?? [];
-            loginfo('driver', json_decode($driver['select'], true));
+
             // 支付形式列表 selects
             if (isset($driver['select']) && !empty($driver['select'])) {
                 $return['selects'] = json_decode($driver['select'], true) ?? [];
             }
+            $return['inputs'] = json_decode($driver['inputs'], true) ?? [];
+            $return['driver_note'] = $driver['note'] ?? '';
+            $return['bind_wxmp'] = $driver['bind_wxmp'];
+            $return['bind_wxa'] = $driver['bind_wxa'];
 
+            loginfo('=====return', $return);
             return view('pay_channel/secret', $return);
         }
         return $this->success();
