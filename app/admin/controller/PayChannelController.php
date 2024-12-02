@@ -140,8 +140,6 @@ class PayChannelController extends CrudController {
             $return['driver_note'] = $driver['note'] ?? '';
             $return['bind_wxmp'] = $driver['bind_wxmp'];
             $return['bind_wxa'] = $driver['bind_wxa'];
-
-            loginfo('=====return', $return);
             return view('pay_channel/secret', $return);
         }
         return $this->success();
