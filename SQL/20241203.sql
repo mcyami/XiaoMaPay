@@ -11,7 +11,7 @@
  Target Server Version : 50744 (5.7.44-log)
  File Encoding         : 65001
 
- Date: 03/12/2024 16:11:26
+ Date: 03/12/2024 20:39:28
 */
 
 SET NAMES utf8mb4;
@@ -188,6 +188,44 @@ CREATE TABLE `xm_log` (
 -- Records of xm_log
 -- ----------------------------
 BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for xm_merchant
+-- ----------------------------
+DROP TABLE IF EXISTS `xm_merchant`;
+CREATE TABLE `xm_merchant` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `group_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商户组ID',
+  `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '商户类型(0:个人,1:企业)',
+  `username` varchar(32) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(255) NOT NULL DEFAULT '' COMMENT '登录密码',
+  `email` varchar(128) NOT NULL DEFAULT '' COMMENT '邮箱',
+  `phone` varchar(16) NOT NULL DEFAULT '' COMMENT '手机号掩码',
+  `phone_encrypt` varchar(128) NOT NULL COMMENT '手机号密文',
+  `qq` varchar(16) NOT NULL DEFAULT '' COMMENT 'QQ号',
+  `url` varchar(255) NOT NULL DEFAULT '' COMMENT '网址',
+  `service` varchar(64) NOT NULL DEFAULT '' COMMENT '客服联系方式',
+  `goods_name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名称',
+  `fee_mode` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '手续费扣除方式(0:余额扣减,1:订单加费)',
+  `settle_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '结算方式',
+  `settle_account` varchar(64) NOT NULL DEFAULT '' COMMENT '结算账号',
+  `settle_name` varchar(64) NOT NULL COMMENT '结算账号名称',
+  `is_auth` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否实名认证(0:未认证1:已认证)',
+  `is_pay` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '支付权限{0禁用, 1启用}',
+  `is_settle` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '结算权限{0禁用, 1启用}',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态{0禁用, 1启用}',
+  `created_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `login_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '上次登录时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of xm_merchant
+-- ----------------------------
+BEGIN;
+INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `fee_mode`, `settle_type`, `settle_account`, `settle_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (1, 0, 0, 'zhangsan', '1231231231', 'www2@qq.com', '15613423232', '', '7454564', 'http://www.badu.com/', '15900009999', '九游充值卡', 0, 1, '', '', 0, 0, 0, 0, 0, 0, 0);
 COMMIT;
 
 -- ----------------------------
