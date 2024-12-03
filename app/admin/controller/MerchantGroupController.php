@@ -4,6 +4,8 @@ namespace app\admin\controller;
 
 use app\admin\model\LogModel;
 use app\admin\model\MerchantGroupModel;
+use app\admin\model\PayChannelModel;
+use app\admin\model\PayMethodModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -119,27 +121,36 @@ class MerchantGroupController extends CrudController {
         if ($request->method() === 'GET') {
             /* 通道配置界面 */
             $return = [];
-            // 1- 通道信息
+            // 1- 商户组信息
             $id = $request->input('id');
-            $channel = PayChannelModel::find($id);
-            $return['channel_app_type'] = $channel['app_type'] ? explode(',', $channel['app_type']) : '';
-            $return['channel_secret_config'] = json_decode($channel['secret_config'], true);
+            $merchantGroup = MerchantGroupModel::find($id);
+            $return['channel_config'] = json_decode($merchantGroup['channel_config'], true) ?? [];
 
-            // 2- 驱动配置项
-            $driverKey = $request->input('driver_key');
-            // 获取驱动缓存列表
-            $driverList = PayDriverCache::getList();
-            $driver = $driverList[$driverKey] ?? [];
-
-            // 支付形式列表 selects
-            if (isset($driver['select']) && !empty($driver['select'])) {
-                $return['selects'] = json_decode($driver['select'], true) ?? [];
+            // 2- 平台支付方式列表，每个支付方式中包含平台支付通道列表
+            $return['pay_methods'] = [];
+            $payMethods = PayMethodModel::where('status', PayMethodModel::PAY_METHOD_STATUS_ENABLE)
+                ->select('id', 'name', 'key')
+                // sort_order ASC, id ASC
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get();
+            // 商户子通道类型选项配置
+            $channel_common_items = C('MERCHANT_SUBCHANNEL_TYPE', null, []);
+            foreach ($payMethods as $payMethod) {
+                $channels = $channel_common_items;
+                $payMethod = $payMethod->toArray();
+                // 2.1- 支付通道列表 查询pay_channel表 只展示平台&启用的通道, 键为id, 值为name
+                $platform_channels = PayChannelModel::where('method_id', $payMethod['id'])
+                    ->where('status', PayChannelModel::PAY_CHANNEL_STATUS_ENABLE) // 启用的通道
+                    ->where('mode', PayChannelModel::PAY_CHANNEL_MODE_PLATFORM) // 平台代收通道
+                    ->pluck('name', 'id')
+                    ->toArray();
+                // 2.2-合并系统配置中的商户通道配置;
+                $payMethod['channels'] = $channels + $platform_channels;
+                $return['pay_methods'][] = $payMethod;
             }
-            $return['inputs'] = json_decode($driver['inputs'], true) ?? [];
-            $return['driver_note'] = $driver['note'] ?? '';
-            $return['bind_wxmp'] = $driver['bind_wxmp'];
-            $return['bind_wxa'] = $driver['bind_wxa'];
-            return view('merchant_group/secret', $return);
+            loginfo('tpl_info', $return);
+            return view('merchant_group/config', $return);
         }
         return $this->success();
     }

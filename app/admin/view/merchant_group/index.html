@@ -49,6 +49,7 @@
     const DELETE_API = "/admin/merchantGroup/delete";
     const INSERT_URL = "/admin/merchantGroup/insert";
     const UPDATE_URL = "/admin/merchantGroup/update";
+    const CONFIG_URL = "/admin/merchantGroup/config";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -153,7 +154,7 @@
                 toolbar: "#table-bar",
                 align: "center",
                 fixed: "right",
-                width: 130,
+                width: 200,
             }
         ];
 
@@ -245,6 +246,8 @@
                 remove(obj);
             } else if (obj.event === "edit") {
                 edit(obj);
+            } else if (obj.event === "config") {
+                config(obj);
             }
         });
 
@@ -291,6 +294,18 @@
                 shade: 0.1,
                 area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
+            });
+        }
+
+        // 表格设置通道信息
+        let config = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "{:trans('text_merchant_group_channel_config')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "620px", common.isModile() ? "100%" : "520px"],
+                content: CONFIG_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

@@ -65,6 +65,7 @@ return [
     'text_lang_english' => 'English',
     'text_lang_chinese' => '中文',
     'text_set_secret' => 'set secret key',
+    'text_explain' => 'explain',
 
     // 系统配置管理
     'text_config_name' => 'Config Name',
@@ -128,6 +129,16 @@ return [
     'text_pay_channel_name' => 'channel name',
     'text_pay_channel_mode' => 'channel mode',
     'text_pay_channel_ratio' => 'settlement ratio',
+
+    // 商户组
+    'text_merchant_group' => 'merchant group',
+    'text_merchant_group_name' => 'group name',
+    'text_merchant_group_settle_type' => 'settlement type',
+    'text_merchant_group_settle_period' => 'settlement period',
+    'text_merchant_group_settle_rate' => 'settlement fee rate',
+    'text_merchant_group_channel_config' => 'channel and rate configuration',
+    'text_merchant_group_channel_set' => 'channel setting',
+    'tip_merchant_group_channel' => '1. The proportion is the percentage of the amount to be settled to the merchant in the order amount.<br>2. If it is a merchant channel, the ratio is set to 0.<br>3. If a merchant has multiple sub-channels for a payment, they will be used in a round-robin manner based on the weight.',
 
 
 

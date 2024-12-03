@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+                    {foreach $pay_methods as $key=>$pay_method}
+                    <?php $now_channel = $channel_config[$pay_method['id']] ?? ''; ?>
+                    <?php $now_channel_type = $now_channel['type'] ?? ''; ?>
+                    <?php $now_channel_rate = $now_channel['rate'] ?? ''; ?>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$pay_method['name']}</label>
+                        <div class="layui-inline">
+                            <div class="layui-input-group">
+                            <select name="config[{$pay_method['id']}][type]">
+                                {foreach $pay_method['channels'] as $k=>$v }
+                                {if ($now_channel_type==$k)}
+                                <option value="{$k}" selected>{$v}</option>
+                                {else /}
+                                <option value="{$k}">{$v}</option>
+                                {/if}
+                                {/foreach}
+                            </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="config[{$pay_method['id']}][rate]" value="{$now_channel_rate}" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_explain')}</label>
+                        <div class="layui-input-block">
+                            {:trans('tip_merchant_group_channel')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const PRIMARY_KEY = "id";
+            const UPDATE_API = "/admin/merchantGroup/update";
+
+            // 获取数据库记录
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect", "util"], function () {
+                let $ = layui.$;
+                let form = layui.form;
+
+                //提交事件
+                form.on("submit(save)", function (data) {
+                    data.field[PRIMARY_KEY] = layui.url().search[PRIMARY_KEY];
+                    // 处理复选框字段  config[1][type]=0, config[1][rate]=10  -> 字典 -> JSON
+                    var channelConfig = {};
+                    for (var key in data.field) {
+                        if (key.startsWith('config[')) {
+                            // 从 config[1][type] 中获取 1 和 type 和 rate
+                            var id = key.match(/\d+/)[0];
+                            var field = key.match(/\]\[(\w+)\]/)[1];
+                            var value = data.field[key];
+                            // 如果 channelConfig 中没有 id 对应的对象，则创建一个
+                            if (!channelConfig[id]) {
+                                channelConfig[id] = {};
+                            }
+                            // 将 type 和 rate 放入 channelConfig 对象中
+                            channelConfig[id][field] = value;
+                            // 删除原有的key
+                            delete data.field[key];
+                        }
+                    }
+                    // 将 channelConfig 对象转为 JSON 字符串
+                    data.field.channel_config = JSON.stringify(channelConfig);
+
+                    $.ajax({
+                        url: UPDATE_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

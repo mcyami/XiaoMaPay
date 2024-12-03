@@ -65,6 +65,7 @@ return [
     'text_lang_english' => 'English',
     'text_lang_chinese' => '中文',
     'text_set_secret' => '配置密钥',
+    'text_explain' => '说明',
 
     // 系统配置管理
     'text_config_name' => '配置名称',
@@ -151,8 +152,9 @@ return [
     'text_merchant_group_settle_type' => '结算方式',
     'text_merchant_group_settle_period' => '结算周期',
     'text_merchant_group_settle_rate' => '结算手续费费率',
-    'text_merchant_group_channel_config' => '商户通道及费率配置',
+    'text_merchant_group_channel_config' => '商户通道结算比例配置',
     'text_merchant_group_channel_set' => '通道配置',
+    'tip_merchant_group_channel' => '1. 比例填写要结算给商户的金额占订单金额的百分比。<br>2. 如果是商户通道，比例设置为0即可。<br>3. 如果商户某个支付存在多个子通道，会根据权重轮询使用。',
 
 
 
