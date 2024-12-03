@@ -149,7 +149,8 @@ class RuleController extends CrudController {
                 $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
                 foreach ($methods as $method) {
                     $method_name = $method->getName();
-                    if (strtolower($method_name) === 'index' || strpos($method_name, '__') === 0 || in_array($method_name, $no_need_auth)) {
+                    // index规则也要加入
+                    if (strpos($method_name, '__') === 0 || in_array($method_name, $no_need_auth)) {
                         continue;
                     }
                     $name = "$class@$method_name";
