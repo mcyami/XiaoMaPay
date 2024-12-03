@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_method_name')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_pay_method_key')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="key" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_pay_method_is_pc')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="is_pc" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_pay_method_is_mobile')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="is_mobile" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_sort')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sort_order" value="" class="layui-input">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const PRIMARY_KEY = "id";
+            const SELECT_API = "/admin/payMethod/select" + location.search;
+            const UPDATE_API = "/admin/payMethod/update";
+
+            // 获取数据库记录
+            layui.use(["form", "util", "popup", "form"], function () {
+                let $ = layui.$;
+
+                $.ajax({
+                    url: SELECT_API,
+                    dataType: "json",
+                    success: function (res) {
+                        console.log(res);
+                        // 给表单初始化数据
+                        layui.each(res.data[0], function (key, value) {
+                            let obj = $('*[name="'+key+'"]');
+                            if (typeof obj[0] === "undefined" || !obj[0].nodeName) return;
+                            if (obj[0].type === "textarea") {
+                                obj.val(layui.util.escape(value));
+                            } else if (obj[0].type === "checkbox") {
+                                // checkbox 特殊处理，1为选中，0或空为未选中
+                                if (value === 1) {
+                                    obj.prop('checked', true);  // 设置为选中
+                                } else {
+                                    obj.prop('checked', false); // 设置为未选中
+                                }
+                            } else {
+                                obj.attr("value", value);
+                            }
+                        });
+
+                        // ajax产生错误
+                        if (res.code) {
+                            layui.popup.failure(res.msg);
+                        }
+
+                    }
+                });
+
+                //提交事件
+                layui.form.on("submit(save)", function (data) {
+                    data.field[PRIMARY_KEY] = layui.url().search[PRIMARY_KEY];
+                    data.field.is_pc = data.field.is_pc ? 1 : 0;
+                    data.field.is_mobile = data.field.is_mobile ? 1 : 0;
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: UPDATE_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+
+            
+
+
+        </script>
+
+    </body>
+</html>

@@ -145,6 +145,13 @@ return [
     'error_pay_method_id_empty' => '支付方式ID不能为空',
     'error_pay_driver_key_empty' => '驱动标识不能为空',
 
+    // 商户组
+    'text_merchant_group' => '商户组',
+    'text_merchant_group_name' => '商户组名称',
+    'text_merchant_group_settle_type' => '结算方式',
+    'text_merchant_group_settle_period' => '结算周期',
+    'text_merchant_group_settle_rate' => '结算手续费费率',
+    'text_merchant_group_channel_config' => '商户通道及费率配置',
 
 
 

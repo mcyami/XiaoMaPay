@@ -48,6 +48,8 @@ class LogModel extends BaseModel {
     const OP_TYPE_ATTACHMENT = 7; // 附件操作
     const OP_TYPE_PAY_METHOD = 8; // 支付方式
     const OP_TYPE_PAY_CHANNEL = 9; // 支付通道
+    const OP_TYPE_MERCHANT_GROUP = 10; // 商户组
+    const OP_TYPE_MERCHANT = 11; // 商户
 
     /**
      * 保存日志
