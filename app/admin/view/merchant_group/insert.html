@@ -21,23 +21,28 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_key')}</label>
+                        <label class="layui-form-label required">{:trans('text_merchant_group_settle_type')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="key" value="" required lay-verify="required" class="layui-input">
+                            <div name="settle_type" id="settle_type" value="0" ></div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_pc')}</label>
+                        <label class="layui-form-label">{:trans('text_merchant_group_settle_period')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_pc" lay-skin="switch" checked />
+                            <div name="settle_period" id="settle_period" value="0" ></div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_mobile')}</label>
+                        <label class="layui-form-label">{:trans('text_merchant_group_settle_rate')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_mobile" lay-skin="switch" checked />
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="settle_rate" value="0" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -85,6 +90,48 @@
             layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect"], function() {
                 let $ = layui.$;
                 let form = layui.form;
+
+                // 字段 settle_type
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#settle_type").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#settle_type",
+                            name: "settle_type",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 字段 settle_period
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_PERIOD",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#settle_period").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#settle_period",
+                            name: "settle_period",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
 
                 // 提交事件
                 form.on("submit(save)", function (data) {

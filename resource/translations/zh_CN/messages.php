@@ -152,6 +152,7 @@ return [
     'text_merchant_group_settle_period' => '结算周期',
     'text_merchant_group_settle_rate' => '结算手续费费率',
     'text_merchant_group_channel_config' => '商户通道及费率配置',
+    'text_merchant_group_channel_set' => '通道配置',
 
 
 

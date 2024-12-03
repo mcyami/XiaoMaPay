@@ -109,4 +109,38 @@ class MerchantGroupController extends CrudController {
         }
         return $this->success();
     }
+
+    /**
+     * 商户通道配置
+     * @param Request $request
+     * @return Response
+     */
+    public function config(Request $request): Response {
+        if ($request->method() === 'GET') {
+            /* 通道配置界面 */
+            $return = [];
+            // 1- 通道信息
+            $id = $request->input('id');
+            $channel = PayChannelModel::find($id);
+            $return['channel_app_type'] = $channel['app_type'] ? explode(',', $channel['app_type']) : '';
+            $return['channel_secret_config'] = json_decode($channel['secret_config'], true);
+
+            // 2- 驱动配置项
+            $driverKey = $request->input('driver_key');
+            // 获取驱动缓存列表
+            $driverList = PayDriverCache::getList();
+            $driver = $driverList[$driverKey] ?? [];
+
+            // 支付形式列表 selects
+            if (isset($driver['select']) && !empty($driver['select'])) {
+                $return['selects'] = json_decode($driver['select'], true) ?? [];
+            }
+            $return['inputs'] = json_decode($driver['inputs'], true) ?? [];
+            $return['driver_note'] = $driver['note'] ?? '';
+            $return['bind_wxmp'] = $driver['bind_wxmp'];
+            $return['bind_wxa'] = $driver['bind_wxa'];
+            return view('merchant_group/secret', $return);
+        }
+        return $this->success();
+    }
 }

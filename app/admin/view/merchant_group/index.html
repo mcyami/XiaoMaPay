@@ -18,17 +18,20 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.paymethod.insert">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.merchantgroup.insert">
         <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
     </button>
 </script>
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paymethod.update">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="config" permission="app.admin.merchantgroup.config">
+        {:trans('text_merchant_group_channel_set')}
+    </button>
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.merchantgroup.update">
         {:trans('text_edit')}
     </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.paymethod.delete">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.merchantgroup.delete">
         {:trans('text_delete')}
     </button>
 </script>
