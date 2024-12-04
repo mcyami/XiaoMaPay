@@ -217,7 +217,7 @@
         function render() {
             table.render({
                 elem: "#data-table",
-                url: SELECT_API,
+                url: SELECT_API + '?field=id&order=desc',
                 page: {
                     prev: "{:trans('text_prev')}",
                     next: "{:trans('text_next')}",
