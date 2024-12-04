@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_group_name')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_group_settle_type')}</label>
+                        <div class="layui-input-block">
+                            <div name="settle_type" id="settle_type" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_group_settle_period')}</label>
+                        <div class="layui-input-block">
+                            <div name="settle_period" id="settle_period" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_group_settle_rate')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="settle_rate" value="0" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_sort')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sort_order" value="500" class="layui-input">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/admin/merchantGroup/insert";
+
+            // 基础设置
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect"], function() {
+                let $ = layui.$;
+                let form = layui.form;
+
+                // 字段 settle_type
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#settle_type").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#settle_type",
+                            name: "settle_type",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 字段 settle_period
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_PERIOD",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#settle_period").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#settle_period",
+                            name: "settle_period",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 提交事件
+                form.on("submit(save)", function (data) {
+                    data.field.is_pc = data.field.is_pc ? 1 : 0;
+                    data.field.is_mobile = data.field.is_mobile ? 1 : 0;
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

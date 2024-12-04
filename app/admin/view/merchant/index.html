@@ -41,11 +41,11 @@
 
     // 相关常量
     const PRIMARY_KEY = "id";
-    const SELECT_API = "/admin/payMethod/select";
-    const UPDATE_API = "/admin/payMethod/update";
-    const DELETE_API = "/admin/payMethod/delete";
-    const INSERT_URL = "/admin/payMethod/insert";
-    const UPDATE_URL = "/admin/payMethod/update";
+    const SELECT_API = "/admin/merchant/select";
+    const UPDATE_API = "/admin/merchant/update";
+    const DELETE_API = "/admin/merchant/delete";
+    const INSERT_URL = "/admin/merchant/insert";
+    const UPDATE_URL = "/admin/merchant/update";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -76,16 +76,75 @@
                 width: 100,
                 sort: true,
             }, {
-                title: "{:trans('text_pay_method_name')}",
-                field: "name",
+                title: "{:trans('text_merchant_balance')}",
+                field: "balance",
+                // 金额红色加粗
+                templet: function (d) {
+                    return '<span style="color: red; font-weight: bold;">' + util.escape(d.balance) + '</span>';
+                },
+                width: 120,
+            }, {
+                title: "{:trans('text_merchant_username')}",
+                field: "username",
+            }, {
+                title: "{:trans('text_merchant_type')}",
+                field: "type",
+                templet: function (d) {
+                    let field = "type";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "{:trans('text_merchant_group')}",
+                field: "group_id",
+                templet: function (d) {
+                    let field = "group_id";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
+            }, {
+                title: "{:trans('text_mobile')}",
+                field: "phone",
+            }, {
+                title: "{:trans('text_merchant_settle_type')}",
+                field: "settle_type",
+                templet: function (d) {
+                    let field = "settle_type";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    var type = util.escape(items.join(","));
+                    var acc = '<b>' + util.escape(d['settle_account']) + '</b> ' + util.escape(d['settle_name']);
+                    // 如果acc不为空，则拼接acc
+                    if (acc) {
+                        type += ' ' + acc;
+                    }
+                    return type;
+                },
+                width: 260,
+            }, {
+                title: "{:trans('text_email')}",
+                field: "email",
+                hide: true,
             }, {
                 title: "{:trans('text_pay_method_key')}",
                 field: "key",
+                hide: true,
             }, {
-                title: "{:trans('text_pay_method_is_pc')}",
-                field: "is_pc",
+                title: "{:trans('text_merchant_auth')}",
+                field: "is_auth",
                 templet: function (d) {
-                    let field = "is_pc";
+                    let field = "is_auth";
                     form.on("switch(" + field + ")", function (data) {
                         let load = layer.load();
                         let postData = {};
@@ -107,10 +166,35 @@
                 },
                 width: 90,
             }, {
-                title: "{:trans('text_pay_method_is_mobile')}",
-                field: "is_mobile",
+                title: "{:trans('text_merchant_pay')}",
+                field: "is_pay",
                 templet: function (d) {
-                    let field = "is_mobile";
+                    let field = "is_pay";
+                    form.on("switch(" + field + ")", function (data) {
+                        let load = layer.load();
+                        let postData = {};
+                        postData[field] = data.elem.checked ? 1 : 0;
+                        postData[PRIMARY_KEY] = this.value;
+                        $.post(UPDATE_API, postData, function (res) {
+                            layer.close(load);
+                            if (res.code) {
+                                return layui.popup.failure(res.msg, function () {
+                                    data.elem.checked = !data.elem.checked;
+                                    form.render();
+                                });
+                            }
+                            return layui.popup.success(res.msg);
+                        })
+                    });
+                    let checked = d[field] === 1 ? "checked" : "";
+                    return '<input type="checkbox" value="' + util.escape(d[PRIMARY_KEY]) + '" lay-filter="' + util.escape(field) + '" lay-skin="switch" lay-text="' + util.escape('') + '" ' + checked + '/>';
+                },
+                width: 90,
+            }, {
+                title: "{:trans('text_merchant_settle')}",
+                field: "is_settle",
+                templet: function (d) {
+                    let field = "is_settle";
                     form.on("switch(" + field + ")", function (data) {
                         let load = layer.load();
                         let postData = {};
@@ -140,10 +224,7 @@
                 field: "updated_at",
                 hide: true,
             }, {
-                title: "{:trans('text_sort')}",
-                field: "sort_order"
-            }, {
-                title: "{:trans('text_enabled')}",
+                title: "{:trans('text_status')}",
                 field: "status",
                 templet: function (d) {
                     let field = "status";
@@ -180,7 +261,7 @@
         function render() {
             table.render({
                 elem: "#data-table",
-                url: SELECT_API,
+                url: SELECT_API + '?field=id&order=desc',
                 page: {
                     prev: "{:trans('text_prev')}",
                     next: "{:trans('text_next')}",
@@ -219,8 +300,43 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
+        apis.push(["group_id", "/admin/merchantGroup/select?format=select"]);
+        apis.push(["type", "/admin/config/getConfig?key=MERCHANT_TYPE"]);
+        apis.push(["settle_type", "/admin/config/getConfig?key=MERCHANT_SETTLE_ACCOUNT_TYPE"]);
         let apiResults = {};
+        apiResults["group_id"] = [];
+        apiResults["type"] = [];
+        apiResults["settle_type"] = [];
         let count = apis.length;
+        layui.each(apis, function (k, item) {
+            let [field, url] = item;
+            $.ajax({
+                url: url,
+                dateType: "json",
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+
+                    function travel(items) {
+                        for (let k in items) {
+                            let item = items[k];
+                            apiResults[field][item.value] = item.name;
+                            if (item.children) {
+                                travel(item.children);
+                            }
+                        }
+                    }
+
+                    travel(res.data);
+                },
+                complete: function () {
+                    if (--count === 0) {
+                        render();
+                    }
+                }
+            });
+        });
         if (!count) {
             render();
         }

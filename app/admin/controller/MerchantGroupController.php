@@ -149,7 +149,6 @@ class MerchantGroupController extends CrudController {
                 $payMethod['channels'] = $channels + $platform_channels;
                 $return['pay_methods'][] = $payMethod;
             }
-            loginfo('tpl_info', $return);
             return view('merchant_group/config', $return);
         }
         return $this->success();

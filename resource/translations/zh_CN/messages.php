@@ -156,7 +156,16 @@ return [
     'text_merchant_group_channel_set' => '通道配置',
     'tip_merchant_group_channel' => '1. 比例填写要结算给商户的金额占订单金额的百分比。<br>2. 如果是商户通道，比例设置为0即可。<br>3. 如果商户某个支付存在多个子通道，会根据权重轮询使用。',
 
-
+    // 商户
+    'text_merchant' => '商户',
+    'text_merchant_username' => '商户用户名',
+    'text_merchant_name' => '商户名称',
+    'text_merchant_type' => '商户类型',
+    'text_merchant_balance' => '商户余额',
+    'text_merchant_auth' => '商户认证',
+    'text_merchant_pay' => '支付权限',
+    'text_merchant_settle' => '结算权限',
+    'text_merchant_settle_type' => '结算方式',
 
 
     // 错误提示
