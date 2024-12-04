@@ -78,7 +78,6 @@
             }, {
                 title: "{:trans('text_merchant_balance')}",
                 field: "balance",
-                // 金额红色加粗
                 templet: function (d) {
                     return '<span style="color: red; font-weight: bold;">' + util.escape(d.balance) + '</span>';
                 },
@@ -114,18 +113,17 @@
                 title: "{:trans('text_mobile')}",
                 field: "phone",
             }, {
-                title: "{:trans('text_merchant_settle_type')}",
-                field: "settle_type",
+                title: "{:trans('text_merchant_settle_account')}",
+                field: "settle_account_type",
                 templet: function (d) {
-                    let field = "settle_type";
+                    let field = "settle_account_type";
                     if (typeof d[field] == "undefined") return "";
                     let items = [];
                     layui.each((d[field] + "").split(","), function (k, v) {
                         items.push(apiResults[field][v] || v);
                     });
                     var type = util.escape(items.join(","));
-                    var acc = '<b>' + util.escape(d['settle_account']) + '</b> ' + util.escape(d['settle_name']);
-                    // 如果acc不为空，则拼接acc
+                    var acc = '<b>' + util.escape(d['settle_account']) + '</b> ' + util.escape(d['settle_account_name']);
                     if (acc) {
                         type += ' ' + acc;
                     }
@@ -302,11 +300,11 @@
         let apis = [];
         apis.push(["group_id", "/admin/merchantGroup/select?format=select"]);
         apis.push(["type", "/admin/config/getConfig?key=MERCHANT_TYPE"]);
-        apis.push(["settle_type", "/admin/config/getConfig?key=MERCHANT_SETTLE_ACCOUNT_TYPE"]);
+        apis.push(["settle_account_type", "/admin/config/getConfig?key=MERCHANT_SETTLE_ACCOUNT_TYPE"]);
         let apiResults = {};
         apiResults["group_id"] = [];
         apiResults["type"] = [];
-        apiResults["settle_type"] = [];
+        apiResults["settle_account_type"] = [];
         let count = apis.length;
         layui.each(apis, function (k, item) {
             let [field, url] = item;

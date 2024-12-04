@@ -27,6 +27,7 @@ return [
     'text_nickname' => '昵称',
     'text_email' => '邮箱',
     'text_mobile' => '手机',
+    'text_qq' => 'QQ',
     'text_avatar' => '头像',
     'text_create_time' => '创建时间',
     'text_update_time' => '更新时间',
@@ -166,7 +167,18 @@ return [
     'text_merchant_pay' => '支付权限',
     'text_merchant_settle' => '结算权限',
     'text_merchant_settle_type' => '结算方式',
-
+    'text_merchant_settle_account_type' => '结算账户类型',
+    'text_merchant_settle_account' => '结算账户',
+    'text_merchant_settle_name' => '结算账户名称',
+    'text_merchant_service' => '客服联系方式',
+    'text_merchant_goods_name' => '商品名称',
+    'tip_merchant_goods_name' => '支持系统变量：{order}平台支付订单号 {outorder}商户订单号 {timestamp}时间戳 {datetime}日期时间。<br>支持商户变量：{service}客服联系方式 {url}网址 {qq}QQ号 {email}邮箱 {phone}手机号',
+    'text_merchant_fee_mode' => '手续费模式',
+    'text_merchant_reset_password' => '重置密码',
+    'tip_merchant_reset_password' => '留空则不修改密码',
+    'text_merchant_old_phone' => '原手机号',
+    'text_merchant_edit_phone' => '修改手机号',
+    'tip_merchant_edit_phone' => '留空则不修改手机号',
 
     // 错误提示
     'error' => '操作失败',

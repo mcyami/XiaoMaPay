@@ -7,6 +7,7 @@ use app\admin\model\MerchantGroupModel;
 use app\admin\model\MerchantModel;
 use app\admin\model\PayChannelModel;
 use app\admin\model\PayMethodModel;
+use app\common\utils\StringHelper;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -52,6 +53,10 @@ class MerchantController extends CrudController {
     public function insert(Request $request): Response {
         if ($request->method() === 'POST') {
             $data = $this->insertInput($request);
+            // 手机号掩码处理
+            $data['phone'] = StringHelper::maskMobile($data['phone']);
+            // 手机号加密存储
+            $data['phone_encrypt'] = StringHelper::aesEncrypt($data['phone']);
             $id = $this->doInsert($data);
             $this->output['id'] = $id;
             LogModel::saveLog(
@@ -77,6 +82,12 @@ class MerchantController extends CrudController {
             return view('merchant/update');
         }
         [$id, $data] = $this->updateInput($request);
+        if(isset($data['phone']) && !empty($data['phone'])) {
+            // 手机号掩码处理
+            $data['phone'] = StringHelper::maskMobile($data['phone']);
+            // 手机号加密存储
+            $data['phone_encrypt'] = StringHelper::aesEncrypt($data['phone']);
+        }
         // 获取$data中的key，作为查询的字段
         $select_field = collect($data)->keys()->toArray();
         $before_data = $this->model->select($select_field)->find($id)->toArray();
