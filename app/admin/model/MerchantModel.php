@@ -2,6 +2,8 @@
 
 namespace app\admin\model;
 
+use support\Db;
+
 /**
  * 商户
  * @property integer $id ID(主键)
@@ -51,5 +53,47 @@ class MerchantModel extends BaseModel {
     const MERCHANT_SETTLE_DISABLE = 0; // 是否开通结算：禁用
     const MERCHANT_SETTLE_ENABLE = 1; // 是否开通结算：启用
 
+    /**
+     * 商户余额变动操作
+     * @param $merchant_id
+     * @param $type
+     * @param $amount
+     * @param $trade_no
+     * @return bool
+     */
+    public static function changeBalance($merchant_id, $type, $amount, $trade_no) {
+        // 开启事务
+        Db::beginTransaction();
+        try {
+            $merchant = self::find($merchant_id);
+            if (!$merchant) {
+                return false;
+            }
+            $fund = new MerchantFundModel;
+            $fund->merchant_id = $merchant_id;
+            $fund->type = $type;
+            $actions = MerchantFundModel::getFundTypes();
+            $fund->action = $actions[$type]['action'];
+            $fund->amount = $amount;
+            $fund->before_balance = $merchant->balance;
+            if ($fund->action == MerchantFundModel::ACTION_ADD) {
+                $merchant->balance = bcadd($merchant->balance, $amount, 2);
+            }
+            if ($fund->action == MerchantFundModel::ACTION_SUB) {
+                $merchant->balance = bcsub($merchant->balance, $amount, 2);
+            }
+            $fund->after_balance = $merchant->balance;
+            $fund->trade_no = $trade_no;
+            $fund->save();
+            $merchant->save();
+            // 提交事务
+            Db::commit();
+            return true;
+        } catch (\Throwable $e) {
+            // 回滚事务
+            Db::rollBack();
+            return false;
+        }
+    }
 
 }
