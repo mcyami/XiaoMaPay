@@ -159,6 +159,7 @@ return [
 
     // 商户
     'text_merchant' => '商户',
+    'text_merchant_id' => '商户ID',
     'text_merchant_username' => '商户用户名',
     'text_merchant_name' => '商户名称',
     'text_merchant_type' => '商户类型',
@@ -190,7 +191,6 @@ return [
     'text_merchant_fund_after_balance' => '变动后余额',
     'text_merchant_fund_trade_no' => '交易单号',
     'text_merchant_fund_note' => '备注',
-
 
 
 
