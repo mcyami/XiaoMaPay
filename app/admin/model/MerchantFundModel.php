@@ -12,6 +12,7 @@ namespace app\admin\model;
  * @property float $before_balance 变动前余额
  * @property float $after_balance 变动后余额
  * @property string $trade_no 交易单号
+ * @property string $note 备注
  * @property integer $created_at 创建时间
  * @property integer $updated_at 更新时间
  */

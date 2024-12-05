@@ -8,7 +8,6 @@
 </head>
 <body class="pear-container">
 
-
 <!-- 数据表格 -->
 <div class="layui-card">
     <div class="layui-card-body">
@@ -25,6 +24,9 @@
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="balance" permission="app.admin.paymethod.update">
+        {:trans('text_merchant_balance_change')}
+    </button>
     <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paymethod.update">
         {:trans('text_edit')}
     </button>
@@ -46,6 +48,7 @@
     const DELETE_API = "/admin/merchant/delete";
     const INSERT_URL = "/admin/merchant/insert";
     const UPDATE_URL = "/admin/merchant/update";
+    const BALANCE_URL = "/admin/merchant/balance";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -251,7 +254,7 @@
                 toolbar: "#table-bar",
                 align: "center",
                 fixed: "right",
-                width: 130,
+                width: 190,
             }
         ];
 
@@ -345,6 +348,8 @@
                 remove(obj);
             } else if (obj.event === "edit") {
                 edit(obj);
+            } else if (obj.event === "balance") {
+                balance(obj);
             }
         });
 
@@ -391,6 +396,18 @@
                 shade: 0.1,
                 area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
+            });
+        }
+
+        // 表格余额变更
+        let balance = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "{:trans('text_merchant_balance_change')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "560px", common.isModile() ? "100%" : "380px"],
+                content: BALANCE_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

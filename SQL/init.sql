@@ -11,7 +11,7 @@
  Target Server Version : 50744 (5.7.44-log)
  File Encoding         : 65001
 
- Date: 04/12/2024 18:57:35
+ Date: 05/12/2024 19:00:29
 */
 
 SET NAMES utf8mb4;
@@ -59,7 +59,7 @@ CREATE TABLE `xm_admins` (
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态{0禁用, 1启用}',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
 
 -- ----------------------------
 -- Records of xm_admins
@@ -117,7 +117,7 @@ CREATE TABLE `xm_config` (
   `updated_at` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `idx_key` (`key`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COMMENT='系统配置表';
 
 -- ----------------------------
 -- Records of xm_config
@@ -138,10 +138,10 @@ INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (13, '后台系统名称', 'SYS_SITE_NAME', 2, 2, 'Admin', '', '', 1, 5, 1723075200, 1733306954);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (14, '后台系统页脚内容', 'SYS_SITE_FOOTER', 2, 2, 'Released under the MIT license. XiaoMaPay', '', '', 1, 7, 1723075200, 1733306954);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (15, '后台主标签名称', 'SYS_DASHBOARD_NAME', 2, 2, '首页', '', '', 1, 8, 1723075200, 1733306954);
-INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (16, '附件类型', 'CATE_ATTACH_TYPE', 4, 3, '1:附件分类1\n2:附件分类2\n3:附件分类3\n4:附件分类4\n5:附件分类5', '', '', 1, 1, 1723075200, 1733194735);
-INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (17, '文章分类', 'CATE_ARTICLE_TYPE', 4, 3, '1:文章分类1\n2:文章分类2\n3:文章分类3\n4:文章分类4\n5:文章分类5', '', '', 1, 2, 1729594458, 1733194735);
-INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (18, '日志类型', 'CATE_LOG_TYPE', 4, 3, '1:后台账户\n2:管理员操作\n3:角色操作\n4:菜单操作\n5:配置操作\n6:文章操作\n7:附件操作\n8:支付方式\n9:支付通道\n10:商户组\n11:商户', '', '', 1, 3, 1729671388, 1733194735);
-INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (19, '日志用户类型', 'CATE_LOG_USER', 4, 3, '1:A端后台用户\n2:B端用户\n3:C端用户', '', '', 1, 4, 1729674148, 1733194735);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (16, '附件类型', 'CATE_ATTACH_TYPE', 4, 3, '1:附件分类1\n2:附件分类2\n3:附件分类3\n4:附件分类4\n5:附件分类5', '', '', 1, 1, 1723075200, 1733381463);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (17, '文章分类', 'CATE_ARTICLE_TYPE', 4, 3, '1:文章分类1\n2:文章分类2\n3:文章分类3\n4:文章分类4\n5:文章分类5', '', '', 1, 2, 1729594458, 1733381463);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (18, '日志类型', 'CATE_LOG_TYPE', 4, 3, '1:后台账户\n2:管理员操作\n3:角色操作\n4:菜单操作\n5:配置操作\n6:文章操作\n7:附件操作\n8:支付方式\n9:支付通道\n10:商户组\n11:商户', '', '', 1, 3, 1729671388, 1733381463);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (19, '日志用户类型', 'CATE_LOG_USER', 4, 3, '1:A端后台用户\n2:B端用户\n3:C端用户', '', '', 1, 4, 1729674148, 1733381463);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (20, '日志开关', 'LOG_SWITCH', 5, 4, '0', '1:开启\n0:关闭', '系统全局操作日志开关', 1, 1, 1729739365, 1730084387);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (21, '后台账户日志开关', 'LOG_SWITCH_1', 5, 4, '1', '0:关闭\n1:开启', '', 1, 2, 1729739900, 1730084387);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (22, '管理员日志开关', 'LOG_SWITCH_2', 5, 4, '1', '0:关闭\n1:开启', '', 1, 3, 1729773844, 1730084387);
@@ -161,6 +161,8 @@ INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (36, '商户结算账户类型', 'MERCHANT_SETTLE_ACCOUNT_TYPE', 4, 6, '0:银行卡\n1:支付宝\n2:微信\n3:QQ钱包', '', '', 1, 0, 1733282750, 1733282964);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (37, 'AES加密IV值', 'SYS_AES_IV', 2, 2, 'abc987ghi654jkl3', '', '', 1, 9, 1733306576, 1733306954);
 INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (38, 'AES加密密钥', 'SYS_AES_KEY', 2, 2, '5XR8buE6lMy2vacK', '', '', 1, 10, 1733306629, 1733306954);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (39, '资金变动类型', 'CATE_FUND_TYPE', 4, 3, '1:后台充值\n2:后台扣款\n3:订单收入\n4:订单退款\n5:自动结算\n6:手动提现\n7:余额充值\n8:订单服务费', '', '', 1, 5, 1733380914, 1733381463);
+INSERT INTO `xm_config` (`id`, `name`, `key`, `type`, `group`, `val`, `extra`, `desc`, `status`, `sort_order`, `created_at`, `updated_at`) VALUES (40, '资金记账方向', 'CATE_FUND_ACTION', 4, 3, '1:1\n2:2\n3:1\n4:2\n5:2\n6:2\n7:1\n8:2', '', '1:增加资金；2:减少资金', 1, 6, 1733380994, 1733381463);
 COMMIT;
 
 -- ----------------------------
@@ -249,7 +251,38 @@ INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `em
 INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `balance`, `fee_mode`, `settle_account_type`, `settle_account`, `settle_account_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (100004, 1, 0, 'ceshi2', '$2y$10$vqfmNTv1QIuIaTTW3gEzXO7V9YdTRG259qA2.DKrOK4GO1RrAiCxO', 'sdfsdf@qq.cc', '', '', '', 'http://www.sdfsdf.cc', '', '', 0.00, 0, 0, '', '', 0, 1, 1, 1, 1733301306, 1733302896, 0);
 INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `balance`, `fee_mode`, `settle_account_type`, `settle_account`, `settle_account_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (100005, 1, 0, '1234a', '$2y$10$Ffgqqdl/fhPeNhl6jvOBhux6/1G0vFLQE4.lh1FXdBwduHKp7Gybi', '', '', '', '', '', '', '', 0.00, 0, 0, '', '', 0, 1, 1, 1, 1733302489, 1733302489, 0);
 INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `balance`, `fee_mode`, `settle_account_type`, `settle_account`, `settle_account_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (100006, 1, 0, 'ceshi3', '$2y$10$6d815muNOYNBUUtiV27WQuYos9L1dtQQ/UEmg4xn1bOg1gRhQ6aWO', '', '', '', '', '', '', '', 0.00, 0, 0, '', '', 0, 1, 1, 1, 1733307661, 1733307661, 0);
-INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `balance`, `fee_mode`, `settle_account_type`, `settle_account`, `settle_account_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (100007, 1, 0, 'ceshi41', '$2y$10$A0G/YHJ3/mKqJrSOB65qmu6cLzhQqMmJ80uzPPz5Bw2D5IY9hkzwq', '', '135****8888', 'jjzB3Wca47dLwqFsPf8Z/Q==', '', '', '', '', 0.00, 0, 0, '', '', 0, 1, 1, 1, 1733307846, 1733308373, 0);
+INSERT INTO `xm_merchant` (`id`, `group_id`, `type`, `username`, `password`, `email`, `phone`, `phone_encrypt`, `qq`, `url`, `service`, `goods_name`, `balance`, `fee_mode`, `settle_account_type`, `settle_account`, `settle_account_name`, `is_auth`, `is_pay`, `is_settle`, `status`, `created_at`, `updated_at`, `login_at`) VALUES (100007, 1, 0, 'ceshi41', '$2y$10$A0G/YHJ3/mKqJrSOB65qmu6cLzhQqMmJ80uzPPz5Bw2D5IY9hkzwq', '', '135****8888', 'jjzB3Wca47dLwqFsPf8Z/Q==', '', '', '', '', 51.00, 0, 0, '', '', 0, 1, 1, 1, 1733307846, 1733396396, 0);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for xm_merchant_fund
+-- ----------------------------
+DROP TABLE IF EXISTS `xm_merchant_fund`;
+CREATE TABLE `xm_merchant_fund` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `merchant_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '商户ID',
+  `type` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '变动类型{如：支付、退款、充值、提现}',
+  `action` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '记账方向{1:增加,2:减少}',
+  `amount` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '变动金额',
+  `before_balance` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '变更前余额',
+  `after_balance` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '变更后余额',
+  `trade_no` varchar(64) NOT NULL DEFAULT '' COMMENT '交易单号',
+  `note` varchar(500) NOT NULL DEFAULT '' COMMENT '交易备注',
+  `created_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_merchant_id` (`merchant_id`) USING BTREE,
+  KEY `idx_type` (`type`) USING BTREE,
+  KEY `idx_trade_no` (`trade_no`) USING BTREE,
+  KEY `idx_action` (`action`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='商户资金变动记录';
+
+-- ----------------------------
+-- Records of xm_merchant_fund
+-- ----------------------------
+BEGIN;
+INSERT INTO `xm_merchant_fund` (`id`, `merchant_id`, `type`, `action`, `amount`, `before_balance`, `after_balance`, `trade_no`, `note`, `created_at`, `updated_at`) VALUES (1, 100007, 1, 1, 1.00, 0.00, 1.00, '', '', 1733396353, 1733396353);
+INSERT INTO `xm_merchant_fund` (`id`, `merchant_id`, `type`, `action`, `amount`, `before_balance`, `after_balance`, `trade_no`, `note`, `created_at`, `updated_at`) VALUES (2, 100007, 1, 1, 50.00, 1.00, 51.00, '', '线下付款', 1733396396, 1733396396);
 COMMIT;
 
 -- ----------------------------
@@ -268,7 +301,7 @@ CREATE TABLE `xm_merchant_group` (
   `sort_order` int(11) NOT NULL DEFAULT '500' COMMENT '排序',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COMMENT='商户组';
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COMMENT='商户组';
 
 -- ----------------------------
 -- Records of xm_merchant_group

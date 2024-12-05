@@ -59,9 +59,10 @@ class MerchantModel extends BaseModel {
      * @param $type
      * @param $amount
      * @param $trade_no
+     * @param string $note
      * @return bool
      */
-    public static function changeBalance($merchant_id, $type, $amount, $trade_no) {
+    public static function changeBalance($merchant_id, $type, $amount, $trade_no, $note = '') {
         // 开启事务
         Db::beginTransaction();
         try {
@@ -84,6 +85,7 @@ class MerchantModel extends BaseModel {
             }
             $fund->after_balance = $merchant->balance;
             $fund->trade_no = $trade_no;
+            $fund->note = $note;
             $fund->save();
             $merchant->save();
             // 提交事务

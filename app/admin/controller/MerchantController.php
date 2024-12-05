@@ -82,7 +82,7 @@ class MerchantController extends CrudController {
             return view('merchant/update');
         }
         [$id, $data] = $this->updateInput($request);
-        if(isset($data['phone']) && !empty($data['phone'])) {
+        if (isset($data['phone']) && !empty($data['phone'])) {
             // 手机号掩码处理
             $data['phone'] = StringHelper::maskMobile($data['phone']);
             // 手机号加密存储
@@ -124,5 +124,28 @@ class MerchantController extends CrudController {
         return $this->success();
     }
 
-
+    /**
+     * 商户余额变更
+     * @param Request $request
+     * @return Response
+     */
+    public function balance(Request $request): Response {
+        if ($request->method() === 'GET') {
+            return view('merchant/balance');
+        }
+        $merchant_id = $request->input('merchant_id');
+        $type = $request->input('type');
+        $amount = $request->input('amount') ?? 0;
+        $trade_no = $request->input('trade_no') ?? '';
+        $note = $request->input('note') ?? '';
+        if (empty($merchant_id) || empty($type) || empty($amount)) {
+            return $this->error('error_lack_param');
+        }
+        $result = MerchantModel::changeBalance($merchant_id, $type, $amount, $trade_no, $note);
+        if ($result) {
+            return $this->success();
+        } else {
+            return $this->error('error');
+        }
+    }
 }

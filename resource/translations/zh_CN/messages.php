@@ -163,6 +163,7 @@ return [
     'text_merchant_name' => '商户名称',
     'text_merchant_type' => '商户类型',
     'text_merchant_balance' => '商户余额',
+    'text_merchant_balance_change' => '余额变更',
     'text_merchant_auth' => '商户认证',
     'text_merchant_pay' => '支付权限',
     'text_merchant_settle' => '结算权限',
@@ -179,6 +180,19 @@ return [
     'text_merchant_old_phone' => '原手机号',
     'text_merchant_edit_phone' => '修改手机号',
     'tip_merchant_edit_phone' => '留空则不修改手机号',
+
+    // 商户资金变动记录
+    'text_merchant_fund' => '商户资金变动记录',
+    'text_merchant_fund_type' => '变动类型',
+    'text_merchant_fund_action' => '记账方向',
+    'text_merchant_fund_amount' => '变更金额',
+    'text_merchant_fund_before_balance' => '变动前余额',
+    'text_merchant_fund_after_balance' => '变动后余额',
+    'text_merchant_fund_trade_no' => '交易单号',
+    'text_merchant_fund_note' => '备注',
+
+
+
 
     // 错误提示
     'error' => '操作失败',
