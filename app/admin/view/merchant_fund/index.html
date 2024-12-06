@@ -13,42 +13,34 @@
         <form class="layui-form top-search-from">
 
             <div class="layui-form-item">
-                <label class="layui-form-label">ID</label>
+                <label class="layui-form-label">{:trans('text_merchant_id')}</label>
                 <div class="layui-input-block">
-                    <input type="text" name="id" value="" class="layui-input">
+                    <input type="text" name="merchant_id" value="" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_channel_name')}</label>
+                <label class="layui-form-label">{:trans('text_merchant_fund_trade_no')}</label>
                 <div class="layui-input-block">
-                    <input type="hidden" name="name[]" value="like" class="layui-input">
-                    <input type="text" name="name[]" value="" class="layui-input">
+                    <input type="text" name="trade_no" value="" class="layui-input">
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_driver_key')}</label>
+                <label class="layui-form-label">{:trans('text_merchant_fund_type')}</label>
                 <div class="layui-input-block">
-                    <input type="text" name="driver_key" value="" class="layui-input">
+                    <div name="fund_type" id="fund_type" value="" ></div>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_method')}</label>
+                <label class="layui-form-label">{:trans('text_action_time')}</label>
                 <div class="layui-input-block">
-                    <div name="method_id" id="methods" value="" ></div>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_status')}</label>
-                <div class="layui-input-block">
-                    <select name="status">
-                        <option value="">{:trans('tip_select')}</option>
-                        <option value="1">{:trans('text_open')}</option>
-                        <option value="0">{:trans('text_close')}</option>
-                    </select>
+                    <div class="layui-input-block" id="created_at">
+                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-start" class="layui-input inline-block" placeholder="{:trans('text_start_time')}">
+                        -
+                        <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-end" class="layui-input inline-block" placeholder="{:trans('text_end_time')}">
+                    </div>
                 </div>
             </div>
 
@@ -92,7 +84,7 @@
             elem: "#created_at",
             range: ["#created_at-date-start", "#created_at-date-end"],
             type: "datetime",
-            lang: "{php} echo session('lang') == 'zh-CN' ? 'cn' : 'en';{/php}"
+            lang: "{php} echo session('lang') == 'zh_CN' ? 'cn' : 'en';{/php}"
         });
     })
 
@@ -171,6 +163,9 @@
             }, {
                 title: "{:trans('text_merchant_fund_after_balance')}",
                 field: "after_balance",
+            }, {
+                title: "{:trans('text_merchant_fund_trade_no')}",
+                field: "trade_no",
             }, {
                 title: "{:trans('text_merchant_fund_note')}",
                 field: "note",
