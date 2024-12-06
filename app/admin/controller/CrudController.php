@@ -5,6 +5,7 @@ namespace app\admin\controller;
 
 use app\admin\model\AdminModel;
 use app\common\utils\Auth;
+use app\common\utils\StringHelper;
 use app\common\utils\Tree;
 use app\common\utils\Util;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -29,6 +30,7 @@ class CrudController extends BaseController {
      */
     public function select(Request $request): Response {
         [$where, $format, $limit, $field, $order] = $this->selectInput($request);
+        loginfo('====input',  [$where, $format, $limit, $field, $order]);
         $query = $this->doSelect($where, $field, $order);
         return $this->doFormat($query, $format, $limit);
     }
@@ -117,6 +119,10 @@ class CrudController extends BaseController {
                 } else {
                     $where[$column] = strtotime($value);
                 }
+            }
+            // 加密字段处理 如果是 xxx_encrypt 则加密后查询
+            if (substr($column, -8) === '_encrypt') {
+                $where[$column] = StringHelper::aesEncrypt($value);
             }
         }
         // 按照数据限制字段返回数据

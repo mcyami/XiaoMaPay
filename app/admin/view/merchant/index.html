@@ -7,6 +7,97 @@
     <link rel="stylesheet" href="/admin/css/reset.css"/>
 </head>
 <body class="pear-container">
+<!-- 顶部查询表单 -->
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form top-search-from">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_id')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="id" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_mobile')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="phone_encrypt" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_username')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_email')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="email" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_settle_account')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="settle_account" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_settle_name')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="settle_account_name" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_status')}</label>
+                <div class="layui-input-block">
+                    <div name="status" id="status" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_auth')}</label>
+                <div class="layui-input-block">
+                    <div name="is_auth" id="is_auth" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_pay')}</label>
+                <div class="layui-input-block">
+                    <div name="is_pay" id="is_pay" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_merchant_settle')}</label>
+                <div class="layui-input-block">
+                    <div name="is_settle" id="is_settle" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-inline">
+                <label class="layui-form-label"></label>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
+                    <i class="layui-icon layui-icon-search"></i> {:trans('text_select')}
+                </button>
+                <button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
+                    <i class="layui-icon layui-icon-refresh"></i> {:trans('text_reset')}
+                </button>
+            </div>
+            <div class="toggle-btn">
+                <a class="layui-hide">{:trans('text_expand')} <i class="layui-icon layui-icon-down"></i></a>
+                <a class="layui-hide">{:trans('text_collapse')} <i class="layui-icon layui-icon-up"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- 数据表格 -->
 <div class="layui-card">
@@ -61,12 +152,67 @@
     })
 
     // 表格渲染
-    layui.use(["table", "form", "common", "popup", "util"], function () {
+    layui.use(["table", "form", "common", "popup", "util", "jquery", "xmSelect"], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.$;
         let common = layui.common;
         let util = layui.util;
+
+        // 筛选字段
+        $.ajax({
+            url: "/admin/config/getConfig?key=CATE_STATUS",
+            dataType: "json",
+            success: function (res) {
+                let value_status = layui.$("#status").attr("value");
+                let value_auth = layui.$("#is_auth").attr("value");
+                let value_pay = layui.$("#is_pay").attr("value");
+                let value_settle = layui.$("#is_settle").attr("value");
+                let initValueStatus = value_status ? value_status.split(",") : [];
+                let initValueAuth = value_auth ? value_auth.split(",") : [];
+                let initValuePay = value_pay ? value_pay.split(",") : [];
+                let initValueSettle = value_settle ? value_settle.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#status",
+                    name: "status",
+                    initValue: initValueStatus,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                layui.xmSelect.render({
+                    el: "#is_auth",
+                    name: "is_auth",
+                    initValue: initValueAuth,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                layui.xmSelect.render({
+                    el: "#is_pay",
+                    name: "is_pay",
+                    initValue: initValuePay,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                layui.xmSelect.render({
+                    el: "#is_settle",
+                    name: "is_settle",
+                    initValue: initValueSettle,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
 
         // 表头参数
         let cols = [
@@ -88,6 +234,7 @@
             }, {
                 title: "{:trans('text_merchant_username')}",
                 field: "username",
+                width: 120,
             }, {
                 title: "{:trans('text_merchant_type')}",
                 field: "type",
@@ -99,7 +246,8 @@
                         items.push(apiResults[field][v] || v);
                     });
                     return util.escape(items.join(","));
-                }
+                },
+                width: 90,
             }, {
                 title: "{:trans('text_merchant_group')}",
                 field: "group_id",
@@ -111,10 +259,12 @@
                         items.push(apiResults[field][v] || v);
                     });
                     return util.escape(items.join(","));
-                }
+                },
+                width: 110,
             }, {
                 title: "{:trans('text_mobile')}",
                 field: "phone",
+                width: 120,
             }, {
                 title: "{:trans('text_merchant_settle_account')}",
                 field: "settle_account_type",
@@ -362,6 +512,24 @@
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
             }
+        });
+
+        // 表格顶部搜索事件
+        form.on("submit(table-query)", function (data) {
+            table.reload("data-table", {
+                page: {
+                    curr: 1
+                },
+                where: data.field
+            })
+            return false;
+        });
+
+        // 表格顶部搜索重置事件
+        form.on("submit(table-reset)", function (data) {
+            table.reload("data-table", {
+                where: []
+            })
         });
 
         // 表格排序事件

@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\utils\StringHelper;
 use support\Cache;
 use support\Db;
 
@@ -42,6 +43,24 @@ class TestController {
         return json([
             'status' => 'success',
             'message' => $result
+        ]);
+    }
+
+    public function aesEncrypt() {
+        $value = '13588888888';
+
+        return json([
+            'status' => 'success',
+            'message' => StringHelper::aesEncrypt($value)
+        ]);
+    }
+
+    public function aesDecrypt() {
+        $value = 'V66kR0S7RYYgzUfG5SVvgQ==';
+
+        return json([
+            'status' => 'success',
+            'message' => StringHelper::aesDecrypt($value)
         ]);
     }
 }

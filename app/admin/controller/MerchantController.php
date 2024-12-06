@@ -83,10 +83,11 @@ class MerchantController extends CrudController {
         }
         [$id, $data] = $this->updateInput($request);
         if (isset($data['phone']) && !empty($data['phone'])) {
+            $phone_raw = $data['phone'];
             // 手机号掩码处理
-            $data['phone'] = StringHelper::maskMobile($data['phone']);
+            $data['phone'] = StringHelper::maskMobile($phone_raw);
             // 手机号加密存储
-            $data['phone_encrypt'] = StringHelper::aesEncrypt($data['phone']);
+            $data['phone_encrypt'] = StringHelper::aesEncrypt($phone_raw);
         }
         // 获取$data中的key，作为查询的字段
         $select_field = collect($data)->keys()->toArray();
