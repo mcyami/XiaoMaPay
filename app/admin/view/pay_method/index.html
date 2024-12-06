@@ -47,16 +47,6 @@
     const INSERT_URL = "/admin/payMethod/insert";
     const UPDATE_URL = "/admin/payMethod/update";
 
-    // 字段 创建时间 created_at
-    layui.use(["laydate"], function () {
-        layui.laydate.render({
-            elem: "#created_at",
-            range: ["#created_at-date-start", "#created_at-date-end"],
-            type: "datetime",
-            lang: "{php} echo session('lang') == 'zh-CN' ? 'cn' : 'en';{/php}"
-        });
-    })
-
     // 表格渲染
     layui.use(["table", "form", "common", "popup", "util"], function () {
         let table = layui.table;
