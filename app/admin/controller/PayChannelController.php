@@ -123,7 +123,7 @@ class PayChannelController extends CrudController {
             // 1- 通道信息
             $id = $request->input('id');
             $channel = PayChannelModel::find($id);
-            $return['channel_app_type'] = $channel['app_type'] ? explode(',', $channel['app_type']) : '';
+            $return['channel_app_type'] = $channel['app_type'] ? explode(',', $channel['app_type']) : [];
             $return['channel_secret_config'] = json_decode($channel['secret_config'], true);
 
             // 2- 驱动配置项

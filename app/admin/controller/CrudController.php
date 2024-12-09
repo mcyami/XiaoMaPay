@@ -30,7 +30,6 @@ class CrudController extends BaseController {
      */
     public function select(Request $request): Response {
         [$where, $format, $limit, $field, $order] = $this->selectInput($request);
-        loginfo('====input',  [$where, $format, $limit, $field, $order]);
         $query = $this->doSelect($where, $field, $order);
         return $this->doFormat($query, $format, $limit);
     }

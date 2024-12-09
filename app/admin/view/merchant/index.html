@@ -108,20 +108,20 @@
 
 <!-- 表格顶部工具栏 -->
 <script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.paymethod.insert">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.merchant.insert">
         <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
     </button>
 </script>
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="balance" permission="app.admin.paymethod.update">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="balance" permission="app.admin.merchant.update">
         {:trans('text_merchant_balance_change')}
     </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paymethod.update">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.merchant.update">
         {:trans('text_edit')}
     </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.paymethod.delete">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.merchant.delete">
         {:trans('text_delete')}
     </button>
 </script>
