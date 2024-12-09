@@ -94,6 +94,7 @@
     // 相关常量
     const PRIMARY_KEY = "id";
     const SELECT_API = "/admin/order/select";
+    const INSERT_URL = "/admin/order/insert";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -339,7 +340,9 @@
 
         // 表格顶部工具栏事件
         table.on("toolbar(data-table)", function (obj) {
-            if (obj.event === "refresh") {
+            if (obj.event === "add") {
+                add();
+            } else if (obj.event === "refresh") {
                 refreshTable();
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
@@ -375,6 +378,17 @@
                 }
             });
         });
+
+        // 表格新增数据
+        let add = function () {
+            layer.open({
+                type: 2,
+                title: "{:trans('text_order_backend_add')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                content: INSERT_URL
+            });
+        }
 
         // 刷新表格数据
         window.refreshTable = function () {

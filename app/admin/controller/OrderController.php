@@ -58,7 +58,7 @@ class OrderController extends CrudController {
     }
 
     /**
-     * 新增订单
+     * 后台提单
      * @param Request $request
      * @return Response
      * @throws BusinessException

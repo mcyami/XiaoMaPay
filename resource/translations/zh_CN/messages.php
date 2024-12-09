@@ -203,7 +203,7 @@ return [
     'text_order_method_id' => '支付方式ID',
     'text_order_type' => '订单类型',
     'text_order_goods_name' => '商品名称',
-    'text_order_goods_price' => '商品价格',
+    'text_order_goods_price' => '商品金额',
     'text_order_procedure_fee' => '手续费',
     'text_order_amount' => '订单金额',
     'text_order_pay_at' => '支付时间',
@@ -212,6 +212,7 @@ return [
     'text_order_note' => '备注',
     'text_order_status' => '订单状态',
     'text_order_backend_add' => '后台提单',
+    'text_order_offline' => '线下代收',
 
 
 

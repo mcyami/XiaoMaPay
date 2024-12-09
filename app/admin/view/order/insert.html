@@ -14,120 +14,64 @@
                 <div class="main-container mr-5">
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_merchant_type')}</label>
+                        <label class="layui-form-label required">{:trans('text_pay_channel')}</label>
                         <div class="layui-input-block">
-                            <div name="type" id="merchant_type" value="0" ></div>
+                            <div name="channel_id" id="channel_id" value="0" ></div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_merchant_fee_mode')}</label>
+                        <label class="layui-form-label required">{:trans('text_merchant_id')}</label>
                         <div class="layui-input-block">
-                            <div name="fee_mode" id="fee_mode" value="0" ></div>
+                            <input type="text" name="merchant_id" value="" required lay-verify="required" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_merchant_username')}</label>
+                        <label class="layui-form-label">{:trans('text_order_goods_name')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="username" value="" required lay-verify="required|username" class="layui-input">
+                            <input type="text" name="goods_name" value="{:trans('text_order_offline')}" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_password')}</label>
+                        <label class="layui-form-label required">{:trans('text_order_amount')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="password" value="" required lay-verify="required|password" class="layui-input">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" lay-affix="number" name="amount" value="0" class="layui-input" style="width: 150px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    ￥
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_mobile')}</label>
+                        <label class="layui-form-label required">{:trans('text_order_goods_price')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="phone" value="" class="layui-input">
+                            <div class="layui-input-group">
+                                <input type="number" name="goods_price" value="0" class="layui-input" style="width: 150px" disabled>
+                                <div class="layui-input-split layui-input-suffix">
+                                    ￥
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_email')}</label>
+                        <label class="layui-form-label required">{:trans('text_order_procedure_fee')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="email" value="" lay-verify="email" class="layui-input">
+                            <div class="layui-input-group">
+                                <input type="number" name="procedure_fee" value="0" class="layui-input" style="width: 150px" disabled>
+                                <div class="layui-input-split layui-input-suffix">
+                                    ￥
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_qq')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="qq" value="" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_url')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="url" value="" lay-verify="url" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_service')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="service" value="" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_goods_name')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="goods_name" value="" class="layui-input">
-                            <div class="layui-form-mid layui-text-em">{:trans('tip_merchant_goods_name')}</div>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_merchant_settle_account_type')}</label>
-                        <div class="layui-input-block">
-                            <div name="settle_account_type" id="settle_account_type" value="0" ></div>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_settle_account')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="settle_account" value="" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_settle_name')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="settle_account_name" value="" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_auth')}</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="is_auth" lay-skin="switch" />
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_pay')}</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="is_pay" lay-skin="switch" checked />
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_settle')}</label>
-                        <div class="layui-input-block">
-                            <input type="checkbox" name="is_settle" lay-skin="switch" checked />
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <label class="layui-form-label">{:trans('text_order_status')}</label>
                         <div class="layui-input-block">
                             <input type="checkbox" name="status" lay-skin="switch" checked />
                         </div>
@@ -167,14 +111,14 @@
 
                 // 字段 merchant_type
                 $.ajax({
-                    url: "/admin/config/getConfig?key=MERCHANT_TYPE",
+                    url: "/admin/payChannel/select?format=select&method_id=8",
                     dataType: "json",
                     success: function (res) {
-                        let value = layui.$("#merchant_type").attr("value");
+                        let value = layui.$("#channel_id").attr("value");
                         let initValue = value ? value.split(",") : [];
                         layui.xmSelect.render({
-                            el: "#merchant_type",
-                            name: "type",
+                            el: "#channel_id",
+                            name: "channel_id",
                             initValue: initValue,
                             tips: "{:trans('tip_select')}",
                             data: res.data,
