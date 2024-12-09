@@ -192,6 +192,28 @@ return [
     'text_merchant_fund_trade_no' => '交易单号',
     'text_merchant_fund_note' => '备注',
 
+    // 订单
+    'text_order' => '订单',
+    'text_order_id' => '订单ID',
+    'text_order_trade_no' => '系统交易号',
+    'text_order_out_trade_no' => '商户交易号',
+    'text_order_api_trade_no' => '三方支付交易号',
+    'text_order_merchant_id' => '商户ID',
+    'text_order_channel_id' => '支付通道ID',
+    'text_order_method_id' => '支付方式ID',
+    'text_order_type' => '订单类型',
+    'text_order_goods_name' => '商品名称',
+    'text_order_goods_price' => '商品价格',
+    'text_order_procedure_fee' => '手续费',
+    'text_order_amount' => '订单金额',
+    'text_order_pay_at' => '支付时间',
+    'text_order_refund' => '退款金额',
+    'text_order_refund_at' => '退款时间',
+    'text_order_note' => '备注',
+    'text_order_status' => '订单状态',
+    'text_order_backend_add' => '后台提单',
+
+
 
 
     // 错误提示

@@ -50,6 +50,7 @@ class LogModel extends BaseModel {
     const OP_TYPE_PAY_CHANNEL = 9; // 支付通道
     const OP_TYPE_MERCHANT_GROUP = 10; // 商户组
     const OP_TYPE_MERCHANT = 11; // 商户
+    const OP_TYPE_ORDER = 12; // 订单
 
     /**
      * 保存日志

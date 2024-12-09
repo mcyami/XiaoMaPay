@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_type')}</label>
+                        <div class="layui-input-block">
+                            <div name="type" id="merchant_type" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_fee_mode')}</label>
+                        <div class="layui-input-block">
+                            <div name="fee_mode" id="fee_mode" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_username')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" value="" required lay-verify="required|username" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_password')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="password" value="" required lay-verify="required|password" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_mobile')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="phone" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_email')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email" value="" lay-verify="email" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_qq')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="qq" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_url')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="url" value="" lay-verify="url" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_service')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="service" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_goods_name')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="goods_name" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_merchant_goods_name')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_settle_account_type')}</label>
+                        <div class="layui-input-block">
+                            <div name="settle_account_type" id="settle_account_type" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_settle_account')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="settle_account" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_settle_name')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="settle_account_name" value="" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_auth')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="is_auth" lay-skin="switch" />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_pay')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="is_pay" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant_settle')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="is_settle" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        <script src="/admin/js/formVerify.js"></script>
+
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/admin/merchant/insert";
+
+            // 基础设置
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect"], function() {
+                let $ = layui.$;
+                let form = layui.form;
+
+                // 字段 merchant_type
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#merchant_type").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#merchant_type",
+                            name: "type",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 字段 settle_account_type
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_ACCOUNT_TYPE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#settle_account_type").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#settle_account_type",
+                            name: "settle_account_type",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 字段 fee_mode
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_FEE_MODE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#fee_mode").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#fee_mode",
+                            name: "fee_mode",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 提交事件
+                form.on("submit(save)", function (data) {
+                    data.field.is_auth = data.field.is_auth ? 1 : 0;
+                    data.field.is_pay = data.field.is_pay ? 1 : 0;
+                    data.field.is_settle = data.field.is_settle ? 1 : 0;
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>
