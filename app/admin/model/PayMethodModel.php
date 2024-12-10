@@ -2,6 +2,8 @@
 
 namespace app\admin\model;
 
+use app\admin\cache\PayMethodCache;
+
 /**
  * 支付方式
  * @property integer $id ID(主键)
@@ -26,5 +28,16 @@ class PayMethodModel extends BaseModel {
 
     const PAY_METHOD_STATUS_ENABLE = 1; // 启用
     const PAY_METHOD_STATUS_DISABLE = 0; // 禁用
+
+    /**
+     * 缓存所有支付方式
+     * @return bool
+     */
+    public static function cache() {
+        // 缓存所有支付方式
+        $payMethods = self::get()->keyBy('id')->toArray();
+        PayMethodCache::setList($payMethods);
+        return true;
+    }
 
 }
