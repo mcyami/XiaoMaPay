@@ -52,6 +52,7 @@ class PayChannelController extends CrudController {
             $data = $this->insertInput($request);
             $id = $this->doInsert($data);
             $this->output['id'] = $id;
+            PayChannelModel::cache();
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
                 LogModel::OP_TYPE_PAY_CHANNEL,
@@ -79,6 +80,7 @@ class PayChannelController extends CrudController {
         $select_field = collect($data)->keys()->toArray();
         $before_data = $this->model->select($select_field)->find($id)->toArray();
         $this->doUpdate($id, $data);
+        PayChannelModel::cache();
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_ADMIN,
             LogModel::OP_TYPE_PAY_CHANNEL,
@@ -99,6 +101,7 @@ class PayChannelController extends CrudController {
         // 历史数据 以id为key
         $before_data = $this->model->whereIn('id', $ids)->get()->keyBy('id')->toArray();
         $this->doDelete($ids);
+        PayChannelModel::cache();
         foreach ($ids as $id) {
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,

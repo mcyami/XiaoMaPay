@@ -2,6 +2,8 @@
 
 namespace app\admin\model;
 
+use app\admin\cache\PayChannelCache;
+
 /**
  * 支付通道
  * @property integer $id ID(主键)
@@ -40,4 +42,14 @@ class PayChannelModel extends BaseModel {
     const PAY_CHANNEL_MODE_PLATFORM = 0; // 平台通道 平台代收
     const PAY_CHANNEL_MODE_MERCHANT = 1; // 商户通道 商户直清
 
+    /**
+     * 缓存所有支付驱动
+     * @return bool
+     */
+    public static function cache() {
+        // 缓存所有支付驱动
+        $payChannels = self::get()->keyBy('id')->toArray();
+        PayChannelCache::setList($payChannels);
+        return true;
+    }
 }
