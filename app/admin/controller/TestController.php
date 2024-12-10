@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\OrderModel;
 use app\common\utils\StringHelper;
 use support\Cache;
 use support\Db;
@@ -61,6 +62,22 @@ class TestController {
         return json([
             'status' => 'success',
             'message' => StringHelper::aesDecrypt($value)
+        ]);
+    }
+
+    public function sendQueue() {
+        $order_id = 1232333;
+        OrderModel::sendFundQueue($order_id);
+        return json([
+            'status' => 'success',
+            'message' => 'send queue success'
+        ]);
+    }
+
+    public function getTradeNo() {
+        return json([
+            'status' => 'success',
+            'message' => OrderModel::getTradeNo()
         ]);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace app\admin\model;
 
+use app\common\service\SafetyLockService;
+use Webman\RedisQueue\Redis;
+
 /**
  * 商户资金变动记录
  * @property integer $id ID(主键)
@@ -45,4 +48,34 @@ class OrderModel extends BaseModel {
     const ORDER_TYPE_RECHARGE = 2; // 充值余额
     const ORDER_TYPE_BACKEND = 3; // 后台提单(线下收款)
 
+    const QUEUE_ORDER_FUND = '_order_fund_'; // 订单资金变动队列
+
+    /**
+     * 订单加入到资金变动队列
+     * @param integer $order_id 订单ID
+     * @return boolean
+     */
+    public static function sendFundQueue($order_id) {
+        $queueName = self::QUEUE_ORDER_FUND;
+        $queueData = [
+            'order_id' => $order_id,
+        ];
+        return Redis::send($queueName, $queueData);
+    }
+
+    /**
+     * 生成系统唯一的交易单号 20位
+     * @return string
+     */
+    public static function getTradeNo() {
+        while (true) {
+            $tradeNo = date('YmdHis') . str_pad(mt_rand(1, 999999), 6, '0', STR_PAD_LEFT);
+            // 验证唯一性
+            $key = 'order:trade_no:' . $tradeNo;
+            if (SafetyLockService::addLock($key, 120)) {
+                break;
+            }
+        }
+        return $tradeNo;
+    }
 }
