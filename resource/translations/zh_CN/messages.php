@@ -181,6 +181,7 @@ return [
     'text_merchant_old_phone' => '原手机号',
     'text_merchant_edit_phone' => '修改手机号',
     'tip_merchant_edit_phone' => '留空则不修改手机号',
+    'text_merchant_add_order' => '提单',
 
     // 商户资金变动记录
     'text_merchant_fund' => '商户资金变动记录',
@@ -204,7 +205,8 @@ return [
     'text_order_type' => '订单类型',
     'text_order_goods_name' => '商品名称',
     'text_order_goods_price' => '商品金额',
-    'text_order_procedure_fee' => '手续费',
+    'text_order_handling_fee' => '手续费',
+    'text_order_received_amount' => '到账金额',
     'text_order_amount' => '订单金额',
     'text_order_pay_at' => '支付时间',
     'text_order_refund' => '退款金额',

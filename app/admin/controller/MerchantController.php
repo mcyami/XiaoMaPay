@@ -149,4 +149,29 @@ class MerchantController extends CrudController {
             return $this->error('error');
         }
     }
+
+    /**
+     * 商户后台提单
+     * @param Request $request
+     * @return Response
+     */
+    public function addOrder(Request $request): Response {
+        if ($request->method() === 'GET') {
+            return view('merchant/add_order');
+        }
+        $merchant_id = $request->input('merchant_id');
+        $type = $request->input('type');
+        $amount = $request->input('amount') ?? 0;
+        $trade_no = $request->input('trade_no') ?? '';
+        $note = $request->input('note') ?? '';
+        if (empty($merchant_id) || empty($type) || empty($amount)) {
+            return $this->error('error_lack_param');
+        }
+        $result = MerchantModel::changeBalance($merchant_id, $type, $amount, $trade_no, $note);
+        if ($result) {
+            return $this->success();
+        } else {
+            return $this->error('error');
+        }
+    }
 }

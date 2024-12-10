@@ -14,8 +14,9 @@ namespace app\admin\model;
  * @property integer $type 订单类型{0:普通订单,1:聚合收款码,2:充值余额,3:后台提单(线下收款)}
  * @property string $goods_name 商品名称
  * @property float $goods_price 商品价格
- * @property float $procedure_fee 手续费
+ * @property float $handling_fee 手续费
  * @property float $amount 订单金额(实际支付金额)
+ * @property float $received_amount 实际到账金额
  * @property integer $pay_at 支付时间
  * @property float $refund 退款金额
  * @property integer $refund_at 退款时间

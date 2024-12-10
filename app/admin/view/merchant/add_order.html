@@ -14,6 +14,20 @@
                 <div class="main-container mr-5">
 
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_merchant')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" value="【80132】testunit" class="layui-input layui-font-red" disabled>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_merchant_fee_mode')}</label>
+                        <div class="layui-input-block">
+                            <div name="fee_mode" id="fee_mode" value="0" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
                         <label class="layui-form-label required">{:trans('text_pay_channel')}</label>
                         <div class="layui-input-block">
                             <div name="channel_id" id="channel_id" value="0" ></div>
@@ -21,9 +35,14 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_merchant_id')}</label>
+                        <label class="layui-form-label">{:trans('text_pay_channel_ratio')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="merchant_id" value="" required lay-verify="required" class="layui-input">
+                            <div class="layui-input-group">
+                                <input type="number" value="90" class="layui-input" style="width: 150px" disabled>
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -35,22 +54,10 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_order_amount')}</label>
-                        <div class="layui-input-block">
-                            <div class="layui-input-group">
-                                <input type="number" min="0" lay-affix="number" name="amount" value="0" class="layui-input" style="width: 150px">
-                                <div class="layui-input-split layui-input-suffix">
-                                    ￥
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
                         <label class="layui-form-label required">{:trans('text_order_goods_price')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="number" name="goods_price" value="0" class="layui-input" style="width: 150px" disabled>
+                                <input type="text" min="0" lay-affix="number" name="goods_price" value="0" class="layui-input" style="width: 150px">
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -62,7 +69,31 @@
                         <label class="layui-form-label required">{:trans('text_order_handling_fee')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="number" name="handling_fee" value="0" class="layui-input" style="width: 150px" disabled>
+                                <input type="text" name="handling_fee" value="10" class="layui-input" style="width: 150px" disabled>
+                                <div class="layui-input-split layui-input-suffix">
+                                    ￥
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_order_received_amount')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="text" name="received_amount" value="90" class="layui-input" style="width: 150px" disabled>
+                                <div class="layui-input-split layui-input-suffix">
+                                    ￥
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_order_amount')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="text" name="amount" value="100" class="layui-input layui-font-red layui-font-24" style="width: 150px" readonly>
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -109,7 +140,7 @@
                 let $ = layui.$;
                 let form = layui.form;
 
-                // 字段 merchant_type
+                // 字段 channel_id
                 $.ajax({
                     url: "/admin/payChannel/select?format=select&method_id=8",
                     dataType: "json",
@@ -119,6 +150,27 @@
                         layui.xmSelect.render({
                             el: "#channel_id",
                             name: "channel_id",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 字段 fee_mode
+                $.ajax({
+                    url: "/admin/config/getConfig?key=MERCHANT_FEE_MODE",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#fee_mode").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#fee_mode",
+                            name: "fee_mode",
                             initValue: initValue,
                             tips: "{:trans('tip_select')}",
                             data: res.data,
