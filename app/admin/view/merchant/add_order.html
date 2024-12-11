@@ -38,7 +38,7 @@
                         <label class="layui-form-label">{:trans('text_pay_channel_ratio')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="number" value="90" class="layui-input" style="width: 150px" disabled>
+                                <input type="number" name="channel_rate" id="channel_rate" value="" class="layui-input" style="width: 150px" disabled>
                                 <div class="layui-input-split layui-input-suffix">
                                     %
                                 </div>
@@ -57,7 +57,7 @@
                         <label class="layui-form-label required">{:trans('text_order_goods_price')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="text" min="0" lay-affix="number" name="goods_price" value="0" class="layui-input" style="width: 150px">
+                                <input type="text" min="0" lay-affix="number" name="goods_price" id="goods_price" value="" class="layui-input" style="width: 150px">
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -69,7 +69,7 @@
                         <label class="layui-form-label">{:trans('text_order_handling_fee')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="text" name="handling_fee" value="10" class="layui-input" style="width: 150px" disabled>
+                                <input type="text" name="handling_fee" value="" class="layui-input" style="width: 150px" disabled>
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -81,7 +81,7 @@
                         <label class="layui-form-label">{:trans('text_order_received_amount')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="text" name="received_amount" value="90" class="layui-input" style="width: 150px" disabled>
+                                <input type="text" name="received_amount" value="" class="layui-input" style="width: 150px" disabled>
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -93,7 +93,7 @@
                         <label class="layui-form-label">{:trans('text_order_amount')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="text" name="amount" value="100" class="layui-input layui-font-red layui-font-24" style="width: 150px" readonly>
+                                <input type="text" name="amount" value="" class="layui-input layui-font-red layui-font-24" style="width: 150px" readonly>
                                 <div class="layui-input-split layui-input-suffix">
                                     ￥
                                 </div>
@@ -135,28 +135,55 @@
             // 相关接口
             const INSERT_API = "/admin/merchant/insert";
 
+            var channel_rate = {};
+
+            var xmsChannelId = null;
+            var xmsFeeMode = null;
+
             // 基础设置
             layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect"], function() {
                 let $ = layui.$;
                 let form = layui.form;
 
+                var merchant_id = layui.url().search['id'];
+
                 // 字段 channel_id
                 $.ajax({
-                    url: "/admin/payChannel/select?format=select&method_id=8",
+                    url: "/admin/merchant/channelRate?merchant_id=" + merchant_id + "&method_key=offline",
                     dataType: "json",
                     success: function (res) {
                         let value = layui.$("#channel_id").attr("value");
                         let initValue = value ? value.split(",") : [];
-                        layui.xmSelect.render({
+                        var channels = [];
+                        if(res.data.offline.status === 1) {
+                            channels = Object.keys(res.data.offline.channels).map(function (key) {
+                                return {
+                                    name: res.data.offline.channels[key],
+                                    value: key
+                                }
+                            });
+                            // console.log(JSON.stringify(channels));
+                            // 缓存channel_rate
+                            channel_rate = res.data.offline.channels_rate;
+                            // console.log(JSON.stringify(channel_rate));
+                        }
+                        xmsChannelId = layui.xmSelect.render({
                             el: "#channel_id",
                             name: "channel_id",
                             initValue: initValue,
                             tips: "{:trans('tip_select')}",
-                            data: res.data,
+                            data: channels,
                             value: "0",
                             model: {"icon":"hidden","label":{"type":"text"}},
                             clickClose: true,
-                            radio: true
+                            radio: true,
+                            on: function(data){
+                                var change = data.change[0].value;
+                                console.log(change + ' ' + channel_rate[change]);
+                                layui.$("#channel_rate").val(channel_rate[change]);
+                                // 切换时重新计算订单金额
+                                countAmount();
+                            }
                         })
                     }
                 });
@@ -168,7 +195,7 @@
                     success: function (res) {
                         let value = layui.$("#fee_mode").attr("value");
                         let initValue = value ? value.split(",") : [];
-                        layui.xmSelect.render({
+                        xmsFeeMode = layui.xmSelect.render({
                             el: "#fee_mode",
                             name: "fee_mode",
                             initValue: initValue,
@@ -177,52 +204,74 @@
                             value: "0",
                             model: {"icon":"hidden","label":{"type":"text"}},
                             clickClose: true,
-                            radio: true
+                            radio: true,
+                            on: function (data) {
+                                var change = data.change[0].value;
+                                // 手动更新一下xmFeeMode中的值
+                                xmsFeeMode.update({
+                                    data: res.data,
+                                    initValue: [change]
+                                });
+                                console.log(change);
+                                // 切换时重新计算订单金额
+                                countAmount();
+                            }
                         })
                     }
                 });
 
-                // 字段 settle_account_type
-                $.ajax({
-                    url: "/admin/config/getConfig?key=MERCHANT_SETTLE_ACCOUNT_TYPE",
-                    dataType: "json",
-                    success: function (res) {
-                        let value = layui.$("#settle_account_type").attr("value");
-                        let initValue = value ? value.split(",") : [];
-                        layui.xmSelect.render({
-                            el: "#settle_account_type",
-                            name: "settle_account_type",
-                            initValue: initValue,
-                            tips: "{:trans('tip_select')}",
-                            data: res.data,
-                            value: "0",
-                            model: {"icon":"hidden","label":{"type":"text"}},
-                            clickClose: true,
-                            radio: true
-                        })
+                // 输入商品金额goods_price，计算订单金额amount
+                layui.$("#goods_price").on('input', function() {
+                    var rate = parseFloat(layui.$("#channel_rate").val()) || 0;  // 获取渠道结算比例
+                    // 获取渠道结算比例为0则不计算，弹出提示：“请选择支付通道”
+                    if (rate === 0) {
+                        layui.popup.failure("请先选择支付通道");
+                        return;
                     }
+                    countAmount();
                 });
 
-                // 字段 fee_mode
-                $.ajax({
-                    url: "/admin/config/getConfig?key=MERCHANT_FEE_MODE",
-                    dataType: "json",
-                    success: function (res) {
-                        let value = layui.$("#fee_mode").attr("value");
-                        let initValue = value ? value.split(",") : [];
-                        layui.xmSelect.render({
-                            el: "#fee_mode",
-                            name: "fee_mode",
-                            initValue: initValue,
-                            tips: "{:trans('tip_select')}",
-                            data: res.data,
-                            value: "0",
-                            model: {"icon":"hidden","label":{"type":"text"}},
-                            clickClose: true,
-                            radio: true
-                        })
+                // 封装计算订单金额的方法
+                var countAmount = function () {
+                    // 获取商品金额
+                    var goods_price = parseFloat(layui.$("#goods_price").val()) || 0;
+                    // 获取手续费模式 从 #fee_mode 中获取 select 选中值
+                    var fee_mode = xmsFeeMode.getValue()[0].value || 0;
+                    console.log('fee_mode = ' + fee_mode);
+                    var rate = parseFloat(layui.$("#channel_rate").val()) || 0;  // 获取渠道结算比例
+                    // 获取渠道结算比例为0则不计算
+                    if (rate === 0) {
+                        return;
                     }
-                });
+                    if (goods_price === 0) {
+                        return;
+                    }
+                    var amount, received_amount, handling_fee = 0;
+
+                    // 根据手续费模式进行不同的计算，金额均保留两位小数
+                    if (fee_mode === 0) {
+                        // 商户承担模式：fee_mode = 0
+                        // 订单金额 = 商品金额 ，保留两位小数
+                        amount = goods_price.toFixed(2);
+                        // 到账金额 = 订单金额 x 结算比例，保留两位小数
+                        received_amount = (amount * rate / 100).toFixed(2);
+                        // 手续费 = 订单金额 - 到账金额
+                        handling_fee = (amount - received_amount).toFixed(2);
+                    } else if (fee_mode === 1) {
+                        // 用户承担模式：fee_mode = 1
+                        // 到账金额 = 商品金额
+                        received_amount = goods_price.toFixed(2);
+                        // 订单金额 = 到账金额 / 结算比例
+                        amount = (received_amount / rate * 100).toFixed(2);
+                        // 手续费 = 订单金额 - 到账金额
+                        handling_fee = (amount - received_amount).toFixed(2);
+                    }
+
+                    // 更新到账金额和手续费
+                    layui.$("input[name='received_amount']").val(received_amount);
+                    layui.$("input[name='handling_fee']").val(handling_fee);
+                    layui.$("input[name='amount']").val(amount);
+                }
 
                 // 提交事件
                 form.on("submit(save)", function (data) {
