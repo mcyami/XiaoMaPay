@@ -2,13 +2,8 @@
 
 namespace app\admin\controller;
 
-use app\admin\cache\PayChannelCache;
-use app\admin\cache\PayMethodCache;
 use app\admin\model\LogModel;
-use app\admin\model\MerchantGroupModel;
 use app\admin\model\MerchantModel;
-use app\admin\model\PayChannelModel;
-use app\admin\model\PayMethodModel;
 use app\common\utils\StringHelper;
 use support\exception\BusinessException;
 use support\Request;
@@ -161,7 +156,7 @@ class MerchantController extends CrudController {
         if ($request->method() === 'GET') {
             return view('merchant/add_order');
         }
-        $merchant_id = $request->input('merchant_id');
+        $merchant_id = $request->input('id');
         $type = $request->input('type');
         $amount = $request->input('amount') ?? 0;
         $trade_no = $request->input('trade_no') ?? '';
@@ -193,92 +188,7 @@ class MerchantController extends CrudController {
         if (!$merchant) {
             return $this->error('error_data');
         }
-        // 商户组信息
-        $group = MerchantGroupModel::find($merchant->group_id);
-        if (!$group) {
-            return $this->error('error_data');
-        }
-        // 商户组通道费率
-        $group_channel_config = json_decode($group->channel_config, true) ?? [];
-
-        // 支付方式列表
-        $payMethods = PayMethodCache::getList();
-
-        // 平台通道列表
-        $payChannels = PayChannelCache::getList();
-
-        $channelRateList = [];
-        foreach ($payMethods as $payMethod) {
-            // 去除禁用的支付方式
-            if($payMethod['status'] != PayMethodModel::PAY_METHOD_STATUS_ENABLE) {
-                continue;
-            }
-            $item = [
-                'enabled' => 1, // 开启状态
-                'channels' => [], // 平台通道列表
-                'sub_channels' => [], // 商户通道列表
-            ];
-            // 商户组是否开启该支付方式 0:关闭 -1:随机平台通道 -2:随机商户通道 >0:指定平台通道
-            if(!isset($group_channel_config[$payMethod['id']])) {
-                // 没有配置改支付方式
-                $item['enabled'] = 0;
-                continue;
-            }
-            $channel_config = $group_channel_config[$payMethod['id']] ?? [];
-            $channel_config_type = $channel_config['type'] ?? 0;
-            $channel_config_rate = $channel_config['rate'] ?? 0; // 不存在则查询通道默认费率
-            if ($channel_config_type == 0) {
-                // 配置关闭通道
-                $item['enabled'] = 0;
-                continue;
-            }
-
-            // 随机平台通道，将平台通道列表全部加入到 channels
-            if($channel_config_type == -1){
-                // 查询平台通道列表
-                foreach ($payChannels as $k => $channelInfo) {
-                    if(
-                        $channelInfo['method_id'] != $payMethod['id']
-                        || $channelInfo['mode'] != PayChannelModel::PAY_CHANNEL_MODE_PLATFORM
-                        || $channelInfo['status'] != PayChannelModel::PAY_CHANNEL_STATUS_ENABLE
-                    ) {
-                        continue;
-                    }
-                    if($channel_config_rate == 0) {
-                        $channel_config_rate = $channelInfo['ratio'];
-                    }
-                    array_push($item['channels'], [$k=>$channel_config_rate]);
-                }
-            }
-
-            // 随机商户通道，将商户通道列表全部加入到 sub_channels TODO
-//            if($channel_config_type == -2){
-//
-//            }
-
-            // 指定平台通道加入到 channels
-            if($channel_config_type > 0){
-                // $channel_config_rate 不存在则查询通道默认费率
-                if($channel_config_rate == 0) {
-                    // 查询通道默认费率 只获取ratio字段
-                    $channel_config_rate = PayChannelModel::where('id', $channel_config_type)->pluck('ratio');
-                }
-                array_push($item['channels'], [$channel_config_type=>$channel_config_rate]);
-            }
-            $channelRateList[$payMethod['key']] = $item;
-        }
-
-        if($method_key) {
-            if($channel_id) {
-                $return = $channelRateList[$method_key]['channels'][$channel_id] ?? 0;
-            } else {
-                $return[$method_key] = $channelRateList[$method_key];
-            }
-        } else {
-            $return = $channelRateList;
-        }
-
-        $this->output = $return;
+        $this->output = MerchantModel::getChannelRate($merchant_id, $method_key, $channel_id);
         return $this->success();
     }
 }

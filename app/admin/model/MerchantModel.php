@@ -2,6 +2,8 @@
 
 namespace app\admin\model;
 
+use app\admin\cache\PayChannelCache;
+use app\admin\cache\PayMethodCache;
 use support\Db;
 
 /**
@@ -98,4 +100,101 @@ class MerchantModel extends BaseModel {
         }
     }
 
+    /**
+     * 获取商户通道费率
+     * @param $merchant_id
+     * @param $channel_id
+     * @param $method_key
+     * @return array
+     */
+    public static function getChannelRate($merchant_id, $method_key = '', $channel_id = 0) {
+        // 商户信息
+        $merchant = MerchantModel::find($merchant_id);
+        // 商户组信息
+        $group = MerchantGroupModel::find($merchant->group_id);
+        // 商户组通道费率
+        $group_channel_config = json_decode($group->channel_config, true) ?? [];
+        // 支付方式列表
+        $payMethods = PayMethodCache::getList();
+        // 平台通道列表
+        $payChannels = PayChannelCache::getList();
+
+        $channelRateList = [];
+        foreach ($payMethods as $payMethod) {
+            // 去除禁用的支付方式
+            if ($payMethod['status'] != PayMethodModel::PAY_METHOD_STATUS_ENABLE) {
+                continue;
+            }
+            $item = [
+                'status' => 1, // 开启状态
+                'channels' => [], // 平台通道列表
+                'channels_rate' => [], // 平台通道费率列表
+                'sub_channels' => [], // 商户通道列表
+                'sub_channels_rate' => [], // 商户通道费率列表
+            ];
+            // 商户组是否开启该支付方式 0:关闭 -1:随机平台通道 -2:随机商户通道 >0:指定平台通道
+            if (!isset($group_channel_config[$payMethod['id']])) {
+                // 没有配置改支付方式
+                $item['enabled'] = 0;
+                continue;
+            }
+            $channel_config = $group_channel_config[$payMethod['id']] ?? [];
+            $channel_config_type = $channel_config['type'] ?? 0;
+            $channel_config_rate = $channel_config['rate'] ?? 0; // 不存在则查询通道默认费率
+            if ($channel_config_type == 0) {
+                // 配置关闭通道
+                $item['enabled'] = 0;
+                continue;
+            }
+
+            // 1-随机平台通道，将平台通道列表全部加入到 channels
+            if ($channel_config_type == -1) {
+                // 查询平台通道列表
+                foreach ($payChannels as $k => $channelInfo) {
+                    $temp_rate = 0;
+                    if (
+                        $channelInfo['method_id'] != $payMethod['id']
+                        || $channelInfo['mode'] != PayChannelModel::PAY_CHANNEL_MODE_PLATFORM
+                        || $channelInfo['status'] != PayChannelModel::PAY_CHANNEL_STATUS_ENABLE
+                    ) {
+                        continue;
+                    }
+                    $temp_rate = $channel_config_rate;
+                    if (empty($channel_config_rate) || $channel_config_rate == 0) {
+                        $temp_rate = $channelInfo['ratio'];
+                    }
+                    $item['channels'][$k] = $channelInfo['name'];
+                    $item['channels_rate'][$k] = $temp_rate;
+                }
+            }
+
+            // 随机商户通道，将商户通道列表全部加入到 sub_channels TODO
+//            if($channel_config_type == -2){
+//
+//            }
+
+            // 3-指定平台通道加入到 channels
+            if ($channel_config_type > 0) {
+                // $channel_config_rate 不存在则查询通道默认费率
+                if ($channel_config_rate == 0) {
+                    // 查询通道默认费率 只获取ratio字段
+                    $channel_config_rate = PayChannelModel::where('id', $channel_config_type)->pluck('ratio');
+                }
+                $item['channels'][$channel_config_type] = $payChannels[$channel_config_type]['name'];
+                $item['channels_rate'][$channel_config_type] = $channel_config_rate;
+            }
+            $channelRateList[$payMethod['key']] = $item;
+        }
+
+        if ($method_key) {
+            if ($channel_id) {
+                $return = $channelRateList[$method_key]['channels'][$channel_id] ?? 0;
+            } else {
+                $return[$method_key] = $channelRateList[$method_key];
+            }
+        } else {
+            $return = $channelRateList;
+        }
+        return $return;
+    }
 }
