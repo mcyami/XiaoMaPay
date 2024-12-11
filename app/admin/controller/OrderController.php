@@ -66,11 +66,17 @@ class OrderController extends CrudController {
     public function insert(Request $request): Response {
         if ($request->method() === 'POST') {
             $data = $this->insertInput($request);
-            // 手机号掩码处理
-            $data['phone'] = StringHelper::maskMobile($data['phone']);
-            // 手机号加密存储
-            $data['phone_encrypt'] = StringHelper::aesEncrypt($data['phone']);
+            $data['trade_no'] = OrderModel::getTradeNo();
+            $data['method_id'] = 8; // 线下支付方式
+            $data['type'] = OrderModel::ORDER_TYPE_BACKEND;
+            if($data['status'] == OrderModel::ORDER_STATUS_PAID) {
+                $data['pay_at'] = time();
+            }
             $id = $this->doInsert($data);
+            // 付款的订单加入到资金变动队列
+            if($data['status'] == OrderModel::ORDER_STATUS_PAID) {
+                OrderModel::sendFundQueue($id);
+            }
             $this->output['id'] = $id;
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
@@ -95,13 +101,6 @@ class OrderController extends CrudController {
             return view('order/update');
         }
         [$id, $data] = $this->updateInput($request);
-        if (isset($data['phone']) && !empty($data['phone'])) {
-            $phone_raw = $data['phone'];
-            // 手机号掩码处理
-            $data['phone'] = StringHelper::maskMobile($phone_raw);
-            // 手机号加密存储
-            $data['phone_encrypt'] = StringHelper::aesEncrypt($phone_raw);
-        }
         // 获取$data中的key，作为查询的字段
         $select_field = collect($data)->keys()->toArray();
         $before_data = $this->model->select($select_field)->find($id)->toArray();

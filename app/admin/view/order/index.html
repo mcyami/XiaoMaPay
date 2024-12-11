@@ -68,13 +68,6 @@
     </div>
 </div>
 
-<!-- 表格顶部工具栏 -->
-<script type="text/html" id="table-toolbar">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.order.insert">
-        <i class="layui-icon layui-icon-add-1"></i> {:trans('text_order_backend_add')}
-    </button>
-</script>
-
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
     <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.order.update">
@@ -382,17 +375,6 @@
                 }
             });
         });
-
-        // 表格新增数据
-        let add = function () {
-            layer.open({
-                type: 2,
-                title: "{:trans('text_order_backend_add')}",
-                shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: INSERT_URL
-            });
-        }
 
         // 刷新表格数据
         window.refreshTable = function () {

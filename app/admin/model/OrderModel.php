@@ -12,7 +12,8 @@ use Webman\RedisQueue\Redis;
  * @property string $out_trade_no 商户交易单号
  * @property string $api_trade_no 三方支付交易号
  * @property integer $merchant_id 商户ID
- * @property integer $channel_id 支付通道ID
+ * @property integer $channel_id 平台支付通道ID
+ * @property integer $sub_channel_id 商户支付通道ID
  * @property integer $method_id 支付方式ID
  * @property integer $type 订单类型{0:普通订单,1:聚合收款码,2:充值余额,3:后台提单(线下收款)}
  * @property string $goods_name 商品名称
@@ -20,6 +21,7 @@ use Webman\RedisQueue\Redis;
  * @property float $handling_fee 手续费
  * @property float $amount 订单金额(实际支付金额)
  * @property float $received_amount 实际到账金额
+ * @property integer $fee_mode 手续费模式{0:商户承担,1:用户承担}
  * @property integer $pay_at 支付时间
  * @property float $refund 退款金额
  * @property integer $refund_at 退款时间
