@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\MerchantModel;
 use app\admin\model\OrderModel;
 use app\common\utils\StringHelper;
 use support\Cache;
@@ -78,6 +79,16 @@ class TestController {
         return json([
             'status' => 'success',
             'message' => OrderModel::getTradeNo()
+        ]);
+    }
+
+    public function getMerchant(){
+        $merchant_id = '100007';
+        $merchant = MerchantModel::find($merchant_id);
+        loginfo('merchant', $merchant->toArray());
+        return json([
+            'status' => 'success',
+            'message' => $merchant->toArray()
         ]);
     }
 }

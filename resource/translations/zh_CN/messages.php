@@ -200,7 +200,7 @@ return [
     'text_order_id' => '订单ID',
     'text_order_trade_no' => '系统交易号',
     'text_order_out_trade_no' => '商户交易号',
-    'text_order_api_trade_no' => '三方支付交易号',
+    'text_order_api_trade_no' => '接口交易号',
     'text_order_merchant_id' => '商户ID',
     'text_order_channel_id' => '支付通道ID',
     'text_order_method_id' => '支付方式ID',

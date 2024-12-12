@@ -27,14 +27,42 @@
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_merchant_fund_type')}</label>
+                <label class="layui-form-label">{:trans('text_order_type')}</label>
                 <div class="layui-input-block">
-                    <div name="fund_type" id="fund_type" value="" ></div>
+                    <div name="type" id="order_type" value="" ></div>
                 </div>
             </div>
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_action_time')}</label>
+                <label class="layui-form-label">{:trans('text_pay_method')}</label>
+                <div class="layui-input-block">
+                    <div name="method_id" id="order_method_id" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_pay_channel')}</label>
+                <div class="layui-input-block">
+                    <div name="channel_id" id="order_channel_id" value="" ></div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_order_out_trade_no')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="out_trade_no" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_order_api_trade_no')}</label>
+                <div class="layui-input-block">
+                    <input type="text" name="api_trade_no" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">{:trans('text_create_time')}</label>
                 <div class="layui-input-block">
                     <div class="layui-input-block" id="created_at">
                         <input type="text" autocomplete="off" name="created_at[]" id="created_at-date-start" class="layui-input inline-block" placeholder="{:trans('text_start_time')}">
@@ -99,29 +127,74 @@
         });
     })
 
-    // 字段 资金变动类型
-    // layui.use(["jquery", "xmSelect", "popup"], function() {
-    //     layui.$.ajax({
-    //         url: "/admin/config/getConfig?key=CATE_FUND_TYPE",
-    //         dataType: "json",
-    //         success: function (res) {
-    //             let value = layui.$("#fund_type").attr("value");
-    //             let initValue = value ? value.split(",") : [];
-    //             layui.xmSelect.render({
-    //                 el: "#fund_type",
-    //                 name: "type",
-    //                 initValue: initValue,
-    //                 data: res.data,
-    //                 model: {"icon":"hidden","label":{"type":"text"}},
-    //                 clickClose: true,
-    //                 radio: true,
-    //             });
-    //             if (res.code) {
-    //                 layui.popup.failure(res.msg);
-    //             }
-    //         }
-    //     });
-    // });
+    // 字段
+    layui.use(["jquery", "xmSelect", "popup"], function() {
+        // 订单类型
+        layui.$.ajax({
+            url: "/admin/config/getConfig?key=CATE_ORDER_TYPE",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#order_type").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#order_type",
+                    name: "type",
+                    initValue: initValue,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+        // 支付方式
+        layui.$.ajax({
+            url: "/admin/payMethod/select?format=select",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#order_method_id").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#order_method_id",
+                    name: "method_id",
+                    initValue: initValue,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                    filterable: true, // 搜索
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+        // 支付通道
+        layui.$.ajax({
+            url: "/admin/payChannel/select?format=select",
+            dataType: "json",
+            success: function (res) {
+                let value = layui.$("#order_channel_id").attr("value");
+                let initValue = value ? value.split(",") : [];
+                layui.xmSelect.render({
+                    el: "#order_channel_id",
+                    name: "channel_id",
+                    initValue: initValue,
+                    data: res.data,
+                    model: {"icon":"hidden","label":{"type":"text"}},
+                    clickClose: true,
+                    radio: true,
+                    filterable: true, // 搜索
+                });
+                if (res.code) {
+                    layui.popup.failure(res.msg);
+                }
+            }
+        });
+    });
 
     // 表格渲染
     layui.use(["table", "form", "common", "popup", "util"], function () {
@@ -154,6 +227,15 @@
             }, {
                 title: "{:trans('text_order_type')}",
                 field: "type",
+                templet: function (d) {
+                    let field = "type";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                },
                 width: 100,
             }, {
                 title: "{:trans('text_order_amount')}",

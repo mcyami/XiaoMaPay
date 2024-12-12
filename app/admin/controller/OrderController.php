@@ -66,7 +66,9 @@ class OrderController extends CrudController {
     public function insert(Request $request): Response {
         if ($request->method() === 'POST') {
             $data = $this->insertInput($request);
-            $data['trade_no'] = OrderModel::getTradeNo();
+            $trade_no = OrderModel::getTradeNo();
+            // 后台提单的、商户交易、接口交易号与系统交易号相同
+            $data['trade_no'] = $data['out_trade_no'] = $data['api_trade_no'] = $trade_no;
             $data['method_id'] = 8; // 线下支付方式
             $data['type'] = OrderModel::ORDER_TYPE_BACKEND;
             if ($data['status'] == OrderModel::ORDER_STATUS_PAID) {
