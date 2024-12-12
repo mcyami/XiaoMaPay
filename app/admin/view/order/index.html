@@ -154,20 +154,13 @@
             }, {
                 title: "{:trans('text_order_type')}",
                 field: "type",
-                templet: function (d) {
-                    let field = "type";
-                    if (typeof d[field] == "undefined") return "";
-                    let items = [];
-                    layui.each((d[field] + "").split(","), function (k, v) {
-                        items.push(apiResults[field][v] || v);
-                    });
-                    let action = (d['action'] == "1") ? "layui-font-green" : "layui-font-red";
-                    return '<span class="' + action + '">' + util.escape(items.join(",")) + '</span>';
-                },
                 width: 100,
             }, {
                 title: "{:trans('text_order_amount')}",
                 field: "amount",
+                templet: function (d) {
+                    return '<strong class="layui-font-red">' + util.escape(d.amount) + '</strong>';
+                },
                 width: 100,
             }, {
                 title: "{:trans('text_order_received_amount')}",

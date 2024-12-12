@@ -68,15 +68,12 @@ class MerchantModel extends BaseModel {
         // 开启事务
         Db::beginTransaction();
         try {
-            loginfo('===changeBalance===', ['merchant_id' => $merchant_id, 'type' => $type, 'amount' => $amount, 'trade_no' => $trade_no, 'note' => $note]);
-
+            loginfo('===changeBalance params===', ['merchant_id' => $merchant_id, 'type' => $type, 'amount' => $amount, 'trade_no' => $trade_no, 'note' => $note]);
             $merchant = self::find($merchant_id);
-            loginfo('===$merchant===', $merchant);
             // 商户不存在返回false
             if (!$merchant) {
                 return false;
             }
-            loginfo('===$merchant===123');
             $fund = new MerchantFundModel;
             $fund->merchant_id = $merchant_id;
             $fund->type = $type;
@@ -93,7 +90,7 @@ class MerchantModel extends BaseModel {
             $fund->after_balance = $merchant->balance;
             $fund->trade_no = $trade_no;
             $fund->note = $note;
-            loginfo('===changeBalance2===', ['merchant' => $merchant->toArray(), 'fund' => $fund->toArray()]);
+            loginfo('===fund info===', [$fund->toArray()]);
             $fund->save();
             $merchant->save();
             // 提交事务
@@ -102,6 +99,7 @@ class MerchantModel extends BaseModel {
         } catch (\Throwable $e) {
             // 回滚事务
             Db::rollBack();
+            loginfo('===changeBalance Error===', [$e->getMessage()]);
             return false;
         }
     }

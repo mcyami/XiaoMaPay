@@ -69,12 +69,12 @@ class OrderController extends CrudController {
             $data['trade_no'] = OrderModel::getTradeNo();
             $data['method_id'] = 8; // 线下支付方式
             $data['type'] = OrderModel::ORDER_TYPE_BACKEND;
-            if($data['status'] == OrderModel::ORDER_STATUS_PAID) {
+            if ($data['status'] == OrderModel::ORDER_STATUS_PAID) {
                 $data['pay_at'] = time();
             }
             $id = $this->doInsert($data);
             // 付款的订单加入到资金变动队列
-            if($data['status'] == OrderModel::ORDER_STATUS_PAID) {
+            if ($data['status'] == OrderModel::ORDER_STATUS_PAID) {
                 OrderModel::sendFundQueue($id);
             }
             $this->output['id'] = $id;
