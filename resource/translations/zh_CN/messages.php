@@ -10,6 +10,7 @@ return [
     'text_edit' => '编辑',
     'text_select' => '查询',
     'text_submit' => '提交',
+    'text_submitting' => '提交中',
     'text_reset' => '重置',
     'text_login' => '登录',
     'text_logout' => '退出',

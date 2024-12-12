@@ -155,30 +155,6 @@
                         // 显示商户名称+ID
                         var data = res.data[0];
                         layui.$("#merchant_name").val("【" + data.id + "】" + data.username);
-                        // console.log(res);
-                        // let value = layui.$("#fee_mode").attr("value");
-                        // let initValue = value ? value.split(",") : [];
-                        // xmsFeeMode = layui.xmSelect.render({
-                        //     el: "#fee_mode",
-                        //     name: "fee_mode",
-                        //     initValue: initValue,
-                        //     tips: "{:trans('tip_select')}",
-                        //     data: res.data,
-                        //     value: "0",
-                        //     model: {"icon":"hidden","label":{"type":"text"}},
-                        //     clickClose: true,
-                        //     radio: true,
-                        //     on: function (data) {
-                        //         var change = data.change[0].value;
-                        //         // 手动更新一下xmFeeMode中的值
-                        //         xmsFeeMode.update({
-                        //             data: res.data,
-                        //             initValue: [change]
-                        //         });
-                        //         // 切换时重新计算订单金额
-                        //         countAmount();
-                        //     }
-                        // })
                     }
                 });
 
@@ -307,6 +283,9 @@
 
                 // 提交事件
                 form.on("submit(save)", function (data) {
+                    var submitButton = layui.$('button[type="submit"]');
+                    var index = layui.layer.load(1, {shade: [0.1, '#fff']});  // 显示加载动画
+                    submitButton.prop("disabled", true).text("{:trans('text_submitting')}");
                     data.field.merchant_id = layui.url().search['id'];
                     data.field.status = data.field.status ? 1 : 0;
                     layui.$.ajax({
@@ -316,12 +295,16 @@
                         data: data.field,
                         success: function (res) {
                             if (res.code) {
+                                submitButton.prop("disabled", false).text("{:trans('text_submit')}");
                                 return layui.popup.failure(res.msg);
                             }
                             return layui.popup.success(res.msg, function () {
                                 parent.refreshTable();
                                 parent.layer.close(parent.layer.getFrameIndex(window.name));
                             });
+                        },
+                        complete: function () {
+                            layui.layer.close(index);  // 关闭加载动画
                         }
                     });
                     return false;
