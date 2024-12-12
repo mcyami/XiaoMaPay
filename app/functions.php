@@ -1,5 +1,6 @@
 <?php
 
+use app\admin\cache\ConfigCache;
 use support\Context;
 use support\Log;
 
@@ -24,6 +25,11 @@ function loginfo($message = '', $context = []): bool {
  */
 function C($name = null, $value = null, $default = null) {
     $_config = Context::get('system_config') ?: [];
+    if (empty ($_config)) {
+        // 为空时自动获取配置信息，兼容RedisQueue消费者模式的调用
+        $_config = array_change_key_case(ConfigCache::getSystemConfig(), CASE_UPPER);
+        Context::set('system_config', $_config);
+    }
     // 无参数时获取所有
     if (empty ($name)) {
         return $_config;
