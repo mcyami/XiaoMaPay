@@ -215,8 +215,13 @@ return [
     'text_order_refund_at' => '退款时间',
     'text_order_note' => '备注',
     'text_order_status' => '订单状态',
+    'text_order_status_paid' => '已支付',
+    'text_order_status_refund' => '已退款',
+    'text_order_status_unpaid' => '未支付',
     'text_order_backend_add' => '后台提单',
     'text_order_offline' => '线下代收',
+    'text_order_set_paid' => '设为已付款',
+    'error_order_status_not_unpaid' => '订单状态不是未支付',
 
 
 

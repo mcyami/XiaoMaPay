@@ -6,6 +6,13 @@
 
 <h1>LICENSE</h1>
 The XiaoMaPay is open-sourced software licensed under the MIT.
+
+<h2>迭代计划</h2>
+迭代计划请查看：[迭代计划](
+https://github.com/mcyami/XiaoMaPay/wiki/%E8%BF%AD%E4%BB%A3%E8%AE%A1%E5%88%92)
+
+
+
+
+
 </div>
-
-

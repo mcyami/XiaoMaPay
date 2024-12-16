@@ -98,12 +98,6 @@
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.order.update">
-        {:trans('text_edit')}
-    </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.order.delete">
-        {:trans('text_delete')}
-    </button>
 </script>
 
 <script src="/component/layui/layui.js?v=2.8.12"></script>
@@ -115,7 +109,7 @@
     // 相关常量
     const PRIMARY_KEY = "id";
     const SELECT_API = "/admin/order/select";
-    const INSERT_URL = "/admin/order/insert";
+    const SET_PAID_API = "/admin/order/setPaid";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -259,6 +253,16 @@
             }, {
                 title: "{:trans('text_order_pay_at')}",
                 field: "pay_at",
+                templet: function (d) {
+                    // 如果status为1，表示已支付，否则未支付
+                    if (d.status === 1) {
+                        return '<strong class="layui-font-green">' + util.escape(d.pay_at) + '</strong>';
+                    } else {
+                        // 在后面加上“设为支付”的按钮，点击后调用设为支付的方法setPaid
+                        return '<strong class="layui-font-red" style="margin-right: 10px;">{:trans("text_order_status_unpaid")}</strong>'
+                            + '<button class="layui-btn layui-btn-xs" lay-event="setPaid" permission="app.admin.order.setpaid">{:trans("text_order_set_paid")}</button>';
+                    }
+                },
                 width: 165,
             }, {
                 title: "{:trans('text_order_goods_name')}",
@@ -410,6 +414,13 @@
             render();
         }
 
+        // 编辑或删除行事件
+        table.on("tool(data-table)", function (obj) {
+            if (obj.event === "setPaid") {
+                setPaid(obj);
+            }
+        });
+
         // 表格顶部工具栏事件
         table.on("toolbar(data-table)", function (obj) {
             if (obj.event === "add") {
@@ -450,6 +461,32 @@
                 }
             });
         });
+
+        // 订单设为已支付
+        let setPaid = function (obj) {
+            let data = {};
+            data[PRIMARY_KEY] = obj.data[PRIMARY_KEY];
+            layer.confirm("{:trans('tip_operate')}", {
+                icon: 3,
+                title: "{:trans('tip')}"
+            }, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: SET_PAID_API,
+                    type: "post",
+                    data: data,
+                    dataType: "json",
+                    success: function (res) {
+                        layer.close(loading);
+                        if (res.code) {
+                            return layui.popup.failure(res.msg);
+                        }
+                        return layui.popup.success(res.msg, refreshTable);
+                    }
+                })
+            });
+        }
 
         // 刷新表格数据
         window.refreshTable = function () {

@@ -37,7 +37,7 @@ class OrderFund implements Consumer {
                 MerchantModel::changeBalance($orderInfo->merchant_id, MerchantFundModel::FUND_TYPE_ORDER_SERVICE, $orderInfo->handling_fee, $orderInfo->trade_no, $orderInfo->note);
             }
         }
-        Log::info('===consume 订单处理成功===', [$orderInfo]);
+        Log::info('===consume 订单处理成功===', $orderInfo->toArray());
     }
 
     public function onConsumeFailure(\Throwable $e, $package) {

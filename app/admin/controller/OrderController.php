@@ -118,6 +118,35 @@ class OrderController extends CrudController {
     }
 
     /**
+     * 设置订单为已付款
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function setPaid(Request $request): Response {
+        [$id, $data] = $this->updateInput($request);
+        $before_data = $this->model->select(['id', 'status'])->find($id)->toArray();
+        // 订单状态不是未付款，不能设置为已付款
+        if ($before_data['status'] != OrderModel::ORDER_STATUS_UNPAID) {
+            $this->error('error_order_status_not_unpaid');
+        }
+        $data['status'] = OrderModel::ORDER_STATUS_PAID; // 设置为已付款
+        $data['pay_at'] = time(); // 同时更新付款时间
+        $this->doUpdate($id, $data);
+        // 从未付款->已付款，加入资金变动队列
+        OrderModel::sendFundQueue($id);
+        LogModel::saveLog(
+            LogModel::OP_USER_TYPE_ADMIN,
+            LogModel::OP_TYPE_ORDER,
+            $id,
+            $before_data,
+            $data
+        );
+        return $this->success();
+    }
+
+
+    /**
      * 删除订单
      * @param Request $request
      * @return Response

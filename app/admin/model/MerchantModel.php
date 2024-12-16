@@ -90,7 +90,7 @@ class MerchantModel extends BaseModel {
             $fund->after_balance = $merchant->balance;
             $fund->trade_no = $trade_no;
             $fund->note = $note;
-            loginfo('===fund info===', [$fund->toArray()]);
+            loginfo('===fund info===', $fund->toArray());
             $fund->save();
             $merchant->save();
             // 提交事务
