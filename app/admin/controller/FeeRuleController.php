@@ -55,7 +55,7 @@ class FeeRuleController extends CrudController {
             $this->output['id'] = $id;
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
-                LogModel::OP_TYPE_ORDER,
+                LogModel::OP_TYPE_FEE_RULE,
                 $id,
                 '',
                 $data
@@ -83,7 +83,7 @@ class FeeRuleController extends CrudController {
         $this->model->cache();
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_ADMIN,
-            LogModel::OP_TYPE_ORDER,
+            LogModel::OP_TYPE_FEE_RULE,
             $id,
             $before_data,
             $data
@@ -106,7 +106,7 @@ class FeeRuleController extends CrudController {
         foreach ($ids as $id) {
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
-                LogModel::OP_TYPE_ORDER,
+                LogModel::OP_TYPE_FEE_RULE,
                 $id,
                 $before_data[$id] ?? '',
                 ''

@@ -68,15 +68,30 @@
             }, {
                 title: "{:trans('text_fee_rule_channel')}",
                 field: "channel_id",
+                templet: function (d) {
+                    let field = "channel_id";
+                    if (typeof d[field] == "undefined") return "";
+                    let items = [];
+                    layui.each((d[field] + "").split(","), function (k, v) {
+                        items.push(apiResults[field][v] || v);
+                    });
+                    return util.escape(items.join(","));
+                }
             }, {
                 title: "{:trans('text_fee_rule_merchant')}",
                 field: "merchant_id",
+                templet: function (d) {
+                    return d.merchant ? d.merchant.name : "";
+                }
             }, {
                 title: "{:trans('text_fee_rule_receive_merchant')}",
                 field: "receive_merchant_id",
             }, {
                 title: "{:trans('text_fee_rule_rate')}",
                 field: "rate",
+                templet: function (d) {
+                    return d['rate'] + " %";
+                }
             }, {
                 title: "{:trans('text_fee_rule_limit_amount')}",
                 field: "limit_amount",
@@ -165,8 +180,39 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
+        apis.push(["channel_id", "/admin/payChannel/select?format=select"]);
         let apiResults = {};
+        apiResults["channel_id"] = [];
         let count = apis.length;
+        layui.each(apis, function (k, item) {
+            let [field, url] = item;
+            $.ajax({
+                url: url,
+                dateType: "json",
+                success: function (res) {
+                    if (res.code) {
+                        return layui.popup.failure(res.msg);
+                    }
+
+                    function travel(items) {
+                        for (let k in items) {
+                            let item = items[k];
+                            apiResults[field][item.value] = item.name;
+                            if (item.children) {
+                                travel(item.children);
+                            }
+                        }
+                    }
+
+                    travel(res.data);
+                },
+                complete: function () {
+                    if (--count === 0) {
+                        render();
+                    }
+                }
+            });
+        });
         if (!count) {
             render();
         }

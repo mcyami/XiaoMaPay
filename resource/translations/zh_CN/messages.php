@@ -227,9 +227,12 @@ return [
     'text_fee_rule' => '分账规则',
     'text_fee_rule_channel' => '订单通道',
     'text_fee_rule_merchant' => '订单商户',
+    'tip_fee_rule_merchant' => '不填写商户ID，则表示整个通道的分账规则',
     'text_fee_rule_receive_merchant' => '分账商户',
+    'tip_fee_rule_receive_merchant' => '填写商户ID',
     'text_fee_rule_limit_amount' => '最小订单金额',
     'text_fee_rule_rate' => '分账比例',
+    'tip_fee_rule_rate' => '商户分账比例，请填写百分比。注意一个通道总的分账比例不能超过100%，少于100%的部分将计入平台默认手续费收款商户',
 
 
 
