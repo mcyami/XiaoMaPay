@@ -223,6 +223,13 @@ return [
     'text_order_set_paid' => '设为已付款',
     'error_order_status_not_unpaid' => '订单状态不是未支付',
 
+    // 手续费分账规则
+    'text_fee_rule' => '分账规则',
+    'text_fee_rule_channel' => '订单通道',
+    'text_fee_rule_merchant' => '订单商户',
+    'text_fee_rule_receive_merchant' => '分账商户',
+    'text_fee_rule_limit_amount' => '最小订单金额',
+    'text_fee_rule_rate' => '分账比例',
 
 
 
