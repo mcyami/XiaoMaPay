@@ -81,7 +81,7 @@
                 title: "{:trans('text_fee_rule_merchant')}",
                 field: "merchant_id",
                 templet: function (d) {
-                    return d.merchant ? d.merchant.name : "";
+                    return d.merchant_id ? d.merchant_id : "";
                 }
             }, {
                 title: "{:trans('text_fee_rule_receive_merchant')}",
@@ -141,7 +141,7 @@
         function render() {
             table.render({
                 elem: "#data-table",
-                url: SELECT_API,
+                url: SELECT_API + '?field=id&order=desc',
                 page: {
                     prev: "{:trans('text_prev')}",
                     next: "{:trans('text_next')}",
@@ -255,7 +255,7 @@
                 type: 2,
                 title: "{:trans('text_add')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "600px"],
                 content: INSERT_URL
             });
         }
@@ -267,7 +267,7 @@
                 type: 2,
                 title: "{:trans('text_edit')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "600px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }

@@ -14,44 +14,53 @@
                 <div class="main-container mr-5">
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_name')}</label>
+                        <label class="layui-form-label required">{:trans('text_fee_rule_channel')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="name" value="" required lay-verify="required" class="layui-input">
+                            <div name="channel_id" id="channel" value="" ></div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_key')}</label>
+                        <label class="layui-form-label">{:trans('text_fee_rule_merchant')}</label>
                         <div class="layui-input-block">
-                            <input type="text" name="key" value="" required lay-verify="required" class="layui-input">
+                            <input type="text" name="merchant_id" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_merchant')}</div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_pc')}</label>
+                        <label class="layui-form-label required">{:trans('text_fee_rule_receive_merchant')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_pc" lay-skin="switch" checked />
+                            <input type="text" name="receive_merchant_id" value="" required lay-verify="required" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_receive_merchant')}</div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_pay_method_is_mobile')}</label>
+                        <label class="layui-form-label required">{:trans('text_fee_rule_rate')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="is_mobile" lay-skin="switch" checked />
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="rate" value="" lay-verify="required" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_rate')}</div>
                         </div>
                     </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_limit_amount')}</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="limit_amount" value="" class="layui-input">
+                        </div>
+                    </div>
+
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{:trans('text_status')}</label>
                         <div class="layui-input-block">
-                            <input type="checkbox" name="status" lay-skin="switch" />
-                        </div>
-                    </div>
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_sort')}</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="sort_order" value="" class="layui-input">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
                         </div>
                     </div>
                     
@@ -80,11 +89,11 @@
 
             // 相关接口
             const PRIMARY_KEY = "id";
-            const SELECT_API = "/admin/payMethod/select" + location.search;
-            const UPDATE_API = "/admin/payMethod/update";
+            const SELECT_API = "/admin/feeRule/select" + location.search;
+            const UPDATE_API = "/admin/feeRule/update";
 
             // 获取数据库记录
-            layui.use(["form", "util", "popup", "form"], function () {
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect", "util"], function () {
                 let $ = layui.$;
 
                 $.ajax({
@@ -106,6 +115,27 @@
                                 }
                             } else {
                                 obj.attr("value", value);
+                            }
+                        });
+
+                        // 字段 channel_id
+                        layui.$.ajax({
+                            url: "/admin/payChannel/select?format=select",
+                            dataType: "json",
+                            success: function (res) {
+                                let value = layui.$("#channel").attr("value");
+                                let initValue = value ? value.split(",") : [];
+                                layui.xmSelect.render({
+                                    el: "#channel",
+                                    name: "channel_id",
+                                    initValue: initValue,
+                                    tips: "{:trans('tip_select')}",
+                                    data: res.data,
+                                    value: "0",
+                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                    clickClose: true,
+                                    radio: true
+                                })
                             }
                         });
 

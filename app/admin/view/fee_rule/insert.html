@@ -14,14 +14,14 @@
                 <div class="main-container mr-5">
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">{:trans('text_pay_method_key')}</label>
+                        <label class="layui-form-label required">{:trans('text_fee_rule_channel')}</label>
                         <div class="layui-input-block">
                             <div name="channel_id" id="channel_id" value="" ></div>
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{:trans('text_merchant_id')}</label>
+                        <label class="layui-form-label">{:trans('text_fee_rule_merchant')}</label>
                         <div class="layui-input-block">
                             <input type="text" name="merchant_id" value="" class="layui-input">
                             <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_merchant')}</div>
@@ -40,7 +40,7 @@
                         <label class="layui-form-label required">{:trans('text_fee_rule_rate')}</label>
                         <div class="layui-input-block">
                             <div class="layui-input-group">
-                                <input type="number" min="0" max="100" lay-affix="number" name="rate" value="0" lay-verify="required" class="layui-input" style="width: 120px">
+                                <input type="number" min="0" max="100" lay-affix="number" name="rate" value="" lay-verify="required" class="layui-input" style="width: 120px">
                                 <div class="layui-input-split layui-input-suffix">
                                     %
                                 </div>
