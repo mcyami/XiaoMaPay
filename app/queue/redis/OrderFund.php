@@ -13,9 +13,9 @@ use Webman\RedisQueue\Consumer;
  */
 class OrderFund implements Consumer {
     // 要消费的队列名
-    public $queue = '_order_fund_';
+    public $queue = OrderModel::QUEUE_ORDER_FUND;
 
-    // 连接名，对应 plugin/webman/redis-queue/redis.php 里的连接`
+    // 连接名，对应 plugin/webman/redis-queue/redis.php 里的连接
     public $connection = 'default';
 
     // 消费

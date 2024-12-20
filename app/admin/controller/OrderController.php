@@ -78,6 +78,7 @@ class OrderController extends CrudController {
             // 付款的订单加入到资金变动队列
             if ($data['status'] == OrderModel::ORDER_STATUS_PAID) {
                 OrderModel::sendFundQueue($id);
+                OrderModel::sendFeeQueue($id);
             }
             $this->output['id'] = $id;
             LogModel::saveLog(
@@ -135,6 +136,7 @@ class OrderController extends CrudController {
         $this->doUpdate($id, $data);
         // 从未付款->已付款，加入资金变动队列
         OrderModel::sendFundQueue($id);
+        OrderModel::sendFeeQueue($id);
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_ADMIN,
             LogModel::OP_TYPE_ORDER,
