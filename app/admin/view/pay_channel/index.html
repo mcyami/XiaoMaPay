@@ -113,6 +113,7 @@
     const INSERT_URL = "/admin/payChannel/insert";
     const UPDATE_URL = "/admin/payChannel/update";
     const SECRET_URL = "/admin/payChannel/secret";
+    const FEE_RATE_URL = "/admin/payChannel/getFeeRate";
 
     // 字段 支付方式
     layui.use(["jquery", "xmSelect", "popup"], function() {
@@ -176,6 +177,11 @@
                 field: "ratio",
                 templet: function (d) {
                     return d['ratio'] + "%";
+                }
+            }, {
+                title: "{:trans('text_fee_rule_rate')}",
+                templet: function (d) {
+                    return '<button class="layui-btn layui-btn-xs" lay-event="getFeeRate" permission="app.admin.paychannel.getfeerate">{:trans("text_fee_rule_rate")}</button>';
                 }
             }, {
                 title: "{:trans('text_pay_method')}",
@@ -327,6 +333,8 @@
                 edit(obj);
             } else if (obj.event === "secret") {
                 secret(obj);
+            } else if (obj.event === "getFeeRate") {
+                getFeeRate(obj);
             }
         });
 
@@ -403,6 +411,18 @@
                 shade: 0.1,
                 area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
                 content: SECRET_URL + "?" + PRIMARY_KEY + "=" + value + "&driver_key=" + obj.data.driver_key
+            });
+        }
+
+        // 表格获取费率
+        let getFeeRate = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "{:trans('text_fee_rule_rate')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                content: FEE_RATE_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

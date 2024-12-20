@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/admin/css/reset.css"/>
+</head>
+<body>
+
+<div class="layui-bg-gray" style="padding: 16px;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header layui-font-red">通道通用规则</div>
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>{:trans('text_merchant_id')}</th>
+                            <th>{:trans('text_fee_rule_receive_merchant')}</th>
+                            <th>{:trans('text_fee_rule_rate')}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $rules['*'] as $merchant_id=>$rate}
+                        <tr>
+                            <td>{$merchant_id}</td>
+                            <td>{$merchants[$merchant_id]}</td>
+                            <td>{$rate} %</td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {if count($rules) > 1}
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header layui-font-red">指定订单商户规则</div>
+                {foreach $rules as $order_merchant_id=>$order_rule}
+                <?php if ($order_merchant_id == '*') continue; ?>
+                <p>ID:{$order_merchant_id} 【{$merchants[$order_merchant_id]  ?? ''}】</p>
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="150">
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>{:trans('text_merchant_id')}</th>
+                        <th>{:trans('text_fee_rule_receive_merchant')}</th>
+                        <th>{:trans('text_fee_rule_rate')}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $order_rule as $merchant_id=>$rate}
+                    <tr>
+                        <td>{$merchant_id}</td>
+                        <td>{$merchants[$merchant_id] ?? ''}</td>
+                        <td>{$rate} %</td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+                {/foreach}
+            </div>
+        </div>
+        {/if}
+
+    </div>
+</div>
+
+<script src="/component/layui/layui.js?v=2.8.12"></script>
+<script src="/component/pear/pear.js"></script>
+<script src="/admin/js/permission.js"></script>
+
+</body>
+</html>
