@@ -84,6 +84,12 @@
                     return d.merchant_id ? d.merchant_id : "";
                 }
             }, {
+                title: "{:trans('text_fee_rule_platform_id')}",
+                field: "platform_id",
+                templet: function (d) {
+                    return d.platform_id ? d.platform_id : "";
+                }
+            }, {
                 title: "{:trans('text_fee_rule_receive_merchant')}",
                 field: "receive_merchant_id",
             }, {

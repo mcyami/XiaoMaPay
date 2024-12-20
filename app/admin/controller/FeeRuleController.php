@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use app\admin\model\FeeRuleModel;
 use app\admin\model\LogModel;
-use app\admin\model\OrderModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;

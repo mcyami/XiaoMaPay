@@ -233,6 +233,8 @@ return [
     'text_fee_rule_limit_amount' => '最小订单金额',
     'text_fee_rule_rate' => '分账比例',
     'tip_fee_rule_rate' => '商户分账比例，请填写百分比。注意一个通道总的分账比例不能超过100%，少于100%的部分将计入平台默认手续费收款商户',
+    'text_fee_rule_platform_id' => '佣金承担商户',
+    'tip_fee_rule_platform_id' => '指定商户的订单为中间人收入，这一部分佣金一般由平台承担',
 
 
 
