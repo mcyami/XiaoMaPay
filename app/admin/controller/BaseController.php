@@ -44,6 +44,8 @@ class BaseController {
 
     protected $count = null;
 
+    protected $extra = null;
+
     /**
      * 请求日志信息
      * @return array
@@ -73,17 +75,30 @@ class BaseController {
         return $response;
     }
 
+    /**
+     * 成功返回
+     * @param string $msg
+     * @return Response
+     */
     protected function success(string $msg = 'success'): Response {
         $this->output = $this->output ?? [];
         $msg = trans($msg);
-        $return = ['code' => 0, 'msg' => $msg, 'count' => $this->count, 'data' => $this->output];
+        $return = ['code' => 0, 'msg' => $msg, 'data' => $this->output, 'count' => $this->count, 'extra' => $this->extra];
         if ($this->count === null) {
             unset($return['count']);
+        }
+        if ($this->extra === null) {
+            unset($return['extra']);
         }
 //        loginfo('===success===', $return);
         return json($return);
     }
 
+    /**
+     * 失败返回
+     * @param string $msg
+     * @return Response
+     */
     protected function error(string $msg = 'error'): Response {
         $this->output = $this->output ?? [];
         $msg = trans($msg);

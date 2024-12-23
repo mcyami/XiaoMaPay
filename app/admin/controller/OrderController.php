@@ -43,11 +43,19 @@ class OrderController extends CrudController {
 
     /**
      * 通用格式化
+     * @param $model
      * @param $items
      * @param $total
      * @return Response
      */
-    protected function formatNormal($items, $total): Response {
+    protected function formatNormal($model, $items, $total): Response {
+        $this->extra = [
+            'amount' => $model->sum('amount'), // 订单金额
+            'received_amount' => $model->sum('received_amount'), // 到账金额
+            'refund' => $model->sum('refund'), // 退款金额
+            'handling_fee' => $model->sum('handling_fee'), // 手续费
+            'goods_price' => $model->sum('goods_price'), // 商品价格
+        ];
         foreach ($items as &$item) {
             $item['pay_at'] = $item['pay_at'] ? date('Y-m-d H:i:s', $item['pay_at']) : '';
             $item['refund_at'] = $item['refund_at'] ? date('Y-m-d H:i:s', $item['refund_at']) : '';

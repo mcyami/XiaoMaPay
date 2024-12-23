@@ -68,6 +68,7 @@ return [
     'text_lang_chinese' => '中文',
     'text_set_secret' => '配置密钥',
     'text_explain' => '说明',
+    'text_count' => '合计',
 
     // 系统配置管理
     'text_config_name' => '配置名称',

@@ -210,6 +210,7 @@
                 title: "{:trans('text_order_trade_no')}",
                 field: "trade_no",
                 width: 200,
+                totalRowText: "{:trans('text_count')}"
             }, {
                 title: "{:trans('text_order_out_trade_no')}",
                 field: "out_trade_no",
@@ -349,6 +350,7 @@
                 size: "lg",
                 toolbar: "#table-toolbar",
                 autoSort: false,
+                totalRow: true,
                 defaultToolbar: [{
                     title: "{:trans('text_refresh')}",
                     layEvent: "refresh",
@@ -365,7 +367,8 @@
                         "code": res.code,
                         "msg": res.msg,
                         "count": res.count,
-                        "data": res.data
+                        "data": res.data,
+                        "totalRow": res.extra
                     };
                 }
             });

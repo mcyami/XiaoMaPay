@@ -205,7 +205,7 @@ class CrudController extends BaseController {
             $items = call_user_func([$this, "afterQuery"], $items);
         }
         $format_function = $methods[$format] ?? 'formatNormal';
-        return call_user_func([$this, $format_function], $items, $total);
+        return call_user_func([$this, $format_function], $query, $items, $total);
     }
 
     /**
@@ -397,10 +397,11 @@ class CrudController extends BaseController {
 
     /**
      * 格式化树
+     * @param $model
      * @param $items
      * @return Response
      */
-    protected function formatTree($items): Response {
+    protected function formatTree($model, $items): Response {
         $format_items = [];
         foreach ($items as $item) {
             $format_items[] = [
@@ -417,10 +418,11 @@ class CrudController extends BaseController {
 
     /**
      * 格式化表格树
+     * @param $model
      * @param $items
      * @return Response
      */
-    protected function formatTableTree($items): Response {
+    protected function formatTableTree($model, $items): Response {
         $tree = new Tree($items);
         $this->output = $tree->getTree();
         return $this->success();
@@ -428,10 +430,11 @@ class CrudController extends BaseController {
 
     /**
      * 格式化下拉列表
+     * @param $model
      * @param $items
      * @return Response
      */
-    protected function formatSelect($items): Response {
+    protected function formatSelect($model, $items): Response {
         $formatted_items = [];
         foreach ($items as $item) {
             $formatted_items[] = [
@@ -445,11 +448,12 @@ class CrudController extends BaseController {
 
     /**
      * 通用格式化
+     * @param $model
      * @param $items
      * @param $total
      * @return Response
      */
-    protected function formatNormal($items, $total): Response {
+    protected function formatNormal($model, $items, $total): Response {
         $this->output = $items;
         $this->count = $total;
         return $this->success();
