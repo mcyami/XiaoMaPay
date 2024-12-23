@@ -26,6 +26,9 @@ use Webman\RedisQueue\Redis;
  * @property float $refund 退款金额
  * @property integer $refund_at 退款时间
  * @property string $note 备注
+ * @property string $fee_rule 手续费分账规则
+ * @property string $fee_list 手续费分账金额列表
+ * @property string $amount_list 分账金额列表
  * @property integer $created_at 创建时间
  * @property integer $updated_at 更新时间
  * @property integer $status 订单状态{0:未支付,1:已支付,2:已退款,3:已冻结}

@@ -46,11 +46,29 @@ class FeeRuleModel extends BaseModel {
     }
 
     /**
-     * 获取通道手续费分账比例
-     * @param int $channelId
+     * 计算通道手续费分账金额列表
+     * @param float $fee 手续费
+     * @param int $channelId 通道ID
+     * @param int $merchantId 获取指定商户ID 0获取通道所有规则 *获取通道通用规则 >0获取指定商户规则
      * @return array
      */
-    public static function getRulesByChannelId(int $channelId): array {
+    public static function getFeeList(float $fee, int $channelId, int $merchantId = 0): array {
+        $rules = self::getRules($channelId, $merchantId);
+//        loginfo('===Rules===', $rules);
+        $rates = [];
+        foreach ($rules as $merchantId => $rule) {
+            $rates[$merchantId] = number_format($fee * $rule / 100, 2, '.', '');
+        }
+        return $rates;
+    }
+
+    /**
+     * 获取通道手续费分账比例
+     * @param int $channelId 通道ID
+     * @param int $merchantId 获取指定商户ID 0获取通道所有规则 *获取通道通用规则 >0获取指定商户规则
+     * @return array
+     */
+    public static function getRules(int $channelId, int $merchantId = 0): array {
         // 获取该通道所有的分账规则
         $rules = self::where('channel_id', $channelId)->get();
         // 通过merchant_id分组
@@ -81,8 +99,8 @@ class FeeRuleModel extends BaseModel {
 
         // 2、生成指定商户分账比例，基于通用分账比例计算，中间人分账从指定平台商户ID中扣去
         if (count($rules) > 1) {
-            foreach ($rules as $merchantId => $rule) {
-                if ($merchantId == 0) {
+            foreach ($rules as $mId => $rule) {
+                if ($mId == 0) {
                     continue;
                 }
                 $merchant_rule = $common_rule;
@@ -102,9 +120,19 @@ class FeeRuleModel extends BaseModel {
                         }
                     }
                 }
-                $channelRules[$merchantId] = $merchant_rule;
+                $channelRules[$mId] = $merchant_rule;
             }
         }
+//        loginfo('===All Rules===', $channelRules);
+        if ($merchantId === '*') {
+            // 返回通用规则
+            return $channelRules["*"];
+        }
+        if ($merchantId > 0) {
+            // 返回指定商户规则，没有则返回通用规则
+            return $channelRules[$merchantId] ?? $channelRules["*"];
+        }
+        // 返回所有规则
         return $channelRules;
     }
 

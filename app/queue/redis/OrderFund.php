@@ -36,6 +36,18 @@ class OrderFund implements Consumer {
                 // 2- 钱进到商户通道，商户余额减去订单的手续费
                 MerchantModel::changeBalance($orderInfo->merchant_id, MerchantFundModel::FUND_TYPE_ORDER_SERVICE, $orderInfo->handling_fee, $orderInfo->trade_no, $orderInfo->note);
             }
+        } else if($orderInfo->status == OrderModel::ORDER_STATUS_REFUNDED) {
+            // 订单退款 扣减商户余额
+            if ($orderInfo->sub_channel_id == 0) {
+                // 1- 平台通道，商户余额减去订单的入账金额
+                MerchantModel::changeBalance($orderInfo->merchant_id, MerchantFundModel::FUND_TYPE_ORDER_REFUND, $orderInfo->received_amount, $orderInfo->trade_no);
+            } else {
+                // 2- 商户通道，商户余额增加订单的手续费，减去订单金额
+                // 退回商户服务费
+                MerchantModel::changeBalance($orderInfo->merchant_id, MerchantFundModel::FUND_TYPE_ORDER_SERVICE_REFUND, $orderInfo->handling_fee, $orderInfo->trade_no);
+                // 扣减商户余额
+                MerchantModel::changeBalance($orderInfo->merchant_id, MerchantFundModel::FUND_TYPE_ORDER_REFUND, $orderInfo->amount, $orderInfo->trade_no);
+            }
         }
         Log::info('===consume 订单处理成功===', $orderInfo->toArray());
     }

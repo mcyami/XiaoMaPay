@@ -162,7 +162,7 @@ class PayChannelController extends CrudController {
             if (!$channel) {
                 return $this->error('error_records');
             }
-            $rules = FeeRuleModel::getRulesByChannelId($id);
+            $rules = FeeRuleModel::getRules($id);
             $merchantIds = [];
             foreach ($rules as $key => $rule) {
                 if ($key != '*') {

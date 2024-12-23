@@ -69,6 +69,7 @@ return [
     'text_set_secret' => '配置密钥',
     'text_explain' => '说明',
     'text_count' => '合计',
+    'text_refund' => '退款',
 
     // 系统配置管理
     'text_config_name' => '配置名称',
@@ -223,6 +224,7 @@ return [
     'text_order_offline' => '线下代收',
     'text_order_set_paid' => '设为已付款',
     'error_order_status_not_unpaid' => '订单状态不是未支付',
+    'error_order_status_not_paid' => '订单状态不是已支付',
 
     // 手续费分账规则
     'text_fee_rule' => '分账规则',

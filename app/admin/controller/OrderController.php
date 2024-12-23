@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\FeeRuleModel;
 use app\admin\model\LogModel;
 use app\admin\model\OrderModel;
 use app\common\utils\StringHelper;
@@ -79,6 +80,12 @@ class OrderController extends CrudController {
             $data['trade_no'] = $data['out_trade_no'] = $data['api_trade_no'] = $trade_no;
             $data['method_id'] = 8; // 线下支付方式
             $data['type'] = OrderModel::ORDER_TYPE_BACKEND;
+            // 分账规则
+            $data['fee_rule'] = json_encode(FeeRuleModel::getRules($data['channel_id'], $data['merchant_id']));
+            // 手续费分账金额
+            $data['fee_list'] = json_encode(FeeRuleModel::getFeeList($data['handling_fee'], $data['channel_id'], $data['merchant_id']));
+            // 订单结算金额列表
+            $data['amount_list'] = json_encode([$data['merchant_id'] => $data['received_amount']]);
             if ($data['status'] == OrderModel::ORDER_STATUS_PAID) {
                 $data['pay_at'] = time();
             }
@@ -155,7 +162,6 @@ class OrderController extends CrudController {
         return $this->success();
     }
 
-
     /**
      * 删除订单
      * @param Request $request
@@ -176,6 +182,38 @@ class OrderController extends CrudController {
                 ''
             );
         }
+        return $this->success();
+    }
+
+    /**
+     * 退款
+     * @param Request $request
+     * @return Response
+     * @throws BusinessException
+     */
+    public function refund(Request $request): Response {
+        [$id, $data] = $this->updateInput($request);
+        $before_data = $this->model->select(['id', 'status', 'amount', 'refund', 'refund_at'])->find($id)->toArray();
+        // 订单状态不是已付款，不能退款
+        if ($before_data['status'] != OrderModel::ORDER_STATUS_PAID) {
+            $this->error('error_order_status_not_paid');
+        }
+        $data['status'] = OrderModel::ORDER_STATUS_REFUNDED; // 设置为已退款
+        $data['refund'] = $data['refund'] ?? $before_data['amount']; // 退款金额
+        $data['refund_at'] = time(); // 同时更新退款时间
+        $data['received_amount'] = 0; // 到账金额修改为0
+        $data['handling_fee'] = 0; // 手续费修改为0
+        $this->doUpdate($id, $data);
+        // 退款，加入资金变动队列
+        OrderModel::sendFundQueue($id);
+        OrderModel::sendFeeQueue($id);
+        LogModel::saveLog(
+            LogModel::OP_USER_TYPE_ADMIN,
+            LogModel::OP_TYPE_ORDER,
+            $id,
+            $before_data,
+            $data
+        );
         return $this->success();
     }
 }
