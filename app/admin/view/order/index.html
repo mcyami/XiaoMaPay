@@ -98,9 +98,13 @@
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
+    {{#  if(d.status === 1){ }}
     <button class="pear-btn pear-btn-xs tool-btn" lay-event="refund" permission="app.admin.order.refund">
         {:trans('text_refund')}
     </button>
+    {{#  } else if(d.status === 2) { }}
+    <strong class="layui-font-red">{:trans("text_order_status_refund")}</strong>
+    {{#  } }}
 </script>
 
 <script src="/component/layui/layui.js?v=2.8.12"></script>
@@ -266,6 +270,8 @@
                         // 在后面加上“设为支付”的按钮，点击后调用设为支付的方法setPaid
                         return '<strong class="layui-font-red" style="margin-right: 10px;">{:trans("text_order_status_unpaid")}</strong>'
                             + '<button class="layui-btn layui-btn-xs" lay-event="setPaid" permission="app.admin.order.setpaid">{:trans("text_order_set_paid")}</button>';
+                    } else if (d.status === 2) {
+                        return '<strong class="layui-font-red">{:trans("text_order_status_refund")}</strong>';
                     } else {
                         return util.escape(d.pay_at);
                     }
@@ -281,7 +287,7 @@
                 width: 100,
             }, {
                 title: "{:trans('text_order_refund_at')}",
-                field: "pay_at",
+                field: "refund_at",
                 width: 165,
                 hide: true,
             }, {
