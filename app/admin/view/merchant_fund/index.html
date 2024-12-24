@@ -135,6 +135,7 @@
                 title: "{:trans('text_action_time')}",
                 field: "created_at",
                 width: 170,
+                totalRowText: "{:trans('text_count')}"
             }, {
                 title: "{:trans('text_merchant_id')}",
                 field: "merchant_id",
@@ -157,7 +158,8 @@
                 templet: function (d) {
                     let action = (d['action'] == "1") ? "+" : "-";
                     return action + ' ' + d['amount'];
-                }
+                },
+                totalRow: '{{= d.TOTAL_ROW.amount }}',
             }, {
                 title: "{:trans('text_merchant_fund_before_balance')}",
                 field: "before_balance",
@@ -198,6 +200,7 @@
                 size: "lg",
                 toolbar: "#table-toolbar",
                 autoSort: false,
+                totalRow: true,
                 defaultToolbar: [{
                     title: "{:trans('text_refresh')}",
                     layEvent: "refresh",
@@ -214,7 +217,8 @@
                         "code": res.code,
                         "msg": res.msg,
                         "count": res.count,
-                        "data": res.data
+                        "data": res.data,
+                        "totalRow": res.extra
                     };
                 }
             });

@@ -34,6 +34,9 @@ class MerchantFundModel extends BaseModel {
     const FUND_TYPE_WITHDRAW = 6; // 手动提现
     const FUND_TYPE_MERCHANT_RECHARGE = 7; // 商户充值
     const FUND_TYPE_ORDER_SERVICE = 8; // 订单服务费（商户直清通道，每笔订单手续费扣除的类型）
+    const FUND_TYPE_ORDER_FEE = 9; // 订单手续费收入
+    const FUND_TYPE_ORDER_FEE_REFUND = 10; // 订单手续费退回
+    const FUND_TYPE_ORDER_SERVICE_REFUND = 11; // 订单服务费退回
 
     const ACTION_ADD = 1; // 增加
     const ACTION_SUB = 2; // 减少

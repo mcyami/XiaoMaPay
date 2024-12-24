@@ -3,7 +3,9 @@
 namespace app\admin\controller;
 
 use app\admin\cache\PayDriverCache;
+use app\admin\model\FeeRuleModel;
 use app\admin\model\LogModel;
+use app\admin\model\MerchantModel;
 use app\admin\model\PayChannelModel;
 use support\exception\BusinessException;
 use support\Request;
@@ -144,6 +146,43 @@ class PayChannelController extends CrudController {
             $return['bind_wxmp'] = $driver['bind_wxmp'];
             $return['bind_wxa'] = $driver['bind_wxa'];
             return view('pay_channel/secret', $return);
+        }
+        return $this->success();
+    }
+
+    /**
+     * 获取通道手续费分账比例
+     * @param Request $request
+     * @return Response
+     */
+    public function getFeeRate(Request $request): Response {
+        $id = $request->input('id');
+        $channel = PayChannelModel::find($id);
+        if ($request->method() === 'GET') {
+            if (!$channel) {
+                return $this->error('error_records');
+            }
+            $rules = FeeRuleModel::getRules($id);
+            $merchantIds = [];
+            foreach ($rules as $key => $rule) {
+                if ($key != '*') {
+                    $merchantIds[] = $key;
+                }
+                foreach ($rule as $k => $r) {
+                    $merchantIds[] = $k;
+                }
+            }
+            $merchantIds = array_unique($merchantIds);
+            $merchants = [];
+            if (!empty($merchantIds)) {
+                $merchants = MerchantModel::whereIn('id', $merchantIds)->pluck('username', 'id')->toArray();
+            }
+            $assign = [
+                'channel' => $channel,
+                'rules' => $rules,
+                'merchants' => $merchants,
+            ];
+            return view('pay_channel/fee_rate', $assign);
         }
         return $this->success();
     }

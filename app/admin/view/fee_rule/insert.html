@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_channel')}</label>
+                        <div class="layui-input-block">
+                            <div name="channel_id" id="channel_id" value="" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_fee_rule_merchant')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="merchant_id" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_merchant')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_fee_rule_platform_id')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="platform_id" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_platform_id')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_receive_merchant')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="receive_merchant_id" value="" required lay-verify="required" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_receive_merchant')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_rate')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="rate" value="" lay-verify="required" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_rate')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_limit_amount')}</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="limit_amount" value="0" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const INSERT_API = "/admin/feeRule/insert";
+
+            // 基础设置
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect"], function() {
+                let $ = layui.$;
+                let form = layui.form;
+
+                // 字段 channel_id
+                layui.$.ajax({
+                    url: "/admin/payChannel/select?format=select",
+                    dataType: "json",
+                    success: function (res) {
+                        let value = layui.$("#channel_id").attr("value");
+                        let initValue = value ? value.split(",") : [];
+                        layui.xmSelect.render({
+                            el: "#channel_id",
+                            name: "channel_id",
+                            initValue: initValue,
+                            tips: "{:trans('tip_select')}",
+                            data: res.data,
+                            value: "0",
+                            model: {"icon":"hidden","label":{"type":"text"}},
+                            clickClose: true,
+                            radio: true
+                        })
+                    }
+                });
+
+                // 提交事件
+                form.on("submit(save)", function (data) {
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: INSERT_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+        </script>
+
+    </body>
+</html>

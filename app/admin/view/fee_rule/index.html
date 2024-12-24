@@ -7,67 +7,7 @@
     <link rel="stylesheet" href="/admin/css/reset.css"/>
 </head>
 <body class="pear-container">
-<!-- 顶部查询表单 -->
-<div class="layui-card">
-    <div class="layui-card-body">
-        <form class="layui-form top-search-from">
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="id" value="" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_channel_name')}</label>
-                <div class="layui-input-block">
-                    <input type="hidden" name="name[]" value="like" class="layui-input">
-                    <input type="text" name="name[]" value="" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_driver_key')}</label>
-                <div class="layui-input-block">
-                    <input type="text" name="driver_key" value="" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_pay_method')}</label>
-                <div class="layui-input-block">
-                    <div name="method_id" id="methods" value="" ></div>
-                </div>
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_status')}</label>
-                <div class="layui-input-block">
-                    <select name="status">
-                        <option value="">{:trans('tip_select')}</option>
-                        <option value="1">{:trans('text_open')}</option>
-                        <option value="0">{:trans('text_close')}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="layui-form-item layui-inline">
-                <label class="layui-form-label"></label>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="table-query">
-                    <i class="layui-icon layui-icon-search"></i> {:trans('text_select')}
-                </button>
-                <button type="reset" class="pear-btn pear-btn-md" lay-submit lay-filter="table-reset">
-                    <i class="layui-icon layui-icon-refresh"></i> {:trans('text_reset')}
-                </button>
-            </div>
-            <div class="toggle-btn">
-                <a class="layui-hide">{:trans('text_expand')} <i class="layui-icon layui-icon-down"></i></a>
-                <a class="layui-hide">{:trans('text_collapse')} <i class="layui-icon layui-icon-up"></i></a>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!-- 数据表格 -->
 <div class="layui-card">
@@ -81,20 +21,14 @@
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add" permission="app.admin.paymethod.insert">
         <i class="layui-icon layui-icon-add-1"></i> {:trans('text_add')}
     </button>
-    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" permission="app.admin.article.delete">
-        <i class="layui-icon layui-icon-delete"></i> {:trans('text_delete')}
-    </button>
 </script>
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="secret" permission="app.admin.paychannel.secret">
-        {:trans('text_set_secret')}
-    </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paychannel.update">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.paymethod.update">
         {:trans('text_edit')}
     </button>
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.paychannel.delete">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="remove" permission="app.admin.paymethod.delete">
         {:trans('text_delete')}
     </button>
 </script>
@@ -107,37 +41,11 @@
 
     // 相关常量
     const PRIMARY_KEY = "id";
-    const SELECT_API = "/admin/payChannel/select";
-    const UPDATE_API = "/admin/payChannel/update";
-    const DELETE_API = "/admin/payChannel/delete";
-    const INSERT_URL = "/admin/payChannel/insert";
-    const UPDATE_URL = "/admin/payChannel/update";
-    const SECRET_URL = "/admin/payChannel/secret";
-    const FEE_RATE_URL = "/admin/payChannel/getFeeRate";
-
-    // 字段 支付方式
-    layui.use(["jquery", "xmSelect", "popup"], function() {
-        layui.$.ajax({
-            url: "/admin/payMethod/select?format=select",
-            dataType: "json",
-            success: function (res) {
-                let value = layui.$("#methods").attr("value");
-                let initValue = value ? value.split(",") : [];
-                layui.xmSelect.render({
-                    el: "#methods",
-                    name: "method_id",
-                    initValue: initValue,
-                    data: res.data,
-                    model: {"icon":"hidden","label":{"type":"text"}},
-                    clickClose: true,
-                    radio: true,
-                });
-                if (res.code) {
-                    layui.popup.failure(res.msg);
-                }
-            }
-        });
-    });
+    const SELECT_API = "/admin/feeRule/select";
+    const UPDATE_API = "/admin/feeRule/update";
+    const DELETE_API = "/admin/feeRule/delete";
+    const INSERT_URL = "/admin/feeRule/insert";
+    const UPDATE_URL = "/admin/feeRule/update";
 
     // 表格渲染
     layui.use(["table", "form", "common", "popup", "util"], function () {
@@ -158,13 +66,10 @@
                 width: 100,
                 sort: true,
             }, {
-                title: "{:trans('text_pay_channel_name')}",
-                field: "name",
-            }, {
-                title: "{:trans('text_pay_channel_mode')}",
-                field: "mode",
+                title: "{:trans('text_fee_rule_channel')}",
+                field: "channel_id",
                 templet: function (d) {
-                    let field = "mode";
+                    let field = "channel_id";
                     if (typeof d[field] == "undefined") return "";
                     let items = [];
                     layui.each((d[field] + "").split(","), function (k, v) {
@@ -173,31 +78,29 @@
                     return util.escape(items.join(","));
                 }
             }, {
-                title: "{:trans('text_pay_channel_ratio')}",
-                field: "ratio",
+                title: "{:trans('text_fee_rule_merchant')}",
+                field: "merchant_id",
                 templet: function (d) {
-                    return d['ratio'] + "%";
+                    return d.merchant_id ? d.merchant_id : "";
                 }
+            }, {
+                title: "{:trans('text_fee_rule_platform_id')}",
+                field: "platform_id",
+                templet: function (d) {
+                    return d.platform_id ? d.platform_id : "";
+                }
+            }, {
+                title: "{:trans('text_fee_rule_receive_merchant')}",
+                field: "receive_merchant_id",
             }, {
                 title: "{:trans('text_fee_rule_rate')}",
+                field: "rate",
                 templet: function (d) {
-                    return '<button class="layui-btn layui-btn-xs" lay-event="getFeeRate" permission="app.admin.paychannel.getfeerate">{:trans("text_fee_rule_rate")}</button>';
+                    return d['rate'] + " %";
                 }
             }, {
-                title: "{:trans('text_pay_method')}",
-                field: "method_id",
-                templet: function (d) {
-                    let field = "method_id";
-                    if (typeof d[field] == "undefined") return "";
-                    let items = [];
-                    layui.each((d[field] + "").split(","), function (k, v) {
-                        items.push(apiResults[field][v] || v);
-                    });
-                    return util.escape(items.join(","));
-                }
-            }, {
-                title: "{:trans('text_pay_driver')}",
-                field: "driver_key",
+                title: "{:trans('text_fee_rule_limit_amount')}",
+                field: "limit_amount",
             }, {
                 title: "{:trans('text_create_time')}",
                 field: "created_at",
@@ -207,10 +110,7 @@
                 field: "updated_at",
                 hide: true,
             }, {
-                title: "{:trans('text_sort')}",
-                field: "sort_order"
-            }, {
-                title: "{:trans('text_status')}",
+                title: "{:trans('text_enabled')}",
                 field: "status",
                 templet: function (d) {
                     let field = "status";
@@ -239,7 +139,7 @@
                 toolbar: "#table-bar",
                 align: "center",
                 fixed: "right",
-                width: 200,
+                width: 130,
             }
         ];
 
@@ -247,7 +147,7 @@
         function render() {
             table.render({
                 elem: "#data-table",
-                url: SELECT_API,
+                url: SELECT_API + '?field=id&order=desc',
                 page: {
                     prev: "{:trans('text_prev')}",
                     next: "{:trans('text_next')}",
@@ -286,11 +186,9 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
-        apis.push(["mode", "/admin/config/getConfig?key=PAY_CHANNEL_MODES"]);
-        apis.push(["method_id", "/admin/payMethod/select?format=select"]);
+        apis.push(["channel_id", "/admin/payChannel/select?format=select"]);
         let apiResults = {};
-        apiResults["mode"] = [];
-        apiResults["method_id"] = [];
+        apiResults["channel_id"] = [];
         let count = apis.length;
         layui.each(apis, function (k, item) {
             let [field, url] = item;
@@ -331,10 +229,6 @@
                 remove(obj);
             } else if (obj.event === "edit") {
                 edit(obj);
-            } else if (obj.event === "secret") {
-                secret(obj);
-            } else if (obj.event === "getFeeRate") {
-                getFeeRate(obj);
             }
         });
 
@@ -347,24 +241,6 @@
             } else if (obj.event === "batchRemove") {
                 batchRemove(obj);
             }
-        });
-
-        // 表格顶部搜索事件
-        form.on("submit(table-query)", function (data) {
-            table.reload("data-table", {
-                page: {
-                    curr: 1
-                },
-                where: data.field
-            })
-            return false;
-        });
-
-        // 表格顶部搜索重置事件
-        form.on("submit(table-reset)", function (data) {
-            table.reload("data-table", {
-                where: []
-            })
         });
 
         // 表格排序事件
@@ -385,7 +261,7 @@
                 type: 2,
                 title: "{:trans('text_add')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "600px"],
                 content: INSERT_URL
             });
         }
@@ -397,32 +273,8 @@
                 type: 2,
                 title: "{:trans('text_edit')}",
                 shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "600px"],
                 content: UPDATE_URL + "?" + PRIMARY_KEY + "=" + value
-            });
-        }
-
-        // 表格设置密钥
-        let secret = function (obj) {
-            let value = obj.data[PRIMARY_KEY];
-            layer.open({
-                type: 2,
-                title: "{:trans('text_set_secret')}",
-                shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: SECRET_URL + "?" + PRIMARY_KEY + "=" + value + "&driver_key=" + obj.data.driver_key
-            });
-        }
-
-        // 表格获取费率
-        let getFeeRate = function (obj) {
-            let value = obj.data[PRIMARY_KEY];
-            layer.open({
-                type: 2,
-                title: "{:trans('text_fee_rule_rate')}",
-                shade: 0.1,
-                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
-                content: FEE_RATE_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

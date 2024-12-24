@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body>
+
+        <form class="layui-form" action="">
+
+            <div class="mainBox">
+                <div class="main-container mr-5">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_channel')}</label>
+                        <div class="layui-input-block">
+                            <div name="channel_id" id="channel" value="" ></div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_fee_rule_merchant')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="merchant_id" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_merchant')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_fee_rule_platform_id')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="platform_id" value="" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_platform_id')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_receive_merchant')}</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="receive_merchant_id" value="" required lay-verify="required" class="layui-input">
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_receive_merchant')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_rate')}</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group">
+                                <input type="number" min="0" max="100" lay-affix="number" name="rate" value="" lay-verify="required" class="layui-input" style="width: 120px">
+                                <div class="layui-input-split layui-input-suffix">
+                                    %
+                                </div>
+                            </div>
+                            <div class="layui-form-mid layui-text-em">{:trans('tip_fee_rule_rate')}</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label required">{:trans('text_fee_rule_limit_amount')}</label>
+                        <div class="layui-input-block">
+                            <input type="number" name="limit_amount" value="" class="layui-input">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{:trans('text_status')}</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" checked />
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="bottom">
+                <div class="button-container">
+                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit=""
+                        lay-filter="save">
+                        {:trans('text_submit')}
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        {:trans('text_reset')}
+                    </button>
+                </div>
+            </div>
+            
+        </form>
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+        <script src="/admin/js/permission.js"></script>
+        
+        <script>
+
+            // 相关接口
+            const PRIMARY_KEY = "id";
+            const SELECT_API = "/admin/feeRule/select" + location.search;
+            const UPDATE_API = "/admin/feeRule/update";
+
+            // 获取数据库记录
+            layui.use(["layer", "popup", "form", "popup", "jquery", "xmSelect", "util"], function () {
+                let $ = layui.$;
+
+                $.ajax({
+                    url: SELECT_API,
+                    dataType: "json",
+                    success: function (res) {
+                        // 给表单初始化数据
+                        layui.each(res.data[0], function (key, value) {
+                            let obj = $('*[name="'+key+'"]');
+                            if (typeof obj[0] === "undefined" || !obj[0].nodeName) return;
+                            if (obj[0].type === "textarea") {
+                                obj.val(layui.util.escape(value));
+                            } else if (obj[0].type === "checkbox") {
+                                // checkbox 特殊处理，1为选中，0或空为未选中
+                                if (value === 1) {
+                                    obj.prop('checked', true);  // 设置为选中
+                                } else {
+                                    obj.prop('checked', false); // 设置为未选中
+                                }
+                            } else {
+                                obj.attr("value", value);
+                            }
+                        });
+
+                        // 字段 channel_id
+                        layui.$.ajax({
+                            url: "/admin/payChannel/select?format=select",
+                            dataType: "json",
+                            success: function (res) {
+                                let value = layui.$("#channel").attr("value");
+                                let initValue = value ? value.split(",") : [];
+                                layui.xmSelect.render({
+                                    el: "#channel",
+                                    name: "channel_id",
+                                    initValue: initValue,
+                                    tips: "{:trans('tip_select')}",
+                                    data: res.data,
+                                    value: "0",
+                                    model: {"icon":"hidden","label":{"type":"text"}},
+                                    clickClose: true,
+                                    radio: true
+                                })
+                            }
+                        });
+
+                        // ajax产生错误
+                        if (res.code) {
+                            layui.popup.failure(res.msg);
+                        }
+
+                    }
+                });
+
+                //提交事件
+                layui.form.on("submit(save)", function (data) {
+                    data.field[PRIMARY_KEY] = layui.url().search[PRIMARY_KEY];
+                    data.field.is_pc = data.field.is_pc ? 1 : 0;
+                    data.field.is_mobile = data.field.is_mobile ? 1 : 0;
+                    data.field.status = data.field.status ? 1 : 0;
+                    layui.$.ajax({
+                        url: UPDATE_API,
+                        type: "POST",
+                        dateType: "json",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg, function () {
+                                parent.refreshTable();
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            });
+                        }
+                    });
+                    return false;
+                });
+            });
+
+
+            
+
+
+        </script>
+
+    </body>
+</html>

@@ -51,6 +51,7 @@ class LogModel extends BaseModel {
     const OP_TYPE_MERCHANT_GROUP = 10; // 商户组
     const OP_TYPE_MERCHANT = 11; // 商户
     const OP_TYPE_ORDER = 12; // 订单
+    const OP_TYPE_FEE_RULE = 13; // 手续费分账规则
 
     /**
      * 保存日志

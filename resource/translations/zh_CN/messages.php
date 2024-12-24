@@ -68,6 +68,8 @@ return [
     'text_lang_chinese' => '中文',
     'text_set_secret' => '配置密钥',
     'text_explain' => '说明',
+    'text_count' => '合计',
+    'text_refund' => '退款',
 
     // 系统配置管理
     'text_config_name' => '配置名称',
@@ -222,7 +224,22 @@ return [
     'text_order_offline' => '线下代收',
     'text_order_set_paid' => '设为已付款',
     'error_order_status_not_unpaid' => '订单状态不是未支付',
+    'error_order_status_not_paid' => '订单状态不是已支付',
 
+    // 手续费分账规则
+    'text_fee_rule' => '分账规则',
+    'text_fee_rule_channel' => '订单通道',
+    'text_fee_rule_merchant' => '订单商户',
+    'tip_fee_rule_merchant' => '不填写商户ID，则表示整个通道的分账规则',
+    'text_fee_rule_receive_merchant' => '分账商户',
+    'tip_fee_rule_receive_merchant' => '填写商户ID',
+    'text_fee_rule_limit_amount' => '最小订单金额',
+    'text_fee_rule_rate' => '分账比例',
+    'tip_fee_rule_rate' => '商户分账比例，请填写百分比。注意一个通道总的分账比例不能超过100%，少于100%的部分将计入平台默认手续费收款商户',
+    'text_fee_rule_platform_id' => '佣金承担商户',
+    'tip_fee_rule_platform_id' => '指定商户的订单为中间人收入，这一部分佣金一般由平台承担',
+    'text_fee_rule_common' => '通道通用规则',
+    'text_fee_rule_merchant_order' => '指定订单商户规则',
 
 
 
