@@ -3,6 +3,7 @@
 namespace app\merchant\controller;
 
 use app\common\cache\AdminCache;
+use app\common\cache\MerchantCache;
 use app\common\controller\CrudController;
 use app\common\model\LogModel;
 use app\common\model\MerchantModel;
@@ -49,7 +50,7 @@ class AccountController extends CrudController {
      * @param string $type
      * @return Response
      */
-    public function captcha(Request $request, string $type = 'user-login'): Response {
+    public function captcha(Request $request, string $type = 'merchant-login'): Response {
         $builder = new PhraseBuilder(4, 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ1234567890');
         $captcha = new CaptchaBuilder(null, $builder);
         $captcha->build(120);
@@ -59,7 +60,7 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 登录后台
+     * 登录商户中心
      * @param Request $request
      * @return Response
      * @throws BusinessException
@@ -67,10 +68,10 @@ class AccountController extends CrudController {
     public function login(Request $request): Response {
         $captcha = $request->post('captcha', '');
         // 验证码检测
-        if (strtolower($captcha) !== session('captcha-user-login')) {
+        if (strtolower($captcha) !== session('captcha-merchant-login')) {
             return $this->error('error_captcha');
         }
-        $request->session()->forget('captcha-user-login');
+        $request->session()->forget('captcha-merchant-login'); // 清除验证码
         // 用户名密码检测
         $username = $request->post('username', '');
         $password = $request->post('password', '');
@@ -79,30 +80,28 @@ class AccountController extends CrudController {
         }
         // 检测登录限制
         $this->checkLoginLimit($username);
-        $admin = AdminModel::getByUsername($username);
-        if (!$admin || !Util::passwordVerify($password, $admin->password)) {
+        $merchant = MerchantModel::where('username', $username)->first()->toArray();
+        if (!$merchant || !Util::passwordVerify($password, $merchant['password'])) {
             return $this->error('error_username_password');
         }
-        if ($admin->status != AdminModel::ADMIN_STATUS_ENABLE) {
+        if ($merchant['status'] == MerchantModel::MERCHANT_STATUS_DISABLE) {
             return $this->error('error_user_disabled');
         }
         // 更新登录时间
-        AdminModel::updateLoginTime($admin);
+        MerchantModel::updateLoginTime($merchant['id']);
         // 移除登录限制
-        AdminCache::clearLoginTimes($username);
-        // 存储用户信息到session
-        $session = $request->session();
-        $admin = $admin->toArray();
-        $admin['password'] = md5($admin['password']);
-        $session->set('admin', $admin);
+        MerchantCache::clearLoginTimes($username);
+        // 存储商户信息到session
+        $merchant['password'] = md5($merchant['password']); // 存储MD5后的密码
+        $request->session()->set('merchant', $merchant);
         $this->output = [
-            'nickname' => $admin['nickname'],
+            'username' => $merchant['username'],
             'token' => $request->sessionId(),
         ];
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_MERCHANT,
             LogModel::OP_TYPE_MERCHANT_ACCOUNT,
-            AdminModel::adminId()
+            MerchantModel::merchantId()
         );
         return $this->success('success_login');
     }
@@ -235,8 +234,8 @@ class AccountController extends CrudController {
      * @throws BusinessException
      */
     protected function checkLoginLimit($username) {
-        AdminCache::incrLoginTimes($username);
-        $loginTimes = AdminCache::getLoginTimes($username);
+        MerchantCache::incrLoginTimes($username);
+        $loginTimes = MerchantCache::getLoginTimes($username);
         if ($loginTimes > 5) {
             throw new BusinessException(trans('error_login_limit'));
         }

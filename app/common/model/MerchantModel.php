@@ -154,6 +154,22 @@ class MerchantModel extends BaseModel {
     }
 
     /**
+     * 更新登录时间
+     * @param int $merchant_id 商户ID
+     * @return bool
+     */
+    public static function updateLoginTime(int $merchant_id): bool {
+        $merchant = self::find($merchant_id);
+        if (!$merchant) {
+            return false;
+        }
+        $merchant->login_at = time();
+        $merchant->save();
+        self::cache($merchant->id);
+        return true;
+    }
+
+    /**
      * 商户余额变动操作
      * @param $merchant_id
      * @param $type

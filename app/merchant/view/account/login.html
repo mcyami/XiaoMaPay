@@ -47,14 +47,14 @@
 
                 var $ = layui.$, layer = layui.layer, form = layui.form;
                 function switchCaptcha() {
-                    $('.codeImage').attr("src", "/merchant/account/captcha/user-login?v=" + new Date().getTime());
+                    $('.codeImage').attr("src", "/merchant/account/captcha/merchant-login?v=" + new Date().getTime());
                 }
                 switchCaptcha();
                 // 登 录 提 交
                 form.on('submit(login)', function (data) {
                     layer.load();
                     $.ajax({
-                        url: '/user/account/login',
+                        url: '/merchant/account/login',
                         type: "POST",
                         data: data.field,
                         success: function (res) {

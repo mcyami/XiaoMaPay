@@ -55,8 +55,9 @@ class AdminModel extends BaseModel {
      */
     public static function updateLoginTime(AdminModel $admin): bool {
         $admin->login_at = time();
+        $admin->save();
         self::cache($admin->id);
-        return $admin->save();
+        return true;
     }
 
     /**
