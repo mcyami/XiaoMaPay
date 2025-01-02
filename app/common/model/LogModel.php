@@ -34,7 +34,7 @@ class LogModel extends BaseModel {
 
     // 操作用户类型，如果修改了要与配置项CATE_LOG_USER同步
     const OP_USER_TYPE_ADMIN = 1; // A端后台用户
-    const OP_USER_TYPE_CUSTOMER = 2; // B端用户
+    const OP_USER_TYPE_MERCHANT = 2; // B端用户 商户
     const OP_USER_TYPE_CLIENT = 3; // C端用户
 
     // 操作类型，如果修改了要与配置项CATE_LOG_TYPE同步
@@ -52,6 +52,9 @@ class LogModel extends BaseModel {
     const OP_TYPE_MERCHANT = 11; // 商户
     const OP_TYPE_ORDER = 12; // 订单
     const OP_TYPE_FEE_RULE = 13; // 手续费分账规则
+
+    // 商户端操作类型
+    const OP_TYPE_MERCHANT_ACCOUNT = 101; // 商户账户
 
     /**
      * 保存日志
