@@ -107,17 +107,17 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 退出后台
+     * 退出商户中心
      * @param Request $request
      * @return Response
      */
     public function logout(Request $request): Response {
         LogModel::saveLog(
-            LogModel::OP_USER_TYPE_ADMIN,
-            LogModel::OP_TYPE_ACCOUNT,
-            AdminModel::adminId()
+            LogModel::OP_USER_TYPE_MERCHANT,
+            LogModel::OP_TYPE_MERCHANT_ACCOUNT,
+            MerchantModel::merchantId()
         );
-        $request->session()->delete('admin');
+        $request->session()->delete('merchant');
         return $this->success('success_logout');
     }
 
@@ -127,27 +127,28 @@ class AccountController extends CrudController {
      * @throws Throwable
      */
     public function index() {
-        return view('account/index', ['name' => 'admin']);
+        return view('account/index', ['name' => 'merchant']);
     }
 
     /**
-     * 获取登录信息
+     * 获取登录信息 TODO
      * @param Request $request
      * @return Response
      */
     public function info(Request $request): Response {
-        $admin = AdminModel::admin();
-        if (!$admin) {
+        $merchant_session = MerchantModel::info();
+        if (!$merchant_session) {
             return $this->error('error_no_login');
         }
         $info = [
-            'id' => $admin['id'],
-            'username' => $admin['username'],
-            'nickname' => $admin['nickname'],
-            'avatar' => $admin['avatar'],
-            'email' => $admin['email'],
-            'mobile' => $admin['mobile'],
-            'isSuperAdmin' => Auth::isSuperAdmin(),
+            'id' => $merchant_session['id'],
+            'group_id' => $merchant_session['group_id'],
+            'username' => $merchant_session['username'],
+            'email' => $merchant_session['email'],
+            'phone' => $merchant_session['phone'],
+            'qq' => $merchant_session['qq'],
+            'url' => $merchant_session['url'],
+            'service' => $merchant_session['service'],
             'token' => $request->sessionId(),
         ];
         $this->output = $info;
@@ -155,7 +156,7 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 更新个人资料
+     * 更新个人资料 TODO
      * @param Request $request
      * @return Response
      */
@@ -195,7 +196,7 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 修改密码
+     * 修改密码 TODO
      * @param Request $request
      * @return Response
      */
