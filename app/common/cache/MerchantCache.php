@@ -38,7 +38,7 @@ class MerchantCache {
      * @param string $id
      * @return bool
      */
-    public static function delSystemInfo(string $id): bool {
+    public static function delMerchantInfo(string $id): bool {
         $key = sprintf(self::$merchant_infos, $id);
         return Redis::del($key);
     }

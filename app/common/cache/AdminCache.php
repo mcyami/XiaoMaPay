@@ -10,7 +10,7 @@ class AdminCache {
     // 管理员信息 管理员信息数组 [name:xx, mobile:xx, roles:[1, 2, 3] ...]
     private static $system_admin = 'system:admin:%s';
 
-    // 管理员角色关联
+    // 管理员角色关联 每个角色下面有哪些管理员 [1 => [1, 2, 3, 4, 5], 2 => [1, 2, 3, 4, 5] ...]
     private static $system_admin_role = 'system:admin_role';
 
     /**

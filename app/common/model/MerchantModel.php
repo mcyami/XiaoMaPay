@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use app\common\cache\MerchantCache;
 use app\common\cache\PayChannelCache;
 use app\common\cache\PayMethodCache;
 use support\Db;
@@ -54,6 +55,66 @@ class MerchantModel extends BaseModel {
     const MERCHANT_PAY_ENABLE = 1; // 是否开通支付：启用
     const MERCHANT_SETTLE_DISABLE = 0; // 是否开通结算：禁用
     const MERCHANT_SETTLE_ENABLE = 1; // 是否开通结算：启用
+
+    /**
+     * 刷新当前商户账号session（带自动退出功能）
+     * @param bool $force 是否强制刷新
+     * @return void|null
+     */
+    public static function refreshMerchantSession(bool $force = false) {
+        $merchant_session = session('merchant');
+        if (!$merchant_session) {
+            return null;
+        }
+        $merchant_id = $merchant_session['id'];
+        $time_now = time();
+        // session在2秒内不刷新
+        $session_ttl = 2;
+        $session_last_update_time = session('merchant.session_last_update_time', 0);
+        if (!$force && $time_now - $session_last_update_time < $session_ttl) {
+            return null;
+        }
+        $session = request()->session();
+        // 从缓存获取商户信息
+        $merchant_cache = MerchantCache::getMerchantInfo($merchant_id);
+        if (!$merchant_cache) {
+            // 商户信息不存在则退出
+            $session->forget('merchant');
+            return null;
+        }
+        $merchant_cache['password'] = md5($merchant_cache['password']);
+        $merchant_session['password'] = $merchant_session['password'] ?? '';
+        if ($merchant_cache['password'] != $merchant_session['password']) {
+            // 商户修改了密码，则退出
+            $session->forget('merchant');
+            return null;
+        }
+        // 账户被禁用
+        if ($merchant_cache['status'] != self::MERCHANT_STATUS_ENABLE) {
+            $session->forget('merchant');
+            return;
+        }
+        $merchant_cache['session_last_update_time'] = $time_now;
+        $session->set('merchant', $merchant_cache);
+    }
+
+    /**
+     * 缓存当前操作的商户信息
+     * 新增、编辑、删除后需要进行缓存更新
+     * @param string $id
+     * @param bool $del
+     * @return bool
+     */
+    public static function cache(string $id, bool $del = false): bool {
+        if ($del) {
+            MerchantCache::delMerchantInfo($id);
+            return true;
+        }
+        $merchant_info = self::find($id)->toArray();
+        // 缓存商户信息
+        MerchantCache::setMerchantInfo($id, $merchant_info);
+        return true;
+    }
 
     /**
      * 商户余额变动操作
