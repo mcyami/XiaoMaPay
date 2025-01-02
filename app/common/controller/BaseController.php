@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\common\controller;
 
 use support\Response;
 

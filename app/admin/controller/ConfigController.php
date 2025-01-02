@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\admin\model\OptionModel;
+use app\common\controller\CrudController;
 use app\common\model\ConfigModel;
 use app\common\model\LogModel;
 use app\common\utils\Util;

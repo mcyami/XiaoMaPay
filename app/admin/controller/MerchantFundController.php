@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\controller\CrudController;
 use app\common\model\MerchantFundModel;
 use support\Response;
 

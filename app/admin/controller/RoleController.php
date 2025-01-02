@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\common\controller\CrudController;
 use app\common\model\LogModel;
 use app\common\model\RoleModel;
 use app\common\model\RuleModel;

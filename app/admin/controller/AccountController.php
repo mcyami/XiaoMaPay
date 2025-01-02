@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\cache\AdminCache;
+use app\common\controller\CrudController;
 use app\common\model\AdminModel;
 use app\common\model\LogModel;
 use app\common\utils\Auth;

@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 
+use app\common\controller\CrudController;
 use app\common\model\LogModel;
 use support\exception\BusinessException;
 use support\Request;

@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\OptionModel;
+use app\common\controller\BaseController;
 use app\common\model\AdminModel;
 use app\common\model\RoleModel;
 use app\common\model\RuleModel;

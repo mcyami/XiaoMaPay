@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\cache\PayDriverCache;
+use app\common\controller\CrudController;
 use app\common\model\PayDriverModel;
 use app\common\model\PayMethodModel;
 use support\exception\BusinessException;

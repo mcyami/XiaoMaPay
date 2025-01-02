@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\UserModel;
 use app\common\cache\ConfigCache;
 use app\common\cache\RoleCache;
 use app\common\cache\RuleCache;
