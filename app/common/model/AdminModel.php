@@ -82,6 +82,9 @@ class AdminModel extends BaseModel {
     /**
      * 当前管理员
      * @param null|array|string $fields
+     *  string: 返回指定字段
+     *  array: 返回指定字段
+     *  null: 返回所有字段
      * @return array|mixed|null
      */
     public static function admin($fields = null) {

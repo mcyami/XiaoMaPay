@@ -57,6 +57,43 @@ class MerchantModel extends BaseModel {
     const MERCHANT_SETTLE_ENABLE = 1; // 是否开通结算：启用
 
     /**
+     * 当前商户管理员id
+     * @return int|null
+     */
+    public static function merchantId(): ?int {
+        return session('merchant.id');
+    }
+
+    /**
+     * 当前商户管理员
+     * @param null|array|string $fields
+     *  string: 返回指定字段
+     *  array: 返回指定字段
+     *  null: 返回所有字段
+     * @return array|mixed|null
+     */
+    public static function info($fields = null) {
+        self::refreshAdminSession();
+        if (!$merchant_session = session('merchant')) {
+            return null;
+        }
+        if ($fields === null) {
+            // 返回所有字段
+            return $merchant_session;
+        }
+        if (is_array($fields)) {
+            // 返回指定字段
+            $results = [];
+            foreach ($fields as $field) {
+                $results[$field] = $merchant_session[$field] ?? null;
+            }
+            return $results;
+        }
+        // 返回指定字段
+        return $merchant_session[$fields] ?? null;
+    }
+
+    /**
      * 刷新当前商户账号session（带自动退出功能）
      * @param bool $force 是否强制刷新
      * @return void|null
