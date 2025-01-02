@@ -3,9 +3,9 @@
 namespace app\admin\controller;
 
 use app\admin\cache\RuleCache;
-use app\admin\model\AdminModel;
-use app\admin\model\LogModel;
-use app\admin\model\RuleModel;
+use app\common\model\AdminModel;
+use app\common\model\LogModel;
+use app\common\model\RuleModel;
 use app\common\utils\Tree;
 use app\common\utils\Util;
 use support\exception\BusinessException;

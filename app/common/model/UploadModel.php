@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\model;
+namespace app\common\model;
 
 /**
  * @property integer $id 主键(主键)

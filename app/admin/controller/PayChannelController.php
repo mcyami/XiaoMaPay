@@ -3,10 +3,10 @@
 namespace app\admin\controller;
 
 use app\admin\cache\PayDriverCache;
-use app\admin\model\FeeRuleModel;
-use app\admin\model\LogModel;
-use app\admin\model\MerchantModel;
-use app\admin\model\PayChannelModel;
+use app\common\model\FeeRuleModel;
+use app\common\model\LogModel;
+use app\common\model\MerchantModel;
+use app\common\model\PayChannelModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;

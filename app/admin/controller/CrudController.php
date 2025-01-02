@@ -3,7 +3,7 @@
 namespace app\admin\controller;
 
 
-use app\admin\model\AdminModel;
+use app\common\model\AdminModel;
 use app\common\utils\Auth;
 use app\common\utils\StringHelper;
 use app\common\utils\Tree;

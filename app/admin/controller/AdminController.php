@@ -3,9 +3,9 @@
 namespace app\admin\controller;
 
 use app\admin\cache\AdminCache;
-use app\admin\model\AdminModel;
-use app\admin\model\AdminRoleModel;
-use app\admin\model\LogModel;
+use app\common\model\AdminModel;
+use app\common\model\AdminRoleModel;
+use app\common\model\LogModel;
 use app\common\utils\Auth;
 use support\exception\BusinessException;
 use support\Request;

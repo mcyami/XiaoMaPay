@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\model;
+namespace app\common\model;
 
 use app\common\service\SafetyLockService;
 use Webman\RedisQueue\Redis;

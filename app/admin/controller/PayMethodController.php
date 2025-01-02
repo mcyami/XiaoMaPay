@@ -2,8 +2,8 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\LogModel;
-use app\admin\model\PayMethodModel;
+use app\common\model\LogModel;
+use app\common\model\PayMethodModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;

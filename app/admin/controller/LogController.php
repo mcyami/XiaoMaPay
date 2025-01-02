@@ -1,7 +1,7 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\model\LogModel;
+use app\common\model\LogModel;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;

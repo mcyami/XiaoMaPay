@@ -2,8 +2,8 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\MerchantModel;
-use app\admin\model\OrderModel;
+use app\common\model\MerchantModel;
+use app\common\model\OrderModel;
 use app\common\utils\StringHelper;
 use support\Cache;
 use support\Db;

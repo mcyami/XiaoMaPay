@@ -2,8 +2,8 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\LogModel;
-use app\admin\model\MerchantModel;
+use app\common\model\LogModel;
+use app\common\model\MerchantModel;
 use app\common\utils\StringHelper;
 use support\exception\BusinessException;
 use support\Request;

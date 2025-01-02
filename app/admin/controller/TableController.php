@@ -2,10 +2,10 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\AdminModel;
 use app\admin\model\OptionModel;
-use app\admin\model\RoleModel;
-use app\admin\model\RuleModel;
+use app\common\model\AdminModel;
+use app\common\model\RoleModel;
+use app\common\model\RuleModel;
 use app\common\utils\Layui;
 use app\common\utils\Util;
 use Doctrine\Inflector\InflectorFactory;

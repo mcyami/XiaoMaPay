@@ -2,10 +2,9 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\AdminModel;
-use app\admin\model\ConfigModel;
-use app\admin\model\LogModel;
 use app\admin\model\OptionModel;
+use app\common\model\ConfigModel;
+use app\common\model\LogModel;
 use app\common\utils\Util;
 use support\exception\BusinessException;
 use support\Request;

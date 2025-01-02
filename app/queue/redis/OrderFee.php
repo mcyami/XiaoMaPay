@@ -2,10 +2,9 @@
 
 namespace app\queue\redis;
 
-use app\admin\model\FeeRuleModel;
-use app\admin\model\MerchantFundModel;
-use app\admin\model\MerchantModel;
-use app\admin\model\OrderModel;
+use app\common\model\MerchantFundModel;
+use app\common\model\MerchantModel;
+use app\common\model\OrderModel;
 use support\Log;
 use Webman\RedisQueue\Consumer;
 

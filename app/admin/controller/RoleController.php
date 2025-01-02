@@ -2,9 +2,9 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\LogModel;
-use app\admin\model\RoleModel;
-use app\admin\model\RuleModel;
+use app\common\model\LogModel;
+use app\common\model\RoleModel;
+use app\common\model\RuleModel;
 use app\common\utils\Auth;
 use app\common\utils\Tree;
 use support\exception\BusinessException;

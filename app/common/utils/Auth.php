@@ -5,9 +5,9 @@ namespace app\common\utils;
 use app\admin\cache\AdminCache;
 use app\admin\cache\RoleCache;
 use app\admin\cache\RuleCache;
-use app\admin\model\AdminModel;
-use app\admin\model\AdminRoleModel;
-use app\admin\model\RuleModel;
+use app\common\model\AdminModel;
+use app\common\model\AdminRoleModel;
+use app\common\model\RuleModel;
 use support\exception\BusinessException;
 
 class Auth {

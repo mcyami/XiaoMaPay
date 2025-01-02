@@ -2,8 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\MerchantFundModel;
-use support\Db;
+use app\common\model\MerchantFundModel;
 use support\Response;
 
 /**

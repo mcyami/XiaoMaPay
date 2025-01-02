@@ -2,17 +2,17 @@
 
 namespace app\admin\controller;
 
-use app\admin\model\AdminModel;
-use app\admin\model\LogModel;
-use app\admin\model\UploadModel;
+use app\common\model\AdminModel;
+use app\common\model\LogModel;
+use app\common\model\UploadModel;
 use Exception;
 use Intervention\Image\ImageManager as Image;
-
-//use Random\RandomException;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 use Throwable;
+
+//use Random\RandomException;
 
 /**
  * 附件管理
