@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\RuleCache;
+use app\common\cache\RuleCache;
 
 /**
  * @property integer $id ID(主键)

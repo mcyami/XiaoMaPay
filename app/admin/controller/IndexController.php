@@ -2,10 +2,10 @@
 
 namespace app\admin\controller;
 
-use app\admin\cache\ConfigCache;
-use app\admin\cache\RoleCache;
-use app\admin\cache\RuleCache;
 use app\admin\model\UserModel;
+use app\common\cache\ConfigCache;
+use app\common\cache\RoleCache;
+use app\common\cache\RuleCache;
 use app\common\model\AdminModel;
 use app\common\model\ConfigModel;
 use app\common\model\RoleModel;

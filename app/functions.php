@@ -1,6 +1,6 @@
 <?php
 
-use app\admin\cache\ConfigCache;
+use app\common\cache\ConfigCache;
 use support\Context;
 use support\Log;
 

@@ -3,8 +3,8 @@
 namespace app\common\model;
 
 
-use app\admin\cache\RoleCache;
-use app\admin\cache\RuleCache;
+use app\common\cache\RoleCache;
+use app\common\cache\RuleCache;
 use app\common\utils\Util;
 
 /**

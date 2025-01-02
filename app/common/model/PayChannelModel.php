@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\PayChannelCache;
+use app\common\cache\PayChannelCache;
 
 /**
  * 支付通道

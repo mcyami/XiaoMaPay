@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\admin\cache\RuleCache;
+use app\common\cache\RuleCache;
 use app\common\model\AdminModel;
 use app\common\model\LogModel;
 use app\common\model\RuleModel;

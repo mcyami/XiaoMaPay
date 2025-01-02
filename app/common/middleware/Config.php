@@ -2,7 +2,7 @@
 
 namespace app\common\middleware;
 
-use app\admin\cache\ConfigCache;
+use app\common\cache\ConfigCache;
 use Webman\Http\Request;
 use Webman\Http\Response;
 use Webman\MiddlewareInterface;

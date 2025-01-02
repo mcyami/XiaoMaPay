@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\PayDriverCache;
+use app\common\cache\PayDriverCache;
 use support\Db;
 
 /**

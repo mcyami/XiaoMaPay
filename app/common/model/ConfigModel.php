@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\ConfigCache;
+use app\common\cache\ConfigCache;
 
 
 class ConfigModel extends BaseModel {

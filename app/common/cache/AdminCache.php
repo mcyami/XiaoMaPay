@@ -1,5 +1,5 @@
 <?php
-namespace app\admin\cache;
+namespace app\common\cache;
 
 use support\Redis;
 

@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\PayMethodCache;
+use app\common\cache\PayMethodCache;
 
 /**
  * 支付方式

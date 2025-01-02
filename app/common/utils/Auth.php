@@ -2,9 +2,9 @@
 
 namespace app\common\utils;
 
-use app\admin\cache\AdminCache;
-use app\admin\cache\RoleCache;
-use app\admin\cache\RuleCache;
+use app\common\cache\AdminCache;
+use app\common\cache\RoleCache;
+use app\common\cache\RuleCache;
 use app\common\model\AdminModel;
 use app\common\model\AdminRoleModel;
 use app\common\model\RuleModel;

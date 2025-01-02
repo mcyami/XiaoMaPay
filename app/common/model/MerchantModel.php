@@ -2,8 +2,8 @@
 
 namespace app\common\model;
 
-use app\admin\cache\PayChannelCache;
-use app\admin\cache\PayMethodCache;
+use app\common\cache\PayChannelCache;
+use app\common\cache\PayMethodCache;
 use support\Db;
 
 /**

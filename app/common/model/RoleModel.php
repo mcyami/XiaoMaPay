@@ -3,7 +3,7 @@
 namespace app\common\model;
 
 
-use app\admin\cache\RoleCache;
+use app\common\cache\RoleCache;
 
 /**
  * @property integer $id 主键(主键)

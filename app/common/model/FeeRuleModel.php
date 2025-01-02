@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\admin\cache\FeeRuleCache;
+use app\common\cache\FeeRuleCache;
 
 /**
  * 手续费分账规则

@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\admin\cache\PayDriverCache;
+use app\common\cache\PayDriverCache;
 use app\common\model\FeeRuleModel;
 use app\common\model\LogModel;
 use app\common\model\MerchantModel;
