@@ -80,10 +80,11 @@ class AccountController extends CrudController {
         }
         // 检测登录限制
         $this->checkLoginLimit($username);
-        $merchant = MerchantModel::where('username', $username)->first()->toArray();
-        if (!$merchant || !Util::passwordVerify($password, $merchant['password'])) {
+        $merchant = MerchantModel::where('username', $username)->first();
+        if (!$merchant || !Util::passwordVerify($password, $merchant->password)) {
             return $this->error('error_username_password');
         }
+        $merchant = $merchant->toArray(); // 商户存在才转换为数组，避免toArray()报错
         if ($merchant['status'] == MerchantModel::MERCHANT_STATUS_DISABLE) {
             return $this->error('error_user_disabled');
         }

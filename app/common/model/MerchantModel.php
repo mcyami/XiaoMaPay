@@ -73,7 +73,7 @@ class MerchantModel extends BaseModel {
      * @return array|mixed|null
      */
     public static function info($fields = null) {
-        self::refreshAdminSession();
+        self::refreshMerchantSession();
         if (!$merchant_session = session('merchant')) {
             return null;
         }

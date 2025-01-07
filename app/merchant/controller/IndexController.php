@@ -21,8 +21,7 @@ class IndexController {
      * @return Response
      */
     public function index(Request $request): Response {
-//        $merchant = MerchantModel::user();
-        $merchant = 0;
+        $merchant = MerchantModel::info();
         if (!$merchant) {
             // 登录页
             $title = C('MERCHANT_SITE_NAME', null, 'Merchant Admin');

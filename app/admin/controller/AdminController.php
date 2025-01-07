@@ -67,7 +67,7 @@ class AdminController extends CrudController {
         [$where, $format, $limit, $field, $order] = $this->selectInput($request);
         $query = $this->doSelect($where, $field, $order);
         if ($format === 'select') {
-            return $this->formatSelect($query->get());
+            return $this->formatSelect($this->model, $query->get());
         }
         $paginator = $query->paginate($limit);
         $items = $paginator->items();
@@ -235,7 +235,7 @@ class AdminController extends CrudController {
      * @param $items
      * @return Response
      */
-    protected function formatSelect($items): Response {
+    protected function formatSelect($model, $items): Response {
         $formatted_items = [];
         foreach ($items as $item) {
             $formatted_items[] = [
