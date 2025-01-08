@@ -122,7 +122,7 @@ class MerchantModel extends BaseModel {
         $merchant_cache['password'] = md5($merchant_cache['password']);
         $merchant_session['password'] = $merchant_session['password'] ?? '';
         if ($merchant_cache['password'] != $merchant_session['password']) {
-            // 商户修改了密码，则退出
+            // 商户修改了密码，则退出重新登录
             $session->forget('merchant');
             return null;
         }
@@ -167,6 +167,18 @@ class MerchantModel extends BaseModel {
         $merchant->save();
         self::cache($merchant->id);
         return true;
+    }
+
+    /**
+     * 更新商户资料
+     * @param $merchant_id
+     * @param $data
+     * @return bool|int
+     */
+    public static function updateProfile($merchant_id, $data) {
+        $res = self::where('id', $merchant_id)->update($data);
+        self::cache($merchant_id);
+        return $res;
     }
 
     /**

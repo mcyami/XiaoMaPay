@@ -132,7 +132,7 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 获取登录信息 TODO
+     * 获取登录信息
      * @param Request $request
      * @return Response
      */
@@ -157,16 +157,16 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 更新个人资料 TODO
+     * 更新商户个人资料
      * @param Request $request
      * @return Response
      */
     public function update(Request $request): Response {
         $allow_column = [
-            'nickname' => 'nickname',
-            'avatar' => 'avatar',
             'email' => 'email',
-            'mobile' => 'mobile',
+            'qq' => 'qq',
+            'url' => 'url',
+            'service' => 'service',
         ];
         $data = $request->post();
         $update_data = [];
@@ -178,18 +178,19 @@ class AccountController extends CrudController {
         if (isset($update_data['password'])) {
             $update_data['password'] = Util::passwordHash($update_data['password']);
         }
-        $before_data = AdminModel::find(AdminModel::adminId())->toArray();
-        AdminModel::updateProfile(AdminModel::adminId(), $update_data);
-        $admin = AdminModel::admin();
+        $now_id = MerchantModel::merchantId(); // 当前商户ID
+        $before_data = MerchantModel::find($now_id)->toArray();
+        MerchantModel::updateProfile($now_id, $update_data);
+
+        $merchant = MerchantModel::info();
         unset($update_data['password']);
         foreach ($update_data as $key => $value) {
-            $admin[$key] = $value;
+            $merchant[$key] = $value;
         }
-        $request->session()->set('admin', $admin);
         LogModel::saveLog(
-            LogModel::OP_USER_TYPE_ADMIN,
-            LogModel::OP_TYPE_ACCOUNT,
-            AdminModel::adminId(),
+            LogModel::OP_USER_TYPE_MERCHANT,
+            LogModel::OP_TYPE_MERCHANT_ACCOUNT,
+            $now_id,
             $before_data,
             $update_data
         );
@@ -197,13 +198,13 @@ class AccountController extends CrudController {
     }
 
     /**
-     * 修改密码 TODO
+     * 修改密码
      * @param Request $request
      * @return Response
      */
     public function password(Request $request): Response {
-        $admin_id = AdminModel::adminId();
-        $hash = AdminModel::find($admin_id)['password'];
+        $now_id = MerchantModel::merchantId();
+        $hash = MerchantModel::find($now_id)['password'];
         $password = $request->post('password');
         if (!$password) {
             return $this->error('error_password_empty');
@@ -218,11 +219,11 @@ class AccountController extends CrudController {
         $update_data = [
             'password' => $new_password
         ];
-        AdminModel::updateProfile($admin_id, $update_data);
+        MerchantModel::updateProfile($now_id, $update_data);
         LogModel::saveLog(
-            LogModel::OP_USER_TYPE_ADMIN,
-            LogModel::OP_TYPE_ACCOUNT,
-            AdminModel::adminId(),
+            LogModel::OP_USER_TYPE_MERCHANT,
+            LogModel::OP_TYPE_MERCHANT_ACCOUNT,
+            $now_id,
             $hash, // 旧密码
             $new_password // 新密码
         );

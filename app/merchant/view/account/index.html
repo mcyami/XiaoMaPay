@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/component/layui/css/layui.css?v=2.8.12" />
+        <link rel="stylesheet" href="/component/pear/css/pear.css" />
+        <link rel="stylesheet" href="/admin/css/reset.css" />
+    </head>
+    <body class="pear-container">
+        <style>
+            .layui-input-block input {
+                width: 300px;
+            }
+        </style>
+
+        <div class="layui-card">
+            <div class="layui-card-body">
+
+                <div class="layui-tab layui-tab-brief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">{:trans('text_basic_info')}</li>
+                    <li>{:trans('text_security_settings')}</li>
+                </ul>
+                <div class="layui-tab-content">
+
+                    <!-- 基本信息 -->
+                    <div class="layui-tab-item layui-show">
+
+                        <form class="layui-form" lay-filter="baseInfo">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_username')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="username" placeholder="{:trans('text_username')}" class="layui-input" disabled>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_mobile')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="phone" placeholder="{:trans('text_mobile')}" class="layui-input" disabled>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_email')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="email" placeholder="{:trans('text_email')}" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_qq')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="qq" placeholder="{:trans('text_qq')}" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_url')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="url" placeholder="{:trans('text_url')}" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_merchant_service')}</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="service" placeholder="{:trans('text_merchant_service')}" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="saveBaseInfo">
+                                        {:trans('text_submit')}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div class="layui-tab-item">
+
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_old_password')}</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="old_password" required  lay-verify="required" placeholder="{:trans('text_old_password')}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_new_password')}</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="password" required  lay-verify="required" placeholder="{:trans('text_new_password')}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:trans('text_password_confirm')}</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="password_confirm" required  lay-verify="required" placeholder="{:trans('text_password_confirm')}" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="pear-btn pear-btn-primary pear-btn-md" lay-submit="" lay-filter="savePassword">
+                                        {:trans('text_submit')}
+                                    </button>
+                                    <button type="reset" class="pear-btn pear-btn-md">
+                                        {:trans('text_reset')}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+
+        <script src="/component/layui/layui.js?v=2.8.12"></script>
+        <script src="/component/pear/pear.js"></script>
+
+        <script>
+
+            layui.use(["form", "popup"], function () {
+                let form = layui.form;
+                let $ = layui.$;
+                $.ajax({
+                    url: "/merchant/account/info",
+                    dataType: "json",
+                    success: function (res) {
+                        form.val("baseInfo", res.data);
+                    }
+                });
+
+                form.on("submit(saveBaseInfo)", function(data){
+                    // 只提交部分数据 email, qq, url, service，不提交 username, phone
+                    delete data.field.username;
+                    delete data.field.phone;
+                    console.log(JSON.stringify(data.field));
+                    $.ajax({
+                        url: "/merchant/account/update",
+                        dataType: "json",
+                        type: "POST",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg);
+                        }
+                    });
+                    return false;
+                });
+
+                form.on("submit(savePassword)", function(data){
+                    $.ajax({
+                        url: "/merchant/account/password",
+                        dataType: "json",
+                        type: "POST",
+                        data: data.field,
+                        success: function (res) {
+                            if (res.code) {
+                                return layui.popup.failure(res.msg);
+                            }
+                            return layui.popup.success(res.msg);
+                        }
+                    });
+                    return false;
+                });
+
+            });
+
+        </script>
+
+    </body>
+</html>

@@ -105,8 +105,8 @@
         <!-- 框 架 初 始 化 -->
         <script>
 
-            // Admin
-            window.Admin = {
+            // Merchant 全 局 对 象
+            window.Merchant = {
                 Account: {}
             };
 
@@ -141,12 +141,12 @@
                     url: "/merchant/account/info",
                     dataType: 'json',
                     success: function (res) {
-                        window.Admin.Account = res.data;
+                        window.Merchant.Account = res.data;
                     }
                 });
 
                 // 消息点击回调
-                //admin.message(function(id, title, context, form) {});
+                //merchant.message(function(id, title, context, form) {});
             });
 
         </script>
