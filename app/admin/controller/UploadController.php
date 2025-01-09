@@ -226,7 +226,6 @@ class UploadController extends CrudController {
             $relative_path = 'upload/avatar/' . date('Ym');
             $base_path = base_path() . '/public';
             $real_path = $base_path . "/$relative_path";
-            loginfo('real_path' . $real_path);
             if (!is_dir($real_path)) {
                 mkdir($real_path, 0777, true);
             }

@@ -75,7 +75,6 @@ class PayDriverModel extends BaseModel {
     public static function cache(): bool {
         $all = self::get()->toArray();
         $dataList = array_column($all, null, 'key');
-        loginfo('dataList', [$dataList]);
         // 1. 全部支付驱动列表
         PayDriverCache::setList($dataList);
         // 2&3. 支付方式支持的驱动列表

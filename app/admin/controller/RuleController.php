@@ -251,7 +251,6 @@ class RuleController extends CrudController {
         }
         $before_data = $row->toArray();
         if (isset($data['pid'])) {
-            loginfo('pid', ['data'=>$data]);
             $data['pid'] = is_numeric($data['pid']) ? $data['pid'] : 0;
             if ($data['pid'] == $row['id']) {
                 return $this->error('error_no_pid_self');

@@ -190,9 +190,8 @@ class MerchantController extends CrudController {
         }
         // 存储商户信息到session
         $merchant['password'] = md5($merchant['password']); // 存储MD5后的密码
-        loginfo('merchant_info', [$merchant]);
         session()->put('merchant', $merchant);
-        session()->save(); // 显式保存，避免redirect引起的session为保存问题
+        session()->save(); // 显式保存
         // 跳转到商户中心
         return redirect('/merchant/index/index');
     }

@@ -54,7 +54,6 @@ class FeeRuleModel extends BaseModel {
      */
     public static function getFeeList(float $fee, int $channelId, int $merchantId = 0): array {
         $rules = self::getRules($channelId, $merchantId);
-//        loginfo('===Rules===', $rules);
         $rates = [];
         foreach ($rules as $merchantId => $rule) {
             $rates[$merchantId] = number_format($fee * $rule / 100, 2, '.', '');
