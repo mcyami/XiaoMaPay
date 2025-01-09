@@ -2,11 +2,11 @@
 
 namespace app\merchant\controller;
 
-use app\common\model\AdminModel;
 use app\common\model\MerchantModel;
 use app\common\utils\Util;
 use support\Request;
 use support\Response;
+use Throwable;
 use Workerman\Worker;
 
 class IndexController {

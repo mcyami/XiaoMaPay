@@ -56,6 +56,7 @@ class MerchantController extends CrudController {
             // 手机号加密存储
             $data['phone_encrypt'] = StringHelper::aesEncrypt($data['phone']);
             $id = $this->doInsert($data);
+            $this->model->cache($id);
             $this->output['id'] = $id;
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
@@ -91,6 +92,7 @@ class MerchantController extends CrudController {
         $select_field = collect($data)->keys()->toArray();
         $before_data = $this->model->select($select_field)->find($id)->toArray();
         $this->doUpdate($id, $data);
+        $this->model->cache($id);
         LogModel::saveLog(
             LogModel::OP_USER_TYPE_ADMIN,
             LogModel::OP_TYPE_MERCHANT,
@@ -112,6 +114,7 @@ class MerchantController extends CrudController {
         $before_data = $this->model->whereIn('id', $ids)->get()->keyBy('id')->toArray();
         $this->doDelete($ids);
         foreach ($ids as $id) {
+            $this->model->cache($id, true);
             LogModel::saveLog(
                 LogModel::OP_USER_TYPE_ADMIN,
                 LogModel::OP_TYPE_MERCHANT,
@@ -142,6 +145,7 @@ class MerchantController extends CrudController {
         }
         $result = MerchantModel::changeBalance($merchant_id, $type, $amount, $trade_no, $note);
         if ($result) {
+            $this->model->cache($merchant_id);
             return $this->success();
         } else {
             return $this->error('error');
@@ -166,5 +170,30 @@ class MerchantController extends CrudController {
         }
         $this->output = MerchantModel::getChannelRate($merchant_id, $method_key, $channel_id);
         return $this->success();
+    }
+
+    /**
+     * 商户中心快捷登录
+     * @param Request $request
+     * @return Response
+     */
+    public function login(Request $request) {
+        // 商户ID
+        $merchant_id = $request->input('id');
+        if (!$merchant_id) {
+            return $this->error('error_data');
+        }
+        // 商户信息
+        $merchant = MerchantModel::getOne($merchant_id);
+        if (!$merchant) {
+            return $this->error('error_data');
+        }
+        // 存储商户信息到session
+        $merchant['password'] = md5($merchant['password']); // 存储MD5后的密码
+        loginfo('merchant_info', [$merchant]);
+        session()->put('merchant', $merchant);
+        session()->save(); // 显式保存，避免redirect引起的session为保存问题
+        // 跳转到商户中心
+        return redirect('/merchant/index/index');
     }
 }

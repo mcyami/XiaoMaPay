@@ -94,6 +94,25 @@ class MerchantModel extends BaseModel {
     }
 
     /**
+     * 获取商户信息 顺序：缓存->数据库
+     * @param string $id
+     * @return array
+     */
+    public static function getOne(string $id){
+        // 从缓存获取商户信息
+        $merchant_info = MerchantCache::getMerchantInfo($id);
+        if (!$merchant_info) {
+            $merchant_info = self::find($id);
+            if (!$merchant_info) {
+                return []; // 商户信息不存在
+            }
+            $merchant_info = $merchant_info->toArray();
+            MerchantCache::setMerchantInfo($id, $merchant_info);
+        }
+        return $merchant_info;
+    }
+
+    /**
      * 刷新当前商户账号session（带自动退出功能）
      * @param bool $force 是否强制刷新
      * @return void|null
@@ -112,27 +131,28 @@ class MerchantModel extends BaseModel {
             return null;
         }
         $session = request()->session();
-        // 从缓存获取商户信息
-        $merchant_cache = MerchantCache::getMerchantInfo($merchant_id);
-        if (!$merchant_cache) {
+        // 获取商户信息
+        $merchant_info = self::getOne($merchant_id);
+        if (!$merchant_info || count($merchant_info) == 0) {
             // 商户信息不存在则退出
             $session->forget('merchant');
             return null;
         }
-        $merchant_cache['password'] = md5($merchant_cache['password']);
+        $merchant_info['password'] = md5($merchant_info['password']);
         $merchant_session['password'] = $merchant_session['password'] ?? '';
-        if ($merchant_cache['password'] != $merchant_session['password']) {
+        if ($merchant_info['password'] != $merchant_session['password']) {
             // 商户修改了密码，则退出重新登录
             $session->forget('merchant');
             return null;
         }
         // 账户被禁用
-        if ($merchant_cache['status'] != self::MERCHANT_STATUS_ENABLE) {
+        if ($merchant_info['status'] != self::MERCHANT_STATUS_ENABLE) {
             $session->forget('merchant');
             return;
         }
-        $merchant_cache['session_last_update_time'] = $time_now;
-        $session->set('merchant', $merchant_cache);
+        // 更新session
+        $merchant_info['session_last_update_time'] = $time_now;
+        $session->set('merchant', $merchant_info);
     }
 
     /**

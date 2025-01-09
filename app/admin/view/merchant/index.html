@@ -121,6 +121,9 @@
     <button class="pear-btn pear-btn-xs tool-btn" lay-event="balance" permission="app.admin.merchant.balance">
         {:trans('text_merchant_balance_change')}
     </button>
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="login" permission="app.admin.merchant.login">
+        {:trans('text_login')}
+    </button>
     <button class="pear-btn pear-btn-xs tool-btn" lay-event="edit" permission="app.admin.merchant.update">
         {:trans('text_edit')}
     </button>
@@ -408,7 +411,7 @@
                 toolbar: "#table-bar",
                 align: "center",
                 fixed: "right",
-                width: 220,
+                width: 260,
             }
         ];
 
@@ -506,6 +509,8 @@
                 balance(obj);
             } else if (obj.event === "addOrder") {
                 addOrder(obj);
+            } else if (obj.event === "login") {
+                login(obj);
             }
         });
 
@@ -626,6 +631,13 @@
                     }
                 })
             });
+        }
+
+        // 快捷登录商户
+        let login = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            let url = "/admin/merchant/login?id=" + value;
+            window.open(url);
         }
 
         // 刷新表格数据
