@@ -109,7 +109,7 @@ layui.define(['message', 'table', 'jquery', 'element', 'yaml', 'form', 'tab', 'm
 
 				if (isMuiltTab(param) === "true" || isMuiltTab(param) === true) {
 					bodyTab = pearTab.render({
-						elem: 'content',
+						elem: 'm-content',
 						roll: true,
 						tool: true,
 						width: '100%',

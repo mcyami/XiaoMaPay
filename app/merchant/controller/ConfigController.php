@@ -70,11 +70,11 @@ class ConfigController extends CrudController {
                 "keepState" => true,
                 "preload" => false,
                 "session" => true,
-                "max" => "30",
+                "max" => "20",
                 "index" => [
                     "id" => "0",
                     "href" => "/merchant/index/dashboard",
-                    "title" => "Merchant Admin",
+                    "title" => "商户中心",
                 ]
             ],
             "theme" => [

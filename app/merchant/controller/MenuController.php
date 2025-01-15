@@ -17,25 +17,54 @@ class MenuController extends CrudController {
         return  [
             [
                 "id" => 1,
-                "title" => "基本信息",
+                "title" => "商户资料",
                 "icon" => "layui-icon layui-icon-set",
-                "key" => "merchant",
+                "key" => "app\\merchant\\controller\\AccountController@index",
                 "pid" => 0,
-                "href" => "",
-                "type" => 0,
-                "children" => [
-                    [
-                        "id" => 2,
-                        "title" => "商户资料",
-                        "icon" => "",
-                        "key" => "app\\merchant\\controller\\AccountController@index",
-                        "pid" => 1,
-                        "href" => "/merchant/account/index",
-                        "type" => 1,
-                        "children" => [],
-                    ],
-
-                ],
+                "href" => "/merchant/account/index",
+                "type" => 1,
+                "children" => []
+            ],
+            [
+                "id" => 11,
+                "title" => "订单记录",
+                "icon" => "layui-icon layui-icon-cart-simple",
+                "key" => "app\\merchant\\controller\\OrderController@index",
+                "pid" => 0,
+                "href" => "/merchant/order/index",
+                "type" => 1,
+                "children" => [],
+            ],
+            [
+                "id" => 12,
+                "title" => "资金明细",
+                "icon" => "layui-icon layui-icon-rmb",
+                "key" => "app\\merchant\\controller\\FundController@index",
+                "pid" => 0,
+                "href" => "/merchant/fund/index",
+                "type" => 1,
+                "children" => [],
+            ],
+            [
+                "id" => 13,
+                "title" => "余额充值",
+                "icon" => "layui-icon layui-icon-cellphone",
+                "key" => "app\\merchant\\controller\\RechargeController@index",
+                "pid" => 0,
+                "href" => "/merchant/recharge/index",
+                "type" => 1,
+                "children" => [],
+            ],
+            [
+                "id" => 51,
+                "title" => "开发文档",
+                "icon" => "layui-icon layui-icon-help",
+                "key" => "developer_doc",
+                "pid" => 0,
+                "href" => "https://www.baidu.com",
+                "type" => 1,
+                "openType" => "_blank",
+                "children" => []
             ],
         ];
     }
