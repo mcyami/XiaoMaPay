@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/component/pear/css/pear.css"/>
+    <link rel="stylesheet" href="/admin/css/reset.css"/>
+</head>
+<body>
+
+<div class="layui-bg-gray" style="padding: 16px;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="35%">
+                            <col width="65%">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td>{:trans('text_order_trade_no')}</td>
+                            <td>{$order['trade_no']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_out_trade_no')}</td>
+                            <td>{$order['out_trade_no']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_api_trade_no')}</td>
+                            <td>{$order['api_trade_no']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_merchant_id')}</td>
+                            <td>{$order['merchant_id']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_pay_channel')}</td>
+                            <td>{$channel_list[$order['channel_id']]}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_pay_method')}</td>
+                            <td>{$method_list[$order['method_id']]}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_pay_channel_ratio')}</td>
+                            <td>{$order['channel_rate']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_type')}</td>
+                            <td>{$type_list[$order['type']]}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_goods_name')}</td>
+                            <td>{$order['goods_name']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_goods_price')}</td>
+                            <td>{$order['goods_price']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_amount')}</td>
+                            <td><strong class="layui-font-red">{$order['amount']}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_merchant_fee_mode')}</td>
+                            <td>{$fee_mode_list[$order['fee_mode']]}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_handling_fee')}</td>
+                            <td>{$order['handling_fee']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_received_amount')}</td>
+                            <td>{$order['received_amount']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_note')}</td>
+                            <td>{$order['note']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_pay_at')}</td>
+                            <td>{$order['pay_at']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_create_time')}</td>
+                            <td>{$order['created_at']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_update_time')}</td>
+                            <td>{$order['updated_at']}</td>
+                        </tr>
+                        <tr>
+                            <td>{:trans('text_order_status')}</td>
+                            <td>{$status_list[$order['status']]}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header layui-font-red">{:trans('text_order_handling_fee')}{:trans('text_fee_rule')}</div>
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="150">
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>{:trans('text_merchant_id')}</th>
+                        <th>{:trans('text_fee_rule_rate')}</th>
+                        <th>{:trans('text_order_received_amount')}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $order['fee_rule'] as $merchant_id=>$rate}
+                    <tr>
+                        <td>{$merchant_id}</td>
+                        <td>{$rate} %</td>
+                        <td>{$order['fee_list'][$merchant_id] ?? ''}</td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script src="/component/layui/layui.js?v=2.8.12"></script>
+<script src="/component/pear/pear.js"></script>
+<script src="/admin/js/permission.js"></script>
+
+</body>
+</html>

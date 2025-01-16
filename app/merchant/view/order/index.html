@@ -91,8 +91,11 @@
 
 <!-- 表格行工具栏 -->
 <script type="text/html" id="table-bar">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="detail">
+        {:trans('text_detail')}
+    </button>
     {{#  if(d.status === 1){ }}
-    <button class="pear-btn pear-btn-xs tool-btn" lay-event="refund" permission="app.merchant.order.refund">
+    <button class="pear-btn pear-btn-xs tool-btn" lay-event="refund">
         {:trans('text_refund')}
     </button>
     {{#  } else if(d.status === 2) { }}
@@ -110,6 +113,7 @@
     const PRIMARY_KEY = "id";
     const SELECT_API = "/merchant/order/select";
     const REFUND_API = "/merchant/order/refund";
+    const DETAIL_URL = "/merchant/order/detail";
 
     // 字段 创建时间 created_at
     layui.use(["laydate"], function () {
@@ -424,6 +428,8 @@
                 setPaid(obj);
             } else if (obj.event === "refund") {
                 refund(obj);
+            } else if (obj.event === "detail") {
+                detail(obj);
             }
         });
 
@@ -491,6 +497,18 @@
                         return layui.popup.success(res.msg, refreshTable);
                     }
                 })
+            });
+        }
+
+        // 表格获取费率
+        let detail = function (obj) {
+            let value = obj.data[PRIMARY_KEY];
+            layer.open({
+                type: 2,
+                title: "{:trans('text_detail')}",
+                shade: 0.1,
+                area: [common.isModile() ? "100%" : "600px", common.isModile() ? "100%" : "480px"],
+                content: DETAIL_URL + "?" + PRIMARY_KEY + "=" + value
             });
         }
 

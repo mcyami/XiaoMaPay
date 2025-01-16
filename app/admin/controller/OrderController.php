@@ -64,14 +64,11 @@ class OrderController extends CrudController {
             // 全部支付通道列表
             $channel_list = PayChannelCache::getList();
             $channel_list = collect($channel_list)->pluck('name', 'id')->toArray();
-            loginfo('channel_list', [$channel_list]);
             // 支付方式列表
             $method_list = PayMethodCache::getList();
             $method_list = collect($method_list)->pluck('name', 'id')->toArray();
-            loginfo('method_list', [$method_list]);
             // 订单类型列表
             $type_list = C('CATE_ORDER_TYPE');
-            loginfo('$type_list', [$type_list]);
             // 手续费模式
             $fee_mode_list = C('MERCHANT_FEE_MODE');
             // 订单状态
