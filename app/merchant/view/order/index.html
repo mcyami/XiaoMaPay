@@ -13,13 +13,6 @@
         <form class="layui-form top-search-from">
 
             <div class="layui-form-item">
-                <label class="layui-form-label">{:trans('text_merchant_id')}</label>
-                <div class="layui-input-block">
-                    <input type="text" name="merchant_id" value="" class="layui-input">
-                </div>
-            </div>
-
-            <div class="layui-form-item">
                 <label class="layui-form-label">{:trans('text_merchant_fund_trade_no')}</label>
                 <div class="layui-input-block">
                     <input type="text" name="trade_no" value="" class="layui-input">
@@ -132,7 +125,7 @@
     layui.use(["jquery", "xmSelect", "popup"], function() {
         // 订单类型
         layui.$.ajax({
-            url: "/admin/config/getConfig?key=CATE_ORDER_TYPE",
+            url: "/merchant/config/getConfig?key=CATE_ORDER_TYPE",
             dataType: "json",
             success: function (res) {
                 let value = layui.$("#order_type").attr("value");
@@ -153,7 +146,7 @@
         });
         // 支付方式
         layui.$.ajax({
-            url: "/admin/payMethod/select?format=select",
+            url: "/merchant/method/select?format=select",
             dataType: "json",
             success: function (res) {
                 let value = layui.$("#order_method_id").attr("value");
@@ -175,7 +168,7 @@
         });
         // 支付通道
         layui.$.ajax({
-            url: "/admin/payChannel/select?format=select",
+            url: "/merchant/channel/select?format=select",
             dataType: "json",
             success: function (res) {
                 let value = layui.$("#order_channel_id").attr("value");
@@ -384,9 +377,9 @@
 
         // 获取表格中下拉或树形组件数据
         let apis = [];
-        apis.push(["type", "/admin/config/getConfig?key=CATE_ORDER_TYPE"]);
-        apis.push(["method_id", "/admin/payMethod/select?format=select"]);
-        apis.push(["channel_id", "/admin/payChannel/select?format=select"]);
+        apis.push(["type", "/merchant/config/getConfig?key=CATE_ORDER_TYPE"]);
+        apis.push(["method_id", "/merchant/method/select?format=select"]);
+        apis.push(["channel_id", "/merchant/channel/select?format=select"]);
         let apiResults = {};
         apiResults["type"] = [];
         apiResults["method_id"] = [];
