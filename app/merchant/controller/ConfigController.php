@@ -4,6 +4,7 @@ namespace app\merchant\controller;
 
 use app\common\controller\CrudController;
 use app\common\model\ConfigModel;
+use support\Request;
 use support\Response;
 
 /**
@@ -20,7 +21,7 @@ class ConfigController extends CrudController {
      * 不需要验证权限的方法
      * @var string[]
      */
-    protected $noNeedAuth = ['get'];
+    protected $noNeedAuth = ['get', 'getConfig'];
 
     /**
      * 构造函数
@@ -28,6 +29,26 @@ class ConfigController extends CrudController {
      */
     public function __construct() {
         $this->model = new ConfigModel; // 配置表模型
+    }
+
+    /**
+     * 获取指定配置值
+     * 数组类型以字典形式返回 [name=>text, value=>1]
+     * @param array $items
+     * @return Response
+     */
+    public function getConfig(Request $request) {
+        $key = $request->get('key', 'SYS_CONFIG_TYPE');
+        $value = C($key);
+        if(is_array($value)){
+            $selects = [];
+            foreach ($value as $key => $val) {
+                $selects[] = ['name' => $val, 'value' => $key];
+            }
+            $value = $selects;
+        }
+        $this->output = $value;
+        return $this->success();
     }
 
     /**
