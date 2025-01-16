@@ -70,6 +70,7 @@ return [
     'text_explain' => '说明',
     'text_count' => '合计',
     'text_refund' => '退款',
+    'text_detail' => '详情',
 
     // 系统配置管理
     'text_config_name' => '配置名称',
